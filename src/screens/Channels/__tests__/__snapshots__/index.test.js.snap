@@ -94,41 +94,10 @@ exports[`renders correctly 1`] = `
         >
           <Text
             accessible={true}
-            active={true}
-            allowFontScaling={false}
+            allowFontScaling={true}
             disabled={false}
             ellipsizeMode="tail"
-            style={
-              Array [
-                Object {
-                  "color": undefined,
-                  "fontSize": 12,
-                },
-                Array [
-                  Object {
-                    "color": "#000",
-                    "fontSize": 30,
-                  },
-                  Object {
-                    "color": "#007aff",
-                    "fontSize": 33,
-                    "marginLeft": 2,
-                    "marginRight": 2,
-                    "marginTop": 2,
-                    "paddingTop": 2,
-                  },
-                ],
-                Object {
-                  "fontFamily": "Ionicons",
-                  "fontStyle": "normal",
-                  "fontWeight": "normal",
-                },
-              ]
-            }
-            virtual={undefined}
-          >
-            
-          </Text>
+          />
         </View>
       </View>
       <View
