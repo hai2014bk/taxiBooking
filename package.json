@@ -4,6 +4,7 @@
   "private": true,
   "devDependencies": {
     "babel-eslint": "7.2.3",
+    "babel-preset-react-native-stage-0": "^1.0.1",
     "eslint": "4.4.1",
     "eslint-plugin-flowtype": "2.35.0",
     "eslint-plugin-import": "2.7.0",
@@ -17,28 +18,24 @@
     "jest": "20.0.4",
     "jest-expo": "19.0.5",
     "prettier": "1.5.3",
-    "react-native-scripts": "1.1.0",
     "react-test-renderer": "16.0.0-alpha.12"
   },
-  "main": "./node_modules/react-native-scripts/build/bin/crna-entry.js",
   "scripts": {
     "postinstall": "remotedev-debugger",
-    "start": "react-native-scripts start",
-    "eject": "react-native-scripts eject",
-    "android": "react-native-scripts android",
-    "ios": "react-native-scripts ios",
-    "test": "jest && eslint .",
+    "start": "react-native start",
+    "android": "react-native run-android",
+    "ios": "react-native run-ios",
+    "test": "jest && eslint",
     "precommit": "yarn test"
   },
   "jest": {
-    "preset": "jest-expo",
+    "preset": "react-native",
     "transformIgnorePatterns": [
       "node_modules/(?!(react-native|lottie-react-native|expo|react-native-maps|react-native-svg|react-native-branch|native-base-shoutem-theme|react-native-easy-grid|react-native-drawer|react-native-vector-icons|react-native-keyboard-aware-scroll-view|react-native-swiper|react-navigation|native-base|@expo|react-native-scrollable-tab-view|react-native-simple-modal)/)"
     ]
   },
   "dependencies": {
     "color": "1.0.3",
-    "expo": "20.0.2",
     "jest-cli": "20.0.4",
     "lodash": "4.13.1",
     "moment": "2.13.0",
@@ -49,6 +46,7 @@
     "react-native-carousel-view": "^0.5.1",
     "react-native-easy-grid": "0.1.15",
     "react-native-modalbox": "1.4.2",
+    "react-native-vector-icons": "4.3.0",
     "react-navigation": "1.0.0-beta.11",
     "react-redux": "5.0.5",
     "redux": "3.7.2",
