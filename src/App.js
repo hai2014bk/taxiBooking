@@ -39,7 +39,7 @@ const App = ({ initialRouteName }) => {
     },
     {
       initialRouteName: initialRouteName,
-      // initialRouteName: "Register",
+      // initialRouteName: "loginAcc",
       contentComponent: props => <Sidebar {...props} />
     }
   );

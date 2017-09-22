@@ -91,7 +91,7 @@ class loginAccForm extends Component {
           navigation.navigate("Register",{data:data})
         }
       })
-    }else {      
+    }else {
       // this.setState({
       //   visible: false
       //   })

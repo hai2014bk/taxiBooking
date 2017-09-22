@@ -13,7 +13,9 @@ import {
   Toast,
   Left,
   Right,
-  Footer, Label
+  Footer,
+  Label,
+  Root
 } from "native-base";
 import { Field, reduxForm } from "redux-form";
 import * as mConstants from '../../utils/Constants';
@@ -127,10 +129,10 @@ class registerForm extends Component {
       if(this.state.password.length > 0){
         if (Utils.validatePasswordRegister(this.state.password)) {
           params.password = this.state.password
-          if(this.state.first_name.length > 0){
-            params.first_name = this.state.first_name
-            if(this.state.last_name.length > 0){
-              params.last_name = this.state.last_name
+          if(this.state.last_name.length > 0){
+            params.last_name = this.state.first_name
+            if(this.state.first_name.length > 0){
+              params.first_name = this.state.last_name
               if(this.state.email.length > 0){
                 var nospace = this.state.email.replace(/^\s+|\s+$/g, "");
                 setTimeout(() =>{
@@ -151,7 +153,7 @@ class registerForm extends Component {
                                 text: "OK",
                                 onPress: () => {
                                   pressable = true;
-                                  // this.address._root.focus();
+                                  this.address._root.focus();
                                 }
                               }
                             ]);
@@ -165,7 +167,7 @@ class registerForm extends Component {
                               text: "OK",
                               onPress: () => {
                                 pressable = true;
-                                // this.email._root.focus();
+                                this.email._root.focus();
                               }
                             }
                           ]);
@@ -179,13 +181,19 @@ class registerForm extends Component {
                             text: "OK",
                             onPress: () => {
                               pressable = true;
-                              // this.email._root.focus();
+                              this.email._root.focus();
                             }
                           }
                         ]);
                       }, 100);
                     }
                   }else { 
+                    // Toast.show({
+                    //   text: "Email không đúng định dạng!",
+                    //   position: 'bottom',
+                    //   buttonText: 'Okay',
+                    //   type: "danger",
+                    // })
                     this.setState({visible : false})
                     setTimeout(()=> {
                       this.fnAlert("Lỗi", "Email không đúng định dạng", [
@@ -193,7 +201,7 @@ class registerForm extends Component {
                           text: "OK",
                           onPress: () => {
                             pressable = true;
-                            // this.email._root.focus();
+                            this.email._root.focus();
                           }
                         }
                       ]);
@@ -201,6 +209,12 @@ class registerForm extends Component {
                   }
                 }, 200)
               }else{
+                // Toast.show({
+                //   text: "Email không được bỏ trống!",
+                //   position: 'bottom',
+                //   buttonText: 'Okay',
+                //   type: "danger",
+                // })
                 this.setState({visible : false})
                 setTimeout(() => {
                   this.fnAlert("Lỗi", "Email không được bỏ trống", [
@@ -208,7 +222,7 @@ class registerForm extends Component {
                       text: "OK",
                       onPress: () => {
                         pressable = true;
-                        // this.email._root.focus();
+                        this.email._root.focus();
                       }
                     }
                   ]);
@@ -222,7 +236,7 @@ class registerForm extends Component {
                     text: "OK",
                     onPress: () => {
                       pressable = true;
-                      // this.last_name._root.focus();
+                      this.first_name._root.focus();
                     }
                   }
                 ]);
@@ -236,7 +250,7 @@ class registerForm extends Component {
                   text: "OK",
                   onPress: () => {
                     pressable = true;
-                    // this.first_name._root.focus();
+                    this.last_name._root.focus();
                   }
                 }
               ]);
@@ -251,7 +265,7 @@ class registerForm extends Component {
                 text: "OK",
                 onPress: () => {
                   pressable = true;
-                  // this.password._root.focus();
+                  this.password._root.focus();
                 }
               }
             ]);
@@ -265,7 +279,7 @@ class registerForm extends Component {
             text: "OK",
             onPress: () => {
               pressable = true;
-              // this.password._root.focus();
+              this.password._root.focus();
             }
           }
         ]);
@@ -285,7 +299,7 @@ class registerForm extends Component {
             text: "OK",
             onPress: () => {
               pressable = true;
-              // this.username._root.focus();
+              this.username._root.focus();
             }
           }
         ]);
@@ -308,7 +322,7 @@ class registerForm extends Component {
             <Text style={styles.signupHeader}>TẠO TÀI KHOẢN</Text>
             <View style={styles.signupContainer}>
 
-            <Item floatingLabel style={{width:"100%", marginTop:10}}>
+            <Item stackedLabel style={{width:"100%", marginTop:10}}>
             <Label>Số Điện Thoại</Label>
             <Input
               {...this.props}
@@ -327,7 +341,7 @@ class registerForm extends Component {
             />
             </Item>
 
-            <Item floatingLabel style={{width:"100%", marginTop:10}}>
+            <Item stackedLabel style={{width:"100%", marginTop:10}}>
             <Label>Mật Khẩu</Label>
             <Input
             {...this.props}
@@ -344,25 +358,8 @@ class registerForm extends Component {
             />
             </Item>
 
-            <Item floatingLabel style={{width:"100%", marginTop:10}}>
+            <Item stackedLabel style={{width:"100%", marginTop:10}}>
             <Label>Tên</Label>
-            <Input
-            {...this.props}
-              ref={ref => {
-                this.first_name = ref;
-              }}
-              style={styles.input}
-              placeholderTextColor="#848484"
-              autoCapitalize="none"
-              autoCorrect = {false}
-              keyboardType = "default"
-              secureTextEntry = {false}
-              onChangeText={first_name => this.setState({ first_name: first_name })} 
-            />
-            </Item>
-
-            <Item floatingLabel style={{width:"100%", marginTop:10}}>
-            <Label>Họ</Label>
             <Input
             {...this.props}
               ref={ref => {
@@ -378,7 +375,24 @@ class registerForm extends Component {
             />
             </Item>
 
-            <Item floatingLabel style={{width:"100%", marginTop:10}}>
+            <Item stackedLabel style={{width:"100%", marginTop:10}}>
+            <Label>Họ</Label>
+            <Input
+            {...this.props}
+              ref={ref => {
+                this.first_name = ref;
+              }}
+              style={styles.input}
+              placeholderTextColor="#848484"
+              autoCapitalize="none"
+              autoCorrect = {false}
+              keyboardType = "default"
+              secureTextEntry = {false}
+              onChangeText={first_name => this.setState({ first_name: first_name })} 
+            />
+            </Item>
+
+            <Item stackedLabel style={{width:"100%", marginTop:10}}>
             <Label>Email</Label>
             <Input
             {...this.props}
@@ -395,7 +409,7 @@ class registerForm extends Component {
             />
             </Item>
 
-            <Item floatingLabel style={{width:"100%", marginTop:10}}>
+            <Item stackedLabel style={{width:"100%", marginTop:10}}>
             <Label>Địa Chỉ</Label>
             <Input
             {...this.props}

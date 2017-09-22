@@ -61,15 +61,28 @@ class LoginSrcForm extends Component {
     };
   }
 
+  fnAlert(title, content, button) {
+    Alert.alert(title, content, button, { cancelable: false });
+  }
+
   componentWillReceiveProps(props){
     const navigation = this.props.navigation;
     console.log("ddddddnjbjkjk",this.props)
       if(props.error.status == 401){
+        setTimeout(() =>{
+          this.fnAlert("Lỗi", "Sai số điện thoại hoặc mật khẩu", [
+            {
+              text: "OK",
+              onPress: () => {
+                pressable = true;
+                navigation.navigate("Home")
+                this.password._root.focus();
+              }
+            }
+          ]);
+        }, 100);
         this.setState({visible:false})
         press = true
-        setTimeout(function() {
-          alert("Sai số điện thoại hoặc mật khẩu")
-        }, 100);
       }else{
           // console.log("mang")
           this.setState({visible:false})
@@ -135,7 +148,7 @@ class LoginSrcForm extends Component {
               </View>
               <View style={styles.container}>
                 <View style={styles.form}>
-                    <Item floatingLabel style={{width:"100%", marginTop:10}}>
+                    <Item stackedLabel style={{width:"100%", marginTop:10}}>
                           <Label>Số điện thoại</Label>
                           <Input
                           style={styles.input}
@@ -149,9 +162,13 @@ class LoginSrcForm extends Component {
                           onChangeText={phonenumber => this.setState({ phoneNumber: phonenumber })} 
                           />
                     </Item>
-                  <Item floatingLabel style={{width:"100%", marginTop:10}}>
+                  <Item stackedLabel style={{width:"100%", marginTop:10}}>
                         <Label>Mật khẩu</Label>
                         <Input
+                        {...this.props}
+                          ref={ref => {
+                            this.password = ref;
+                          }}
                         style={styles.input}
                         placeholderTextColor="#848484"
                         autoCapitalize="none"
