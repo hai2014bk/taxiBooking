@@ -336,6 +336,7 @@ class bookCarForm extends Component {
             { marginRight: 10, alignItems: "flex-end" }
           ]}
         >
+  
           <TouchableOpacity
             style={{
               alignItems: "center",
@@ -484,6 +485,7 @@ class bookCarForm extends Component {
         </View>
         <View style={{ marginTop: 5, height: "70%", marginLeft: 10 }}>
           <Text style={styles.textPrice}>
+
             {this.state.price} VNĐ
           </Text>
         </View>
@@ -833,6 +835,7 @@ class bookCarForm extends Component {
                   <Text numberOfLines={1} style={styles.textstop}>
                     {this.state.start}
                   </Text>
+
                 </View>
               </TouchableOpacity>
             </View>

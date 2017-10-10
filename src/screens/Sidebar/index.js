@@ -12,8 +12,8 @@ import {
   Thumbnail,
   View
 } from "native-base";
-import { Grid, Col } from "react-native-easy-grid";
-
+import { Grid, Col, Row } from "react-native-easy-grid";
+const profile = require("../../Icon/PNG/profile.png");
 import styles from "./style";
 const resetAction = NavigationActions.reset({
   index: 0,
@@ -29,93 +29,47 @@ class SideBar extends Component {
           style={styles.background}
         >
           <Content style={styles.drawerContent}>
+            <Col>
+              <TouchableOpacity
+                style={{ alignSelf: "center" }}
+                onPress={() => {
+                  navigation.navigate("profileBookCar");
+                }}
+              >
+                <Thumbnail
+                  source={require("../../../assets/Contacts/sanket.png")}
+                  style={styles.profilePic}
+                />
+              </TouchableOpacity>
+            </Col>
+            <Text
+              note
+              style={{ color: "#fff", alignSelf: "center", fontSize: 17 }}
+            >
+              Kumar Sanket
+            </Text>
             <ListItem
               button
               onPress={() => {
-                navigation.navigate("Home");
+                navigation.navigate("profileBookCar");
               }}
               iconLeft
               style={styles.links}
             >
-              <Icon name="ios-grid-outline" />
-              <Text style={styles.linkText}>NEWS</Text>
+              <Icon name="md-person" />
+              {/* <Image source={profile}/> */}
+              <Text style={styles.linkText}>Thông tin cá nhân</Text>
             </ListItem>
             <ListItem
               button
               onPress={() => {
-                navigation.navigate("Channels");
-              }}
-              iconLeft
-              style={styles.links}
-            >
-              <Icon name="ios-keypad-outline" />
-              <Text style={styles.linkText}>CHANNELS</Text>
-            </ListItem>
-            <ListItem
-              button
-              onPress={() => {
-                navigation.navigate("Overview");
-              }}
-              iconLeft
-              style={styles.links}
-            >
-              <Icon name="ios-stats" />
-              <Text style={styles.linkText}> OVERVIEW</Text>
-            </ListItem>
-            <ListItem
-              button
-              onPress={() => {
-                navigation.navigate("Calendar");
-              }}
-              iconLeft
-              style={styles.links}
-            >
-              <Icon name="ios-calendar-outline" />
-              <Text style={styles.linkText}>CALENDAR</Text>
-            </ListItem>
-            <ListItem
-              button
-              onPress={() => {
-                navigation.navigate("Timeline");
+                navigation.navigate("history");
               }}
               iconLeft
               style={styles.links}
             >
               <Icon name="ios-timer-outline" />
-              <Text style={styles.linkText}>TIMELINE</Text>
-            </ListItem>
-            <ListItem
-              button
-              onPress={() => {
-                navigation.navigate("Profile");
-              }}
-              iconLeft
-              style={styles.links}
-            >
-              <Icon name="ios-person-outline" />
-              <Text style={styles.linkText}> PROFILE</Text>
-            </ListItem>
-            <ListItem
-              button
-              onPress={() => {
-                navigation.navigate("Settings");
-              }}
-              iconLeft
-              style={styles.links}
-            >
-              <Icon name="ios-settings-outline" />
-              <Text style={styles.linkText}>SETTINGS</Text>
-            </ListItem>
-            <ListItem
-              button
-              onPress={() => {
-                navigation.navigate("Feedback");
-              }}
-              iconLeft
-              style={styles.links}
-            >
-              <Icon name="ios-paper-outline" />
-              <Text style={styles.linkText}>FEEDBACK</Text>
+              <Text style={styles.linkText}>Lịch sử đặt xe</Text>
             </ListItem>
           </Content>
           <View style={styles.logoutContainer}>
@@ -128,28 +82,16 @@ class SideBar extends Component {
                     }}
                     style={{
                       alignSelf: "flex-start",
-                      backgroundColor: "transparent"
+                      backgroundColor: "transparent",
+                      flexDirection:"row",
+                      alignItems:"center",
+                      justifyContent:"center"
                     }}
                   >
-                    <Text style={{ fontWeight: "bold", color: "#fff" }}>
-                      LOG OUT
+                  <Icon name="ios-log-out-outline" />
+                    <Text style={{ fontWeight: "bold", color: "#fff", marginLeft:10 }}>
+                      Đăng xuất
                     </Text>
-                    <Text note style={{ color: "#fff" }}>
-                      Kumar Sanket
-                    </Text>
-                  </TouchableOpacity>
-                </Col>
-                <Col>
-                  <TouchableOpacity
-                    style={{ alignSelf: "flex-end" }}
-                    onPress={() => {
-                      navigation.navigate("Profile");
-                    }}
-                  >
-                    <Thumbnail
-                      source={require("../../../assets/Contacts/sanket.png")}
-                      style={styles.profilePic}
-                    />
                   </TouchableOpacity>
                 </Col>
               </Grid>
