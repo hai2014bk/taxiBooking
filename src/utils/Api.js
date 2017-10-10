@@ -1,135 +1,136 @@
-import {AsyncStorage} from 'react-native'
+import {AsyncStorage} from "react-native";
 
-import * as mConstants from './Constants';
+import * as mConstants from "./Constants";
 
 export function APIRequestGET(url,isAuth,successCallback,errorCallback) {
     if (!isAuth) {
         fetch(url, {
-        method: 'GET',
+        method: "GET",
         headers: {
-            'Accept': 'application/json',
-            'Content-Type': 'application/json',
+            "Accept": "application/json",
+            "Content-Type": "application/json",
         },
     }).then((response) => {
-        if(response.status == 200){
+        if (response.status == 200){
             response.json().then((responseJson) => {
-            successCallback(responseJson)
-            })
+            successCallback(responseJson);
+            });
         } else {
-            console.log('response',response._bodyText.message)
+            console.log("response",response._bodyText.message);
             var error = {
                 "error": true,
                 "message": "Fail to request",
-            }
-            console.log(response)
-            errorCallback(error)
+            };
+            console.log(response);
+            errorCallback(error);
         }
         })
         .catch((error) => {
         console.log(error);
-		errorCallback(error)
+		errorCallback(error);
         });
     } else {
     var token;
      AsyncStorage.getItem(mConstants.LOGIN_INFO, (err, result) => {
-     token = JSON.parse(result).accessToken
-     console.log('token',token)
+     token = JSON.parse(result).auth_token;
+     console.log("token",token);
       fetch(url, {
-      method: 'GET',
+      method: "GET",
       headers: {
-        'Accept': 'application/json',
-        'Content-Type': 'application/json',
-        'Authorization': 'Bearer ' + token,
+        "Accept": "application/json",
+        "Content-Type": "application/json",
+        "Authorization": "token " + token,
       },
     }).then((response) => {
-     if(response.status == 200){
+     if (response.status == 200){
             response.json().then((responseJson) => {
-             console.log(response)
-            successCallback(responseJson)
-            })
+             console.log(response);
+            successCallback(responseJson);
+            });
         } else {
-            console.log('response',response)
+            console.log("response",response);
             var error = {
                 "error": true,
                 "message":"Fail to request"
-            }
-            console.log(response)
-            errorCallback(error)
+            };
+            console.log(response);
+            errorCallback(error);
         }
      })
     .catch((error) => {
       console.log(error);
-	  errorCallback(error)
+	  errorCallback(error);
     });
      });
     }
 }
 
 export function APIRequestPOST(url,param,isAuth,successCallback,errorCallback) {
-
+    console.log("API",param)
     if (!isAuth) {
         fetch(url, {
-        method: 'POST',
+        method: "POST",
         headers: {
-            'Accept': 'application/json',
-            'Content-Type': 'application/json',
+            "Accept": "application/json",
+            "Content-Type": "application/json",
         },
         body: JSON.stringify(param)
     }).then((response) => {
-        console.log("API",response)
+        console.log("API",response);
         // if(response.status == 401) {
         //     successCallback(response)
         // }
-        if(response.status == 200 || response.status == 201) {
+        if (response.status == 200 || response.status == 201) {
             response.json().then((responseJson) => {
-            successCallback(responseJson)
-            })
+            successCallback(responseJson);
+            });
         } else {
-            console.log('response',response)
+            console.log("response",response);
             var error = {
                 "status": response.status,
                 "error": true,
                 "message": "Fail to request",
-            }
-            errorCallback(error)
+            };
+            errorCallback(error);
         }
         })
         .catch((error) => {
         console.log("errorcallback",error);
-		 errorCallback(error)
+		 errorCallback(error);
         });
     } else {
     var token;
      AsyncStorage.getItem(mConstants.LOGIN_INFO, (err, result) => {
-     token = JSON.parse(result).accessToken
+     token = JSON.parse(result).auth_token;
+     console.log("token", token)
       fetch(url, {
-      method: 'POST',
+      method: "POST",
       headers: {
-        'Accept': 'application/json',
-        'Content-Type': 'application/json',
-        'Authorization': 'Bearer ' + token,
+        "Accept": "application/json",
+        "Content-Type": "application/json",
+        "Authorization": "token " + token,
       },
       body: JSON.stringify(param)
     }).then((response) => {
-     if(response.status == 200){
+     if (response.status == 200|| response.status == 201){
             response.json().then((responseJson) => {
-            successCallback(responseJson)
-            })
+            successCallback(responseJson);
+            });
         } else {
-            console.log('response',response)
+            console.log("response",response);
             var error = {
                 "status":response.status,
                 "error": true,
                 "message": "Fail to request",
-            }
-            console.log(error)
-            console.log(response)
-            errorCallback(error)
+            };
+            console.log(error);
+            console.log(response);
+            errorCallback(error);
         }
      })
     .catch((error) => {
       console.log("whatisthis",error);
-	   errorCallback(error)
+	   errorCallback(error);
     });
      });
     }
