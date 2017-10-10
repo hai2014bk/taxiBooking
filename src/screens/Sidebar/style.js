@@ -22,21 +22,21 @@ export default {
   logoutbtn: {
     paddingTop: 30,
     flexDirection: "row",
-    borderTopWidth: 1,
-    borderTopColor: "#fff"
+    // borderTopWidth: 1,
+    // borderTopColor: "#fff"
   },
   background: {
     flex: 1,
     width: null,
     height: null,
-    backgroundColor: primary
+    backgroundColor: "#31404B"
   },
   drawerContent: {
     paddingTop: Platform.OS === "android" ? 20 : 30
   },
   profilePic: {
-    height: 40,
-    width: 40,
-    borderRadius: Platform.OS === "android" ? 40 : 20
+    height: 100,
+    width: 100,
+    borderRadius: Platform.OS === "android" ? 100 : 50
   }
 };
