@@ -8,7 +8,8 @@ import {
   FlatList,
   View as RNView,
   AsyncStorage,
-  Modal
+  Modal,
+  Alert
 } from "react-native";
 import { connect } from "react-redux";
 import { Field, reduxForm } from "redux-form";
@@ -34,6 +35,7 @@ import { Grid, Col } from "react-native-easy-grid";
 import Carousel from "react-native-carousel-view";
 import DateTimePicker from "react-native-modal-datetime-picker";
 import { itemsFetchData } from "../../actions";
+import { carbooking } from "../../actions";
 import datas from "./data.json";
 import * as mConstants from "../../utils/Constants";
 import { GooglePlacesAutocomplete } from "react-native-google-places-autocomplete";
@@ -52,6 +54,12 @@ const headerLogo = require("../../../assets/header-logo.png");
 var lat = 21.2187149;
 var lng = 105.8041709;
 var name = "Cảng hàng không quốc tế Nội Bài";
+var timeH = new Date().getHours();
+var timeMi = new Date().getMinutes();
+var timeY = new Date().getFullYear();
+var timeMo = new Date().getMonth();
+var timeD = new Date().getDate();
+var press = true;
 class bookCarForm extends Component {
   constructor(props) {
     super(props);
@@ -65,7 +73,7 @@ class bookCarForm extends Component {
       car7: car7W,
       car16: car16W,
       start: name,
-      stop: "",
+      stop: "Chọn điểm đến",
       close: false,
       open: false,
       startLat: lat,
@@ -76,15 +84,65 @@ class bookCarForm extends Component {
       disabledstop: false,
       openTimePicker: false,
       roundTrip: false,
-      price: 0
+      price: 0,
+      dateStringshow: "Bây giờ",
+      night: true,
+      userId: 17,
+      car_type_id: 1,
+      dateString:
+        timeY + "-" + timeMo + "-" + timeD + " " + timeH + ":" + timeMi,
+      note: "",
+      timeH:timeH,
+      distance:20,
+      duration:60,
     };
+  }
+  componentWillReceiveProps(props) {
+    if (props.items.id) {
+      this.showAlert("Thành công", "Đặt xe thành công", [
+        {
+          text: "OK",
+          onPress: () => {
+            press = true;
+          }
+        }
+      ]);
+    } else {
+      if (props.error.message == "Network request failed") {
+        this.showAlert(
+          "Thất bại",
+          "Đặt xe đặt xe thất bại\nKết nối mạng không ổn định, vui lòng thử lại sau",
+          [
+            {
+              text: "OK",
+              onPress: () => {
+                press = true;
+              }
+            }
+          ]
+        );
+      } else {
+        this.showAlert("Thất bại", "Đặt xe đặt xe thất bại", [
+          {
+            text: "OK",
+            onPress: () => {
+              press = true;
+            }
+          }
+        ]);
+      }
+    }
+    console.log("123", props);
   }
   componentDidMount() {
     // AsyncStorage.removeItem(mConstants.LOGIN_INFO);
-    this.props.fetchData(datas);
+    // this.props.fetchData(datas);
   }
-
+  componentWillMount() {
+    console.log("qweqweqewe");
+  }
   render() {
+    console.log(timeMi, this.state.timeH, this.state.dateString);
     var date = new Date();
     return (
       <Container>
@@ -116,8 +174,6 @@ class bookCarForm extends Component {
               style={{ marginLeft: 10, marginRight: 10, flexDirection: "row" }}
             >
               <Button
-                bordered
-                info
                 style={[
                   styles.chooseBtn,
                   { backgroundColor: this.state.selectedTab1 }
@@ -129,8 +185,6 @@ class bookCarForm extends Component {
                 </Text>
               </Button>
               <Button
-                bordered
-                info
                 style={[
                   styles.chooseBtn,
                   { backgroundColor: this.state.selectedTab2 }
@@ -148,7 +202,7 @@ class bookCarForm extends Component {
               flex: 1,
               borderBottomWidth: 0.5,
               marginTop: 5,
-              height: 120
+              height: 121
             }}
           >
             {this._pickLocation()}
@@ -193,7 +247,15 @@ class bookCarForm extends Component {
             />
           </View>
           <View style={{ flex: 1, justifyContent: "flex-end" }}>
-            <Button full style={{ backgroundColor: "#2E3B45" }}>
+            <Button
+              full
+              style={{ backgroundColor: "#2E3B45" }}
+              onPress={() => {
+                if (press) {
+                  (press = false), this._book();
+                }
+              }}
+            >
               <Text>Đặt ngay</Text>
             </Button>
           </View>
@@ -202,28 +264,79 @@ class bookCarForm extends Component {
     );
   }
 
+  showAlert(title, content, button) {
+    Alert.alert(title, content, button, { cancelable: false });
+  }
+
+  _book() {
+    var params = {};
+    if (this.state.start.trim() == "Chọn điểm đón") {
+      this.showAlert("Chú ý", "Vui lòng chọn điểm đón", [
+        {
+          text: "OK",
+          onPress: () => {
+            press = true;
+          }
+        }
+      ]);
+    }
+    if (this.state.stop.trim() == "Chọn điểm đến") {
+      this.showAlert("Chú ý", "Vui lòng chọn điểm đến", [
+        {
+          text: "OK",
+          onPress: () => {
+            press = true;
+          }
+        }
+      ]);
+    }
+    if (
+      this.state.start.trim() != "Chọn điểm đón" &&
+      this.state.stop.trim() != "Chọn điểm đến"
+    ) {
+      params.user = this.state.userId;
+      params.from_text = this.state.start;
+      params.from_longitude = 250;
+      params.from_latitude = 402;
+      params.to_text = this.state.stop;
+      params.to_longitude = 123;
+      params.to_latitude = 132;
+      params.car_type = this.state.car_type_id;
+      params.start_time = this.state.dateString;
+      params.round_trip = this.state.roundTrip;
+      if (this.state.note){
+        params.note = this.state.note;
+      } else {
+        params.note = "Tùy chọn";
+      }
+      params.price = this.state.price;
+      params.distance = this.state.distance;
+      params.duration = this.state.duration;
+      params.delete_flag = 0;
+      console.log(params);
+      this.props.carbooking(params);
+      var test = JSON.stringify(params);
+      console.log("asdasdasdas", test);
+    }
+  }
   _timePicker() {
     return (
-      <View
-        style={{
-          flex: 1,
-          flexDirection: "row",
-          justifyContent: "space-between",
-          borderBottomWidth: 0.5
-        }}
-      >
+      <View style={styles.containerTimePicker}>
         <View
-          style={{
-            width: "30%",
-            height: 30,
-            alignItems: "flex-start",
-            justifyContent: "center",
-            marginLeft: 10
-          }}
+          style={[
+            styles.TimePicker,
+            { marginLeft: 10, alignItems: "flex-start" }
+          ]}
         >
           <Text note>Thời gian</Text>
         </View>
-        <View style={{ width: "30%", height: 30 }}>
+        <View
+          style={[
+            styles.TimePicker,
+            { marginRight: 10, alignItems: "flex-end" }
+          ]}
+        >
+  
           <TouchableOpacity
             style={{
               alignItems: "center",
@@ -232,7 +345,9 @@ class bookCarForm extends Component {
             }}
             onPress={() => this.setState({ openTimePicker: true })}
           >
-            <Text style={styles.textNor}>Bây giờ</Text>
+            <Text style={styles.textNor}>
+              {this.state.dateStringshow}
+            </Text>
           </TouchableOpacity>
         </View>
       </View>
@@ -254,10 +369,6 @@ class bookCarForm extends Component {
       date.getDate().toString()
     );
     this.setState({
-      validateWorkingTime: false,
-      time: date.getHours() + ":" + date.getMinutes(),
-      date:
-        date.getFullYear() + "-" + (date.getMonth() + 1) + "-" + date.getDate(),
       dateString:
         date.getFullYear() +
         "-" +
@@ -267,33 +378,48 @@ class bookCarForm extends Component {
         " " +
         date.getHours() +
         ":" +
-        date.getMinutes()
+        date.getMinutes(),
+      timeH: date.getHours(),
+      validateWorkingTime: false,
+      time: date.getHours() + ":" + date.getMinutes(),
+      date:
+        date.getDate() + "/" + (date.getMonth() + 1) + "/" + date.getFullYear(),
+      dateStringshow:
+        date.getHours() +
+        ":" +
+        date.getMinutes() +
+        " " +
+        date.getDate() +
+        "-" +
+        (date.getMonth() + 1) +
+        "-" +
+        date.getFullYear()
     });
     this.hideTimePicker();
+    if (this.state.locate == "noi") {
+      this._checkTimeNoi(this.state.timeH);
+    } else {
+      this._checkTimeNgoai(this.state.timeH);
+    }
   }
 
   _roundTrip() {
     return (
-      <View
-        style={{
-          flex: 1,
-          flexDirection: "row",
-          justifyContent: "space-between",
-          borderBottomWidth: 0.5
-        }}
-      >
+      <View style={styles.containerRouterSelect}>
         <View
-          style={{
-            width: "30%",
-            height: 30,
-            alignItems: "flex-start",
-            justifyContent: "center",
-            marginLeft: 10
-          }}
+          style={[
+            styles.TimePicker,
+            { marginLeft: 10, alignItems: "flex-start" }
+          ]}
         >
           <Text style={{ color: "#31404B" }}>Khứ hồi</Text>
         </View>
-        <View style={{ width: "30%", height: 30 }}>
+        <View
+          style={[
+            styles.TimePicker,
+            { marginRight: 10, alignItems: "flex-end" }
+          ]}
+        >
           <View style={styles.switchZone}>
             <Switch
               value={this.state.roundTrip}
@@ -309,14 +435,7 @@ class bookCarForm extends Component {
   }
   _note() {
     return (
-      <View
-        style={{
-          flex: 1,
-          justifyContent: "center",
-          borderBottomWidth: 0.5,
-          height: 60
-        }}
-      >
+      <View style={styles.noteContainer}>
         <View style={{ marginTop: 5, height: "30%", marginLeft: 10 }}>
           <Text note> Ghi chú</Text>
         </View>
@@ -328,6 +447,7 @@ class bookCarForm extends Component {
             autoCorrect={false}
             secureTextEntry={false}
             editable={true}
+            onChangeText={text => this.setState({ note: text })}
             value={this.state.note}
           />
         </View>
@@ -336,21 +456,36 @@ class bookCarForm extends Component {
   }
 
   _price() {
+    // if (this.state.locate == "noi") {
+    //   if (this.state.night) {
+    //     this.setState({ price: 200000 });
+    //   } else {
+    //     this.setState({ price: 170000 });
+    //   }
+    // } else {
+    //   if (this.state.locate == "ngoai") {
+    //     if (this.state.night) {
+    //       this.setState({ price: 230000 });
+    //     } else {
+    //       this.setState({ price: 200000 });
+    //     }
+    //   }
+    // }
     return (
       <View
-        style={{
-          flex: 1,
-          justifyContent: "center",
-          borderBottomWidth: 0.5,
-          height: 60,
-          marginTop: 5
-        }}
+        style={[
+          styles.noteContainer,
+          {
+            marginTop: 5
+          }
+        ]}
       >
-        <View style={{ marginTop: 5, height: "30%", marginLeft: 10 }}>
-          <Text note> Ghi chú</Text>
+        <View style={styles.textNote}>
+          <Text note> Thành tiền</Text>
         </View>
         <View style={{ marginTop: 5, height: "70%", marginLeft: 10 }}>
-          <Text style={{ color: "orange", fontSize: 30, marginLeft: 10 }}>
+          <Text style={styles.textPrice}>
+
             {this.state.price} VNĐ
           </Text>
         </View>
@@ -379,7 +514,7 @@ class bookCarForm extends Component {
       disabledstart: true,
       disabledstop: false,
       start: name,
-      stop: "",
+      stop: "Chọn điểm đến",
       startLat: lat,
       startLng: lng,
       close: false
@@ -393,7 +528,7 @@ class bookCarForm extends Component {
       textColor1: "black",
       disabledstart: false,
       disabledstop: true,
-      start: "",
+      start: "Chọn điểm đón",
       stop: name,
       stopLat: lat,
       stopLng: lng,
@@ -491,27 +626,34 @@ class bookCarForm extends Component {
             currentLocation={true}
             currentLocationLabel="Vị trí hiện tại"
             nearbyPlacesAPI={"GoogleReverseGeocoding"}
-            GoogleReverseGeocodingQuery={{}}
+            GoogleReverseGeocodingQuery={{
+              postal_code: 100000
+            }}
             GooglePlacesSearchQuery={{}}
             filterReverseGeocodingByTypes={[
               "route",
               "administrative_area_level_3"
             ]}
             onPress={(data, details) => {
+              var num = details.geometry.location.lat.toString;
+              var digits = num.toString().slice(0, -1);
+              console.log("awesome", digits);
+              console.log(data, details);
               if (
                 details.geometry.location.lat == this.state.stopLat &&
                 details.geometry.location.lng == this.state.stopLng
               ) {
                 this._haNoi();
               } else {
-                this._checklocation(details)
-                console.log(data, details);
+                this._checklocation(data, details);
+
                 this.setState({
                   start: data.description,
                   startLat: details.geometry.location.lat,
                   startLng: details.geometry.location.lng,
                   close: false
                 });
+                var pa = this.state.startLat.split(".");
               }
             }}
             query={{
@@ -581,13 +723,14 @@ class bookCarForm extends Component {
               "administrative_area_level_3"
             ]}
             onPress={(data, details) => {
+              console.log(data, details);
               if (
                 details.geometry.location.lat == this.state.startLat &&
                 details.geometry.location.lng == this.state.startLng
               ) {
                 this._noiBai();
               } else {
-                console.log(data, details);
+                this._checklocation(data, details);
                 this.setState({
                   stop: data.description,
                   stopLat: details.geometry.location.lat,
@@ -605,28 +748,79 @@ class bookCarForm extends Component {
       </Container>
     );
   }
+  _checkTimeNoi(timeH) {
+    console.log(timeH,"adasdasdasd")
+    if (
+      timeH == 22 ||
+      timeH == 23 ||
+      timeH == 0 ||
+      timeH == 2 ||
+      timeH == 3 ||
+      timeH == 4 ||
+      timeH == 5 ||
+      timeH == 6
+    ) {
+      this.setState({ price: 200000 });
+    } else {
+      this.setState({ price: 170000 });
+    }
+  }
 
-  _checklocation(details){
+  _checkTimeNgoai(timeH) {
+    if (
+      timeH == 22 ||
+      timeH == 23 ||
+      timeH == 0 ||
+      timeH == 2 ||
+      timeH == 3 ||
+      timeH == 4 ||
+      timeH == 5 ||
+      timeH == 6
+    ) {
+      this.setState({ price: 230000 });
+    } else {
+      this.setState({ price: 200000 });
+    }
+  }
+
+  _checklocation(data, details) {
+    var i = "";
+    for (i in details.formatted_address.split(",")) {
+      if (!details.formatted_address.split(",")[i]) {
+        console.log("akakakk");
+        break;
+      } else {
+        if (
+          details.formatted_address.split(",")[i].trim() == "Hoàn Kiếm" ||
+          details.formatted_address.split(",")[i].trim() == "Tây Hồ" ||
+          details.formatted_address.split(",")[i].trim() == "Đống Đa" ||
+          details.formatted_address.split(",")[i].trim() == "Ba Đình" ||
+          details.formatted_address.split(",")[i].trim() == "Cầu Giấy" ||
+          details.formatted_address.split(",")[i].trim() == "Long Biên"
+        ) {
+          console.log("data", details.formatted_address.split(",")[i]);
+          this.setState({ locate: "noi" });
+          this._checkTimeNoi(this.state.timeH);
+          break;
+        } else {
+          this._checkTimeNgoai(this.state.timeH);
+          console.log("no data");
+          this.setState({ locate: "ngoai" });
+          // break;
+        }
+      }
+    }
+    return i;
   }
 
   _pickLocation() {
     return (
       <View style={{ marginLeft: 10, marginRight: 10 }}>
-        <View
-          style={{ flexDirection: "row", flex: 1, width: "100%", height: 120 }}
-        >
-          <View
-            style={{
-              flex: 1,
-              height: 110,
-              width: "100%",
-              justifyContent: "center",
-              alignItems: "center"
-            }}
-          >
+        <View style={styles.locationPick0}>
+          <View style={styles.locationPick}>
             <Image source={icon} style={{ height: 110 }} resizeMode="contain" />
           </View>
-          <View style={{ flex: 10, height: 110, flexDirection: "column" }}>
+          <View style={styles.locationPick1}>
             <View
               style={{ width: "100%", height: "50%", borderBottomWidth: 0.5 }}
             >
@@ -634,20 +828,14 @@ class bookCarForm extends Component {
                 disabled={this.state.disabledstart}
                 onPress={() => this.setState({ close: true })}
               >
-                <View style={{ width: "100%", height: "20%" }}>
+                <View style={{ width: "100%", height: "30%", marginLeft: 5 }}>
                   <Text note> Điểm đón</Text>
                 </View>
-                <View style={{ width: "100%", height: "80%" }}>
-                  <Input
-                    style={{ padding: 0 }}
-                    placeholder="Chọn điểm xuất phát"
-                    placeholderTextColor="#31404B"
-                    autoCapitalize="none"
-                    autoCorrect={false}
-                    secureTextEntry={false}
-                    editable={false}
-                    value={this.state.start}
-                  />
+                <View style={{ width: "100%", height: "70%" }}>
+                  <Text numberOfLines={1} style={styles.textstop}>
+                    {this.state.start}
+                  </Text>
+
                 </View>
               </TouchableOpacity>
             </View>
@@ -656,20 +844,20 @@ class bookCarForm extends Component {
                 disabled={this.state.disabledstop}
                 onPress={() => this.setState({ open: true })}
               >
-                <View style={{ width: "100%", height: "20%" }}>
+                <View
+                  style={{
+                    width: "100%",
+                    height: "30%",
+                    marginLeft: 5,
+                    marginTop: 2
+                  }}
+                >
                   <Text note> Điểm đến</Text>
                 </View>
-                <View style={{ width: "100%", height: "80%" }}>
-                  <Input
-                    style={{ padding: 0 }}
-                    placeholder="Chọn điểm đến"
-                    placeholderTextColor="#31404B"
-                    autoCapitalize="none"
-                    autoCorrect={false}
-                    secureTextEntry={false}
-                    editable={false}
-                    value={this.state.stop}
-                  />
+                <View style={{ width: "100%", height: "70%" }}>
+                  <Text numberOfLines={1} style={styles.textstop}>
+                    {this.state.stop}
+                  </Text>
                 </View>
               </TouchableOpacity>
             </View>
@@ -685,13 +873,13 @@ const bookCar = reduxForm({
 
 function bindAction(dispatch) {
   return {
-    fetchData: url => dispatch(itemsFetchData(url))
+    carbooking: params => dispatch(carbooking(params))
+    // fetchData: url => dispatch(itemsFetchData(url))
   };
 }
 
 const mapStateToProps = state => ({
-  items: state.homeReducer.items,
-  hasErrored: state.homeReducer.hasErrored,
-  isLoading: state.homeReducer.isLoading
+  items: state.bookCarReducer.items,
+  error: state.bookCarReducer.error
 });
 export default connect(mapStateToProps, bindAction)(bookCarForm);

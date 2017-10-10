@@ -33,7 +33,7 @@ export function carbooking(params) {
   return dispatch => {
     console.log("action", params);
     var url = mConstants.BOOKCAR;
-    var isAuth = false;
+    var isAuth = true;
     APIRequestPOST(
       url,
       params,

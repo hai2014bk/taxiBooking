@@ -149,6 +149,7 @@ export default {
   },
   chooseBtn: {
     flex: 1,
+    alignItems: "center",
     justifyContent: "center",
     height: 25,
     marginBottom: 10
@@ -160,8 +161,7 @@ export default {
   containerCartype: {
     flexDirection: "row",
     justifyContent: "space-between",
-    marginTop: 5,
-    borderBottomWidth:0.5,
+    borderBottomWidth: 0.5
   },
   cartype: {
     width: "25%",
@@ -176,12 +176,10 @@ export default {
     alignItems: "center"
   },
   locationPick0: {
-    flex: 1,
-    marginBottom: 10,
-    marginTop: 5,
     flexDirection: "row",
-    borderBottomWidth: 0.5,
-    borderColor: "#31404B"
+    flex: 1,
+    width: "100%",
+    height: 120
   },
   locationPick: {
     flex: 1.5,
@@ -200,33 +198,35 @@ export default {
     flex: 4,
     width: "100%",
     borderBottomWidth: 0.5,
-    marginRight:10,
+    marginRight: 10
+  },
+  textstop: {
+    color: "#31404B",
+    fontSize: 18,
+    margin:5,
   },
   textNor: {
     color: "#31404B",
     fontSize: 15,
-    marginTop: 2,
-    marginBottom: 2
+    marginLeft: 7
   },
   viewCartype: {
     flexDirection: "column",
     borderBottomWidth: 1,
-    borderColor: "#31404B",
+    borderColor: "#31404B"
     // height:100
   },
   containerTimePicker: {
     flex: 1,
-    height: 35,
+    height: 40,
     flexDirection: "row",
     justifyContent: "space-between",
     borderBottomWidth: 1,
     borderColor: "#31404B"
   },
   TimePicker: {
-    width: "30%",
-    height: 35,
-    alignItems: "flex-start",
-    marginLeft: 10,
+    width: "40%",
+    height: 40,
     justifyContent: "center"
   },
   switchZone: {
@@ -238,7 +238,9 @@ export default {
   containerRouterSelect: {
     flex: 1,
     borderBottomWidth: 0.5,
-    borderColor: "#31404B"
+    borderColor: "#31404B",
+    justifyContent: "space-between",
+    flexDirection: "row"
   },
   touchLocation: {
     width: "100%",
@@ -264,8 +266,8 @@ export default {
   touchTimepicker: {
     width: "40%",
     height: 30,
-    alignItems:"flex-end",
-    justifyContent:"center"
+    alignItems: "flex-end",
+    justifyContent: "center"
   },
   textTime: {
     fontSize: 15
@@ -273,18 +275,20 @@ export default {
   textNote: {
     marginTop: 5,
     marginLeft: 10,
-    marginRight: 10,
+    marginRight: 10
   },
-  noteContainer:{
+  noteContainer: {
     flex: 1,
     flexDirection: "column",
     borderBottomWidth: 1,
-    borderColor: "#31404B"
+    borderColor: "#31404B",
+    justifyContent: "center",
+    height: 60
   },
   textPrice: {
     marginBottom: 5,
     fontSize: 25,
-    marginLeft:10,
-    color:"orange"
+    marginLeft: 10,
+    color: "orange"
   }
 };
