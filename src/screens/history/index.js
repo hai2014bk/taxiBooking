@@ -24,7 +24,6 @@ import CustomHeader from "../../components/CustomHeader";
 import { history } from "../../actions";
 
 import styles from "./styles";
-import datas from "./data";
 // const settings = require("../../Icon/PNG/settings.png");
 const back = require("../../Icon/PNG/Back.png");
 const dot = require("./dot.png");

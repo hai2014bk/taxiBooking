@@ -24,7 +24,6 @@ import { updateProfile } from "./actions";
 import CustomHeader from "../../components/CustomHeader";
 
 import styles from "./styles";
-import datas from "./data";
 // const settings = require("../../Icon/PNG/settings.png");
 const back = require("../../Icon/PNG/Back.png");
 const profile = require("../../Icon/PNG/profile.png");
