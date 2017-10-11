@@ -103,11 +103,12 @@ class loginAccForm extends Component {
         visible: false
       });
       setTimeout(() => {
-        this.showAlert("Chú ý", "Số điện thoại không được để trống", [
+        this.showAlert("Chú ý", "Số điện thoại không được bỏ trống", [
           {
             text: "OK",
             onPress: () => {
               this.phoneNumber._root.focus();
+              this.phoneNumber._root.setNativeProps({ text: "" });
               press = true;
             }
           }
@@ -119,11 +120,12 @@ class loginAccForm extends Component {
           visible: false
         });
         setTimeout(() => {
-          this.showAlert("Chú ý", "Số điện thoại không được để trống", [
+          this.showAlert("Chú ý", "Số điện thoại không được bỏ trống", [
             {
               text: "OK",
               onPress: () => {
                 this.phoneNumber._root.focus();
+                this.phoneNumber._root.setNativeProps({ text: "" });
                 press = true;
               }
             }
@@ -186,6 +188,7 @@ class loginAccForm extends Component {
                   placeholderTextColor="#848484"
                   autoCapitalize="none"
                   autoCorrect={false}
+                  maxLength={20}
                   keyboardType="phone-pad"
                   onChangeText={phoneNumber =>
                     this.setState({ phoneNumber: phoneNumber })}

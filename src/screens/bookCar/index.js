@@ -24,13 +24,12 @@ import {
   Body,
   Right,
   View,
-  Spinner,
   Item,
   Label,
   Input,
   Switch
 } from "native-base";
-
+import Spinner from "react-native-loading-spinner-overlay";
 import { Grid, Col } from "react-native-easy-grid";
 import Carousel from "react-native-carousel-view";
 import DateTimePicker from "react-native-modal-datetime-picker";
@@ -51,9 +50,11 @@ const icon = require("./icon.jpg");
 import styles from "./styles";
 const deviceWidth = Dimensions.get("window").width;
 const headerLogo = require("../../../assets/header-logo.png");
-var lat = 21.2187149;
-var lng = 105.8041709;
-var name = "Cảng hàng không quốc tế Nội Bài";
+var noiBaiLat = 21.2187149;
+var noiBaiLng = 105.8041709;
+var lat = 21.218714;
+var lng = 105.80417;
+var name = "Sân bay Nội Bài, Sóc Sơn, Hà Nội, Việt Nam";
 var timeH = new Date().getHours();
 var timeMi = new Date().getMinutes();
 var timeY = new Date().getFullYear();
@@ -87,42 +88,22 @@ class bookCarForm extends Component {
       price: 0,
       dateStringshow: "Bây giờ",
       night: true,
-      userId: 17,
+      userId: "",
       car_type_id: 1,
       dateString:
         timeY + "-" + timeMo + "-" + timeD + " " + timeH + ":" + timeMi,
       note: "",
-      timeH:timeH,
-      distance:20,
-      duration:60,
+      timeH: timeH,
+      distance: 0,
+      duration: 0,
+      visible: false
     };
   }
   componentWillReceiveProps(props) {
     if (props.items.id) {
-      this.showAlert("Thành công", "Đặt xe thành công", [
-        {
-          text: "OK",
-          onPress: () => {
-            press = true;
-          }
-        }
-      ]);
-    } else {
-      if (props.error.message == "Network request failed") {
-        this.showAlert(
-          "Thất bại",
-          "Đặt xe đặt xe thất bại\nKết nối mạng không ổn định, vui lòng thử lại sau",
-          [
-            {
-              text: "OK",
-              onPress: () => {
-                press = true;
-              }
-            }
-          ]
-        );
-      } else {
-        this.showAlert("Thất bại", "Đặt xe đặt xe thất bại", [
+      this.setState({ visible: false });
+      setTimeout(() => {
+        this.showAlert("Thành công", "Đặt xe thành công", [
           {
             text: "OK",
             onPress: () => {
@@ -130,17 +111,50 @@ class bookCarForm extends Component {
             }
           }
         ]);
+      }, 100);
+    } else {
+      if (props.error.message == "Network request failed") {
+        this.setState({ visible: false });
+        setTimeout(() => {
+          this.showAlert(
+            "Thất bại",
+            "Đặt xe đặt xe thất bại\nKết nối mạng không ổn định, vui lòng thử lại sau",
+            [
+              {
+                text: "OK",
+                onPress: () => {
+                  press = true;
+                }
+              }
+            ]
+          );
+        }, 100);
+      } else {
+        this.setState({ visible: false });
+        setTimeout(() => {
+          this.showAlert("Thất bại", "Đặt xe đặt xe thất bại", [
+            {
+              text: "OK",
+              onPress: () => {
+                press = true;
+              }
+            }
+          ]);
+        }, 100);
       }
     }
     console.log("123", props);
   }
-  componentDidMount() {
+  async componentDidMount() {
+    var loginInfo = await AsyncStorage.getItem(mConstants.LOGIN_INFO);
+    var ObjloginInfo = JSON.parse(loginInfo);
+    var userId = ObjloginInfo.id;
+    this.setState({
+      userId: userId
+    });
     // AsyncStorage.removeItem(mConstants.LOGIN_INFO);
-    // this.props.fetchData(datas);
   }
-  componentWillMount() {
-    console.log("qweqweqewe");
-  }
+  componentWillMount() {}
   render() {
     console.log(timeMi, this.state.timeH, this.state.dateString);
     var date = new Date();
@@ -166,7 +180,7 @@ class bookCarForm extends Component {
           showsVerticalScrollIndicator={false}
           style={{ backgroundColor: "#fff" }}
         >
-          <View style={{ borderBottomWidth: 0.5, marginTop: 10 }}>
+          <View style={{ height:70, borderBottomWidth: 0.5, marginTop: 10 }}>
             <Text note style={styles.text}>
               Chọn tuyến
             </Text>
@@ -199,24 +213,63 @@ class bookCarForm extends Component {
           </View>
           <View
             style={{
-              flex: 1,
-              borderBottomWidth: 0.5,
-              marginTop: 5,
-              height: 121
+              height: 140,
+              flexDirection: "column",
+              borderBottomWidth: 0.5
             }}
           >
             {this._pickLocation()}
           </View>
-          <View style={{ flexDirection: "column" }}>
+          <View
+            style={{
+              flex:1,
+              height: 110,
+              flexDirection: "column",
+              borderBottomWidth: 0.5
+            }}
+          >
             <Text note style={styles.text}>
               Loại Xe
             </Text>
             {this._cartype()}
           </View>
-          {this._timePicker()}
-          {this._roundTrip()}
-          {this._note()}
-          {this._price()}
+          <View
+            style={{
+              height: 48,
+              flexDirection: "column",
+              borderBottomWidth: 0.5
+            }}
+          >
+            {this._timePicker()}
+          </View>
+          <View
+            style={{
+              height: 48,
+              flexDirection: "column",
+              borderBottomWidth: 0.5
+            }}
+          >
+            {this._roundTrip()}
+          </View>
+          <View
+            style={{
+              height: 69,
+              flexDirection: "column",
+              borderBottomWidth: 0.5
+            }}
+          >
+            {this._note()}
+          </View>
+          <View
+            style={{
+              height: 72,
+              flexDirection: "column",
+              borderBottomWidth: 0.5
+            }}
+          >
+            {this._price()}
+          </View>
+
           <View>
             <Modal
               visible={this.state.close}
@@ -246,19 +299,27 @@ class bookCarForm extends Component {
               onCancel={() => this.hideTimePicker()}
             />
           </View>
-          <View style={{ flex: 1, justifyContent: "flex-end" }}>
+          <View
+            style={{
+              flex: 1,
+              justifyContent: "flex-end",
+              alignItems: "flex-end"
+            }}
+          >
             <Button
               full
               style={{ backgroundColor: "#2E3B45" }}
               onPress={() => {
                 if (press) {
-                  (press = false), this._book();
+                  press = false;
+                  this._alertBook();
                 }
               }}
             >
               <Text>Đặt ngay</Text>
             </Button>
           </View>
+          <Spinner visible={this.state.visible} />
         </Content>
       </Container>
     );
@@ -268,27 +329,57 @@ class bookCarForm extends Component {
     Alert.alert(title, content, button, { cancelable: false });
   }
 
+  _alertBook() {
+    this.showAlert(
+      "Xác nhận đặt xe",
+      "Bạn có chắc chắn đặt xe với những thông tin đã chọn",
+      [
+        {
+          text: "Hủy",
+          onPress: () => console.log("Cancel Pressed"),
+          style: "cancel"
+        },
+        {
+          text: "Đặt ngay",
+          onPress: () => {
+            setTimeout(() => {
+              this._book();
+            }, 100);
+            this.setState({ visible: true });
+          }
+        }
+      ],
+      { cancelable: true }
+    );
+  }
+
   _book() {
     var params = {};
     if (this.state.start.trim() == "Chọn điểm đón") {
-      this.showAlert("Chú ý", "Vui lòng chọn điểm đón", [
-        {
-          text: "OK",
-          onPress: () => {
-            press = true;
+      this.setState({ visible: false });
+      setTimeout(() => {
+        this.showAlert("Chú ý", "Vui lòng chọn điểm đón", [
+          {
+            text: "OK",
+            onPress: () => {
+              press = true;
+            }
           }
-        }
-      ]);
+        ]);
+      }, 100);
     }
     if (this.state.stop.trim() == "Chọn điểm đến") {
-      this.showAlert("Chú ý", "Vui lòng chọn điểm đến", [
-        {
-          text: "OK",
-          onPress: () => {
-            press = true;
+      this.setState({ visible: false });
+      setTimeout(() => {
+        this.showAlert("Chú ý", "Vui lòng chọn điểm đến", [
+          {
+            text: "OK",
+            onPress: () => {
+              press = true;
+            }
           }
-        }
-      ]);
+        ]);
+      }, 100);
     }
     if (
       this.state.start.trim() != "Chọn điểm đón" &&
@@ -296,15 +387,15 @@ class bookCarForm extends Component {
     ) {
       params.user = this.state.userId;
       params.from_text = this.state.start;
-      params.from_longitude = 250;
-      params.from_latitude = 402;
+      params.from_longitude = this.state.startLng;
+      params.from_latitude = this.state.startLat;
       params.to_text = this.state.stop;
-      params.to_longitude = 123;
-      params.to_latitude = 132;
+      params.to_longitude = this.state.stopLng;
+      params.to_latitude = this.state.stopLat;
       params.car_type = this.state.car_type_id;
       params.start_time = this.state.dateString;
       params.round_trip = this.state.roundTrip;
-      if (this.state.note){
+      if (this.state.note) {
         params.note = this.state.note;
       } else {
         params.note = "Tùy chọn";
@@ -336,7 +427,6 @@ class bookCarForm extends Component {
             { marginRight: 10, alignItems: "flex-end" }
           ]}
         >
-  
           <TouchableOpacity
             style={{
               alignItems: "center",
@@ -359,15 +449,6 @@ class bookCarForm extends Component {
   }
 
   handleDatePicked(date) {
-    console.log(
-      "month",
-      date.getMonth(),
-      date,
-      "year",
-      date.getFullYear().toString(),
-      "day",
-      date.getDate().toString()
-    );
     this.setState({
       dateString:
         date.getFullYear() +
@@ -436,7 +517,7 @@ class bookCarForm extends Component {
   _note() {
     return (
       <View style={styles.noteContainer}>
-        <View style={{ marginTop: 5, height: "30%", marginLeft: 10 }}>
+        <View style={{ height: "30%", marginLeft: 10 }}>
           <Text note> Ghi chú</Text>
         </View>
         <View style={{ marginTop: 5, height: "70%", marginLeft: 10 }}>
@@ -456,36 +537,13 @@ class bookCarForm extends Component {
   }
 
   _price() {
-    // if (this.state.locate == "noi") {
-    //   if (this.state.night) {
-    //     this.setState({ price: 200000 });
-    //   } else {
-    //     this.setState({ price: 170000 });
-    //   }
-    // } else {
-    //   if (this.state.locate == "ngoai") {
-    //     if (this.state.night) {
-    //       this.setState({ price: 230000 });
-    //     } else {
-    //       this.setState({ price: 200000 });
-    //     }
-    //   }
-    // }
     return (
-      <View
-        style={[
-          styles.noteContainer,
-          {
-            marginTop: 5
-          }
-        ]}
-      >
+      <View style={[styles.noteContainer, { marginBottom: 10 }]}>
         <View style={styles.textNote}>
           <Text note> Thành tiền</Text>
         </View>
-        <View style={{ marginTop: 5, height: "70%", marginLeft: 10 }}>
+        <View style={{ height: "70%", marginLeft: 10 }}>
           <Text style={styles.textPrice}>
-
             {this.state.price} VNĐ
           </Text>
         </View>
@@ -517,7 +575,8 @@ class bookCarForm extends Component {
       stop: "Chọn điểm đến",
       startLat: lat,
       startLng: lng,
-      close: false
+      close: false,
+      price: 0
     });
   }
   _noiBai() {
@@ -532,7 +591,8 @@ class bookCarForm extends Component {
       stop: name,
       stopLat: lat,
       stopLng: lng,
-      open: false
+      open: false,
+      price: 0
     });
   }
 
@@ -626,34 +686,40 @@ class bookCarForm extends Component {
             currentLocation={true}
             currentLocationLabel="Vị trí hiện tại"
             nearbyPlacesAPI={"GoogleReverseGeocoding"}
-            GoogleReverseGeocodingQuery={{
-              postal_code: 100000
-            }}
+            GoogleReverseGeocodingQuery={{}}
             GooglePlacesSearchQuery={{}}
             filterReverseGeocodingByTypes={[
               "route",
               "administrative_area_level_3"
             ]}
             onPress={(data, details) => {
-              var num = details.geometry.location.lat.toString;
-              var digits = num.toString().slice(0, -1);
-              console.log("awesome", digits);
+              console.log("awesome", longitude, latitude);
               console.log(data, details);
               if (
-                details.geometry.location.lat == this.state.stopLat &&
-                details.geometry.location.lng == this.state.stopLng
+                details.geometry.location.lat == noiBaiLat &&
+                details.geometry.location.lng == noiBaiLng
               ) {
                 this._haNoi();
               } else {
+                var stringLat = details.geometry.location.lat.toString();
+                var splitLat = stringLat.split(".")[1].slice(0, 6);
+                var latitude = stringLat.split(".")[0] + "." + splitLat;
+                var stringLng = details.geometry.location.lat.toString();
+                var splitLng = stringLng.split(".")[1].slice(0, 6);
+                var longitude = stringLng.split(".")[0] + "." + splitLng;
                 this._checklocation(data, details);
-
                 this.setState({
-                  start: data.description,
-                  startLat: details.geometry.location.lat,
-                  startLng: details.geometry.location.lng,
+                  start: details.formatted_address,
+                  startLat: latitude,
+                  startLng: longitude,
                   close: false
                 });
-                var pa = this.state.startLat.split(".");
+                console.log(
+                  this.state.startLat,
+                  this.state.startLng,
+                  this.state.stopLat,
+                  this.state.stopLng
+                );
               }
             }}
             query={{
@@ -725,16 +791,22 @@ class bookCarForm extends Component {
             onPress={(data, details) => {
               console.log(data, details);
               if (
-                details.geometry.location.lat == this.state.startLat &&
-                details.geometry.location.lng == this.state.startLng
+                details.geometry.location.lat == noiBaiLat &&
+                details.geometry.location.lng == noiBaiLng
               ) {
                 this._noiBai();
               } else {
+                var stringLat = details.geometry.location.lat.toString();
+                var splitLat = stringLat.split(".")[1].slice(0, 6);
+                var latitude = stringLat.split(".")[0] + "." + splitLat;
+                var stringLng = details.geometry.location.lat.toString();
+                var splitLng = stringLng.split(".")[1].slice(0, 6);
+                var longitude = stringLng.split(".")[0] + "." + splitLng;
                 this._checklocation(data, details);
                 this.setState({
-                  stop: data.description,
-                  stopLat: details.geometry.location.lat,
-                  stopLng: details.geometry.location.lng,
+                  stop: details.formatted_address,
+                  stopLat: latitude,
+                  stopLng: longitude,
                   open: false
                 });
               }
@@ -749,7 +821,7 @@ class bookCarForm extends Component {
     );
   }
   _checkTimeNoi(timeH) {
-    console.log(timeH,"adasdasdasd")
+    console.log(timeH, "adasdasdasd");
     if (
       timeH == 22 ||
       timeH == 23 ||
@@ -815,52 +887,79 @@ class bookCarForm extends Component {
 
   _pickLocation() {
     return (
-      <View style={{ marginLeft: 10, marginRight: 10 }}>
-        <View style={styles.locationPick0}>
-          <View style={styles.locationPick}>
-            <Image source={icon} style={{ height: 110 }} resizeMode="contain" />
-          </View>
-          <View style={styles.locationPick1}>
-            <View
-              style={{ width: "100%", height: "50%", borderBottomWidth: 0.5 }}
+      <View style={styles.locationPick0}>
+        <View style={styles.locationPick}>
+          <Image source={icon} style={{ height: 110 }} resizeMode="contain" />
+        </View>
+        <View style={styles.locationPick1}>
+          <View
+            style={{
+              width: "100%",
+              height: 65,
+              justifyContent: "center",
+              alignContent: "center",
+              marginRight: 10,
+              marginLeft: 5
+            }}
+          >
+            <TouchableOpacity
+              disabled={this.state.disabledstart}
+              onPress={() => this.setState({ close: true })}
             >
-              <TouchableOpacity
-                disabled={this.state.disabledstart}
-                onPress={() => this.setState({ close: true })}
+              <View
+                style={{
+                  justifyContent: "flex-start",
+                  alignItems: "flex-start"
+                }}
               >
-                <View style={{ width: "100%", height: "30%", marginLeft: 5 }}>
-                  <Text note> Điểm đón</Text>
-                </View>
-                <View style={{ width: "100%", height: "70%" }}>
-                  <Text numberOfLines={1} style={styles.textstop}>
-                    {this.state.start}
-                  </Text>
-
-                </View>
-              </TouchableOpacity>
-            </View>
-            <View style={{ width: "100%", height: "50%" }}>
-              <TouchableOpacity
-                disabled={this.state.disabledstop}
-                onPress={() => this.setState({ open: true })}
+                <Text note> Điểm đón</Text>
+              </View>
+              <View
+                style={{
+                  justifyContent: "center",
+                  alignItems: "flex-start",
+                  borderBottomWidth: 0.5
+                }}
               >
-                <View
-                  style={{
-                    width: "100%",
-                    height: "30%",
-                    marginLeft: 5,
-                    marginTop: 2
-                  }}
-                >
-                  <Text note> Điểm đến</Text>
-                </View>
-                <View style={{ width: "100%", height: "70%" }}>
-                  <Text numberOfLines={1} style={styles.textstop}>
-                    {this.state.stop}
-                  </Text>
-                </View>
-              </TouchableOpacity>
-            </View>
+                <Text numberOfLines={1} style={styles.textstop}>
+                  {this.state.start}
+                </Text>
+              </View>
+            </TouchableOpacity>
+          </View>
+          <View
+            style={{
+              width: "100%",
+              height: 65,
+              justifyContent: "center",
+              alignContent: "center",
+              marginRight: 10,
+              marginLeft: 5
+            }}
+          >
+            <TouchableOpacity
+              disabled={this.state.disabledstop}
+              onPress={() => this.setState({ open: true })}
+            >
+              <View
+                style={{
+                  justifyContent: "flex-end",
+                  alignItems: "flex-start"
+                }}
+              >
+                <Text note> Điểm đến</Text>
+              </View>
+              <View
+                style={{
+                  justifyContent: "flex-start",
+                  alignItems: "flex-start"
+                }}
+              >
+                <Text numberOfLines={1} style={styles.textstop}>
+                  {this.state.stop}
+                </Text>
+              </View>
+            </TouchableOpacity>
           </View>
         </View>
       </View>

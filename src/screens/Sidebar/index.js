@@ -1,6 +1,6 @@
 // @flow
 import React, { Component } from "react";
-import { Image, TouchableOpacity } from "react-native";
+import { Image, TouchableOpacity, AsyncStorage } from "react-native";
 
 import { NavigationActions } from "react-navigation";
 import {
@@ -14,6 +14,7 @@ import {
 } from "native-base";
 import { Grid, Col, Row } from "react-native-easy-grid";
 const profile = require("../../Icon/PNG/profile.png");
+import * as mConstants from "../../utils/Constants";
 import styles from "./style";
 const resetAction = NavigationActions.reset({
   index: 0,
@@ -78,6 +79,7 @@ class SideBar extends Component {
                 <Col>
                   <TouchableOpacity
                     onPress={() => {
+                      this._logout();
                       navigation.dispatch(resetAction);
                     }}
                     style={{
@@ -100,6 +102,12 @@ class SideBar extends Component {
         </Image>
       </Container>
     );
+  }
+
+  async _logout(){
+      let keys = [mConstants.LOGIN_INFO,mConstants.REMEMBER];
+      await AsyncStorage.multiRemove(keys);
+      this.props.navigation.navigate("loginAcc");
   }
 }
 
