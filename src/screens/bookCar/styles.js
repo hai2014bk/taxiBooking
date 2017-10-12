@@ -24,7 +24,7 @@ export default {
     fontWeight: "bold"
   },
   newsTypeView: {
-    borderBottomWidth: 1,
+    borderBottomWidth: 0.5,
     borderBottomColor: Platform.OS === "android" ? "#777" : "#666",
     alignSelf: "flex-end"
   },
@@ -51,7 +51,7 @@ export default {
     fontWeight: "bold"
   },
   newsPosterTypeView: {
-    borderBottomWidth: 1,
+    borderBottomWidth: 0.5,
     borderBottomColor: "#ddd",
     alignSelf: "flex-end"
   },
@@ -159,9 +159,9 @@ export default {
     flexDirection: "row"
   },
   containerCartype: {
+    height:"80%",
     flexDirection: "row",
     justifyContent: "space-between",
-    borderBottomWidth: 0.5
   },
   cartype: {
     width: "25%",
@@ -179,20 +179,23 @@ export default {
     flexDirection: "row",
     flex: 1,
     width: "100%",
-    height: 120
+    height: 130,
+    marginBottom:5,
   },
   locationPick: {
-    flex: 1.5,
-    height: 120,
+    flex: 1,
+    height: 130,
     flexDirection: "column",
-    alignItems: "flex-start",
+    alignItems: "center",
     justifyContent: "center"
   },
   locationPick1: {
-    flex: 8.5,
-    height: 110,
+    flex: 12,
+    height: 130,
     flexDirection: "column",
-    alignItems: "center"
+    alignItems: "center",
+    justifyContent:"center",
+    marginTop:5
   },
   locationPick2: {
     flex: 4,
@@ -212,16 +215,15 @@ export default {
   },
   viewCartype: {
     flexDirection: "column",
-    borderBottomWidth: 1,
-    borderColor: "#31404B"
-    // height:100
+    borderBottomWidth: 0.5,
+    borderColor: "#31404B",
+    height:100
   },
   containerTimePicker: {
     flex: 1,
     height: 40,
     flexDirection: "row",
     justifyContent: "space-between",
-    borderBottomWidth: 1,
     borderColor: "#31404B"
   },
   TimePicker: {
@@ -236,7 +238,9 @@ export default {
     marginRight: 10
   },
   containerRouterSelect: {
-    flex: 1,
+    flex:1,
+    height:40,
+    // backgroundColor:"red",
     borderBottomWidth: 0.5,
     borderColor: "#31404B",
     justifyContent: "space-between",
@@ -273,17 +277,18 @@ export default {
     fontSize: 15
   },
   textNote: {
-    marginTop: 5,
+    height:"30%",
     marginLeft: 10,
     marginRight: 10
   },
   noteContainer: {
     flex: 1,
     flexDirection: "column",
-    borderBottomWidth: 1,
+    borderBottomWidth: 0.5,
     borderColor: "#31404B",
     justifyContent: "center",
-    height: 60
+    marginTop:3,
+    // backgroundColor:"green"
   },
   textPrice: {
     marginBottom: 5,
