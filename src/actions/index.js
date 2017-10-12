@@ -8,13 +8,16 @@ export {
 export {
   checkSuccess,
   checkError,
-  checkNumber
-} from "../screens/loginAcc/actions";
-
-export {
+  checkNumber,
   loginSuccess,
   loginError,
-  login } from "../screens/loginSrc/actions";
+  login
+} from "../screens/loginAcc/actions";
+
+// export {
+//   loginSuccess,
+//   loginError,
+//   login } from "../screens/loginSrc/actions";
 
 export {
   registerSuccess,

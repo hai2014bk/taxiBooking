@@ -11,6 +11,10 @@ export default function(state: any = initialState, action: Function) {
       return { ...state, kind: "success",items: action.items };
     case "CHECK_NUMBER_ERROR": 
       return { ...state, kind: "error",error: action.error };
+    case "LOGIN_SUCCESS":
+      return { ...state, kind: "success",items: action.items };
+    case "LOGIN_ERROR": 
+      return { ...state, kind: "error",error: action.error };
     default:
       return state;
   }

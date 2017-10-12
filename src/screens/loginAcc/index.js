@@ -1,6 +1,13 @@
 // @flow
 import React, { Component } from "react";
-import { Image, Platform, StatusBar, AsyncStorage, Alert } from "react-native";
+import {
+  Image,
+  Platform,
+  StatusBar,
+  AsyncStorage,
+  Alert,
+  TouchableOpacity
+} from "react-native";
 import {
   Container,
   Content,
@@ -32,6 +39,7 @@ import styles from "./styles";
 // import {checkNumber} from "./actions"
 import { checkNumber } from "../../actions";
 import RNAccountKit from "react-native-facebook-account-kit";
+import { login } from "../../actions";
 // import commonColor from "../../theme/variables/commonColor";
 
 // const bg = require("../../../assets/bg.png");
@@ -51,42 +59,82 @@ class loginAccForm extends Component {
   textInput: Any;
 
   componentWillReceiveProps(props) {
-    var data = this.state.phoneNumber;
     const navigation = this.props.navigation;
-    if (props.items.id) {
-      this.setState({
-        visible: false
-      });
+    console.log("Items", props.items);
+    if (props.items) {
+      this.setState({ visible: false });
       press = true;
-      navigation.navigate("LoginSrc", { data: data });
+      isLoading = false;
+      AsyncStorage.setItem(
+        mConstants.LOGIN_INFO,
+        JSON.stringify(props.items),
+        () => {
+          AsyncStorage.getItem(mConstants.LOGIN_INFO, (err, result) => {
+            console.log("AsyncStorage_index_log", result);
+          });
+        }
+      );
+      setTimeout(() => {
+        navigation.navigate("bookCar");
+      }, 300);
     } else {
-      if (props.error.status) {
-        this.setState({
-          visible: false
-        });
-        press = true;
-        this.accConfigure(data);
-        RNAccountKit.loginWithPhone(data).then(token => {
-          if (!token) {
-            check = true;
-            press = true;
-            console.log("Login cancelled", props);
-          } else {
-            check = true;
-            press = true;
-            navigation.navigate("Register", { data: data });
+      // console.log("mang")
+      this.setState({ visible: false });
+      setTimeout(() => {
+        this.fnAlert("Lỗi", "Đã xảy ra sự cố với kết nối mạng", [
+          {
+            text: "OK",
+            onPress: () => {
+              press = true;
+            }
           }
-        });
-      } else {
-        this.setState({
-          visible: false
-        });
-        press = true;
-        setTimeout(() => {
-          alert("Đã xảy ra sự cố với kết nối mạng");
-        }, 100);
-      }
+        ]);
+      }, 100);
     }
+    // AsyncStorage.setItem(
+    //   mConstants.LOGIN_INFO,
+    //   JSON.stringify(props.items),
+    //   () => {
+    //     AsyncStorage.getItem(mConstants.LOGIN_INFO, (err, result) => {
+    //       console.log("AsyncStorage_index_log", result);
+    //     });
+    //   });
+    // var data = this.state.phoneNumber;
+    // const navigation = this.props.navigation;
+    // if (props.items.id) {
+    //   this.setState({
+    //     visible: false
+    //   });
+    //   press = true;
+    //   navigation.navigate("LoginSrc", { data: data });
+    // } else {
+    //   if (props.error.status) {
+    //     this.setState({
+    //       visible: false
+    //     });
+    //     press = true;
+    //     this.accConfigure(data);
+    //     RNAccountKit.loginWithPhone(data).then(token => {
+    //       if (!token) {
+    //         check = true;
+    //         press = true;
+    //         console.log("Login cancelled", props);
+    //       } else {
+    //         check = true;
+    //         press = true;
+    //         navigation.navigate("Register", { data: data });
+    //       }
+    //     });
+    //   } else {
+    //     this.setState({
+    //       visible: false
+    //     });
+    //     press = true;
+    //     setTimeout(() => {
+    //       alert("Đã xảy ra sự cố với kết nối mạng");
+    //     }, 100);
+    //   }
+    // }
   }
   showAlert(title, content, button) {
     Alert.alert(title, content, button, { cancelable: false });
@@ -133,12 +181,23 @@ class loginAccForm extends Component {
         }, 100);
       } else {
         params.phonenumber = data;
-        this.props.checkNumber(params);
+        this.accConfigure(data);
+        RNAccountKit.loginWithPhone(data).then(token => {
+          if (!token) {
+            check = true;
+            press = true;
+          } else {
+            check = true;
+            press = true;
+            navigation.navigate("Register", { data: data });
+          }
+        });
       }
     }
   }
 
   onLogin(token) {
+    this.accConfigure(this.state.phoneNumber);
     if (!token) {
       console.warn("User canceled login");
       this.setState({});
@@ -194,23 +253,53 @@ class loginAccForm extends Component {
                     this.setState({ phoneNumber: phoneNumber })}
                 />
               </Item>
-              <Button
+              <TouchableOpacity
                 style={styles.button}
                 onPress={() => {
+                  // console.log(this.state.phoneNumber.split("")[0])
+                  this.number(this.state.phoneNumber);
+                  // this.accConfigure(this.state.phoneNumber);
                   if (press) {
+                    var data = this.state.phoneNumber;
+                    var params = {};
+                    // params.phonenumber = data;
+                    // this.props.login(params);
                     press = false;
-                    this.checkaNumber(this.state.phoneNumber);
+                    RNAccountKit.loginWithPhone(data).then(token => {
+                      if (!token) {
+                        console.log("Cancel", token);
+                      } else {
+                        params.phonenumber = data;
+                        check = true;
+                        press = true;
+                        this.props.login(params);
+                      }
+                    });
                   }
                 }}
               >
-                <Text style={styles.buttonText}>Tiếp theo</Text>
-              </Button>
+                <Text style={styles.buttonText}>
+                  Đăng nhập với số điện thoại của bạn
+                </Text>
+              </TouchableOpacity>
             </View>
           </View>
-          <Spinner visible={this.state.visible} />
+          {/* <Spinner visible={this.state.visible} /> */}
         </Content>
       </Container>
     );
+  }
+
+  number(data) {
+    if (data.split("")[0] == 0) {
+      press = true;
+      var numbers = data.slice(1, 20);
+      this.accConfigure(numbers);
+      console.log("adadada", numbers);
+    } else {
+      press = true;
+      this.accConfigure(data);
+    }
   }
 
   render() {
@@ -233,7 +322,8 @@ class loginAccForm extends Component {
 }
 function bindAction(dispatch) {
   return {
-    checkNumber: params => dispatch(checkNumber(params))
+    checkNumber: params => dispatch(checkNumber(params)),
+    login: params => dispatch(login(params))
     // fetchData: url => dispatch(itemsFetchData(url))
   };
 }

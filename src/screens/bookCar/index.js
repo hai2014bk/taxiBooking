@@ -35,7 +35,6 @@ import Carousel from "react-native-carousel-view";
 import DateTimePicker from "react-native-modal-datetime-picker";
 import { itemsFetchData } from "../../actions";
 import { carbooking } from "../../actions";
-import datas from "./data.json";
 import * as mConstants from "../../utils/Constants";
 import { GooglePlacesAutocomplete } from "react-native-google-places-autocomplete";
 // import LocationPicker from "../LocationPicker";
@@ -96,7 +95,8 @@ class bookCarForm extends Component {
       timeH: timeH,
       distance: 0,
       duration: 0,
-      visible: false
+      visible: false,
+      router: "hn",
     };
   }
   componentWillReceiveProps(props) {
@@ -180,7 +180,7 @@ class bookCarForm extends Component {
           showsVerticalScrollIndicator={false}
           style={{ backgroundColor: "#fff" }}
         >
-          <View style={{ height:70, borderBottomWidth: 0.5, marginTop: 10 }}>
+          <View style={{ height: 70, borderBottomWidth: 0.5, marginTop: 10 }}>
             <Text note style={styles.text}>
               Chọn tuyến
             </Text>
@@ -222,7 +222,7 @@ class bookCarForm extends Component {
           </View>
           <View
             style={{
-              flex:1,
+              flex: 1,
               height: 110,
               flexDirection: "column",
               borderBottomWidth: 0.5
@@ -235,7 +235,7 @@ class bookCarForm extends Component {
           </View>
           <View
             style={{
-              height: 48,
+              height: 40,
               flexDirection: "column",
               borderBottomWidth: 0.5
             }}
@@ -244,7 +244,7 @@ class bookCarForm extends Component {
           </View>
           <View
             style={{
-              height: 48,
+              height: 40,
               flexDirection: "column",
               borderBottomWidth: 0.5
             }}
@@ -253,7 +253,7 @@ class bookCarForm extends Component {
           </View>
           <View
             style={{
-              height: 69,
+              height: 70,
               flexDirection: "column",
               borderBottomWidth: 0.5
             }}
@@ -477,10 +477,18 @@ class bookCarForm extends Component {
         date.getFullYear()
     });
     this.hideTimePicker();
-    if (this.state.locate == "noi") {
-      this._checkTimeNoi(this.state.timeH);
+    if (this.state.router == "nb") {
+      if (this.state.locate == "noi") {
+        this._checkTimeNoi(this.state.timeH);
+      } else {
+        this._checkTimeNgoai(this.state.timeH);
+      }
     } else {
-      this._checkTimeNgoai(this.state.timeH);
+      if (this.state.locate == "noi") {
+        this._checkTimeNoinb(this.state.timeH);
+      } else {
+        this._checkTimeNgoainb(this.state.timeH);
+      }
     }
   }
 
@@ -551,15 +559,43 @@ class bookCarForm extends Component {
     );
   }
 
-  _upDate(val) {
+  async _upDate(val) {
     if (val) {
-      this.setState({
-        roundTrip: true
+      var priceRoundTrip = this.state.price + this.state.price + 100000;
+      console.log("price________", priceRoundTrip);
+      await this.setState({
+        roundTrip: true,
       });
+      if (this.state.router == "nb") {
+        if (this.state.locate == "noi") {
+          this._checkTimeNoi(this.state.timeH);
+        } else {
+          this._checkTimeNgoai(this.state.timeH);
+        }
+      } else {
+        if (this.state.locate == "noi") {
+          this._checkTimeNoinb(this.state.timeH);
+        } else {
+          this._checkTimeNgoainb(this.state.timeH);
+        }
+      }
     } else {
-      this.setState({
-        roundTrip: false
+      await this.setState({
+        roundTrip: false,
       });
+      if (this.state.router == "nb") {
+        if (this.state.locate == "noi") {
+          this._checkTimeNoi(this.state.timeH);
+        } else {
+          this._checkTimeNgoai(this.state.timeH);
+        }
+      } else {
+        if (this.state.locate == "noi") {
+          this._checkTimeNoinb(this.state.timeH);
+        } else {
+          this._checkTimeNgoainb(this.state.timeH);
+        }
+      }
     }
   }
 
@@ -576,7 +612,8 @@ class bookCarForm extends Component {
       startLat: lat,
       startLng: lng,
       close: false,
-      price: 0
+      price: 0,
+      router: "hn"
     });
   }
   _noiBai() {
@@ -592,25 +629,75 @@ class bookCarForm extends Component {
       stopLat: lat,
       stopLng: lng,
       open: false,
-      price: 0
+      price: 0,
+      router: "nb"
     });
   }
 
-  _color4 = () => {
-    this.setState({
+  async _color4() {
+    await this.setState({
       car4: car4Y,
       car7: car7W,
       car16: car16W,
       car_type_id: 1
     });
-  };
+    if (this.state.router == "nb") {
+      if (this.state.locate == "noi") {
+        this._checkTimeNoi(this.state.timeH);
+      } else {
+        this._checkTimeNgoai(this.state.timeH);
+      }
+    } else {
+      if (this.state.locate == "noi") {
+        this._checkTimeNoinb(this.state.timeH);
+      } else {
+        this._checkTimeNgoainb(this.state.timeH);
+      }
+    }
+  }
 
-  _color7 = () => {
-    this.setState({ car4: car4W, car7: car7Y, car16: car16W, car_type_id: 3 });
-  };
-  _color16 = () => {
-    this.setState({ car4: car4W, car7: car7W, car16: car16Y, car_type_id: 2 });
-  };
+  async _color7() {
+    await this.setState({
+      car4: car4W,
+      car7: car7Y,
+      car16: car16W,
+      car_type_id: 2
+    });
+    if (this.state.router == "nb") {
+      if (this.state.locate == "noi") {
+        this._checkTimeNoi(this.state.timeH);
+      } else {
+        this._checkTimeNgoai(this.state.timeH);
+      }
+    } else {
+      if (this.state.locate == "noi") {
+        this._checkTimeNoinb(this.state.timeH);
+      } else {
+        this._checkTimeNgoainb(this.state.timeH);
+      }
+    }
+  }
+  async _color16() {
+    await this.setState({
+      car4: car4W,
+      car7: car7W,
+      car16: car16Y,
+      car_type_id: 4
+    });
+    if (this.state.router == "nb") {
+      if (this.state.locate == "noi") {
+        this._checkTimeNoi(this.state.timeH);
+      } else {
+        this._checkTimeNgoai(this.state.timeH);
+      }
+    } else {
+      if (this.state.locate == "noi") {
+        this._checkTimeNoinb(this.state.timeH);
+      } else {
+        this._checkTimeNgoainb(this.state.timeH);
+      }
+    }
+  }
 
   _cartype() {
     return (
@@ -832,9 +919,61 @@ class bookCarForm extends Component {
       timeH == 5 ||
       timeH == 6
     ) {
-      this.setState({ price: 200000 });
+      if (this.state.car_type_id == 1) {
+        if (!this.state.roundTrip) {
+          this.setState({ price: 200000 });
+          console.log("1");
+        } else {
+          this.setState({ price: 500000 });
+          console.log("1_1");
+        }
+      }
+      if (this.state.car_type_id == 2) {
+        if (!this.state.roundTrip) {
+          this.setState({ price: 230000 });
+          console.log("2");
+        } else {
+          this.setState({ price: 560000 });
+          console.log("2_1");
+        }
+      }
+      if (this.state.car_type_id == 4) {
+        if (!this.state.roundTrip) {
+          this.setState({ price: 400000 });
+          console.log("3");
+        } else {
+          this.setState({ price: 900000 });
+          console.log("3_1");
+        }
+      }
     } else {
-      this.setState({ price: 170000 });
+      if (this.state.car_type_id == 1) {
+        if (!this.state.roundTrip) {
+          this.setState({ price: 170000 });
+          console.log("4");
+        } else {
+          this.setState({ price: 440000 });
+          console.log("4_1");
+        }
+      }
+      if (this.state.car_type_id == 2) {
+        if (!this.state.roundTrip) {
+          this.setState({ price: 200000 });
+          console.log("5");
+        } else {
+          this.setState({ price: 500000 });
+          console.log("5_1");
+        }
+      }
+      if (this.state.car_type_id == 4) {
+        if (!this.state.roundTrip) {
+          this.setState({ price: 350000 });
+          console.log("6");
+        } else {
+          this.setState({ price: 800000 });
+          console.log("6_1");
+        }
+      }
     }
   }
 
@@ -849,9 +988,200 @@ class bookCarForm extends Component {
       timeH == 5 ||
       timeH == 6
     ) {
-      this.setState({ price: 230000 });
+      if (this.state.car_type_id == 1) {
+        if (!this.state.roundTrip) {
+          this.setState({ price: 230000 });
+          console.log("7");
+        } else {
+          this.setState({ price: 560000 });
+          console.log("7_1");
+        }
+      }
+      if (this.state.car_type_id == 2) {
+        if (!this.state.roundTrip) {
+          this.setState({ price: 260000 });
+          console.log("8");
+        } else {
+          this.setState({ price: 620000 });
+          console.log("8_1");
+        }
+      }
+      if (this.state.car_type_id == 4) {
+        if (!this.state.roundTrip) {
+          this.setState({ price: 450000 });
+          console.log("9");
+        } else {
+          this.setState({ price: 1000000 });
+          console.log("9_1");
+        }
+      }
     } else {
-      this.setState({ price: 200000 });
+      if (this.state.car_type_id == 1) {
+        if (!this.state.roundTrip) {
+          this.setState({ price: 200000 });
+          console.log("10");
+        } else {
+          this.setState({ price: 500000 });
+          console.log("10_1");
+        }
+      }
+      if (this.state.car_type_id == 2) {
+        if (!this.state.roundTrip) {
+          this.setState({ price: 230000 });
+          console.log("11");
+        } else {
+          this.setState({ price: 560000 });
+          console.log("11_1");
+        }
+      }
+      if (this.state.car_type_id == 4) {
+        if (!this.state.roundTrip) {
+          this.setState({ price: 400000 });
+          console.log("12");
+        } else {
+          this.setState({ price: 1000000 });
+          console.log("12_1");
+        }
+      }
+    }
+  }
+
+  _checkTimeNoinb(timeH) {
+    console.log(timeH, "adasdasdasd");
+    if (
+      timeH == 22 ||
+      timeH == 23 ||
+      timeH == 0 ||
+      timeH == 2 ||
+      timeH == 3 ||
+      timeH == 4 ||
+      timeH == 5 ||
+      timeH == 6
+    ) {
+      if (this.state.car_type_id == 1) {
+        if (!this.state.roundTrip) {
+          this.setState({ price: 300000 });
+          console.log("13");
+        } else {
+          this.setState({ price: 500000 });
+          console.log("13_1");
+        }
+      }
+      if (this.state.car_type_id == 2) {
+        if (!this.state.roundTrip) {
+          this.setState({ price: 330000 });
+          console.log("14");
+        } else {
+          this.setState({ price: 560000 });
+          console.log("14_1");
+        }
+      }
+      if (this.state.car_type_id == 4) {
+        if (!this.state.roundTrip) {
+          this.setState({ price: 500000 });
+          console.log("15");
+        } else {
+          this.setState({ price: 900000 });
+          console.log("15_1");
+        }
+      }
+    } else {
+      if (this.state.car_type_id == 1) {
+        if (!this.state.roundTrip) {
+          this.setState({ price: 270000 });
+          console.log("16");
+        } else {
+          this.setState({ price: 440000 });
+          console.log("16_1");
+        }
+      }
+      if (this.state.car_type_id == 2) {
+        if (!this.state.roundTrip) {
+          this.setState({ price: 300000 });
+          console.log("17");
+        } else {
+          this.setState({ price: 500000 });
+          console.log("17_1");
+        }
+      }
+      if (this.state.car_type_id == 4) {
+        if (!this.state.roundTrip) {
+          this.setState({ price: 450000 });
+          console.log("18");
+        } else {
+          this.setState({ price: 800000 });
+          console.log("18_1");
+        }
+      }
+    }
+  }
+
+  _checkTimeNgoainb(timeH) {
+    if (
+      timeH == 22 ||
+      timeH == 23 ||
+      timeH == 0 ||
+      timeH == 2 ||
+      timeH == 3 ||
+      timeH == 4 ||
+      timeH == 5 ||
+      timeH == 6
+    ) {
+      if (this.state.car_type_id == 1) {
+        if (!this.state.roundTrip) {
+          this.setState({ price: 330000 });
+          console.log("19");
+        } else {
+          this.setState({ price: 560000 });
+          console.log("19_1");
+        }
+      }
+      if (this.state.car_type_id == 2) {
+        if (!this.state.roundTrip) {
+          this.setState({ price: 360000 });
+          console.log("20");
+        } else {
+          this.setState({ price: 620000 });
+          console.log("20_1");
+        }
+      }
+      if (this.state.car_type_id == 4) {
+        if (!this.state.roundTrip) {
+          this.setState({ price: 550000 });
+          console.log("21");
+        } else {
+          this.setState({ price: 1000000 });
+          console.log("21_1");
+        }
+      }
+    } else {
+      if (this.state.car_type_id == 1) {
+        if (!this.state.roundTrip) {
+          this.setState({ price: 300000 });
+          console.log("22");
+        } else {
+          this.setState({ price: 500000 });
+          console.log("22_1");
+        }
+      }
+      if (this.state.car_type_id == 2) {
+        if (!this.state.roundTrip) {
+          this.setState({ price: 330000 });
+          console.log("23");
+        } else {
+          this.setState({ price: 560000 });
+          console.log("23_1");
+        }
+      }
+      if (this.state.car_type_id == 4) {
+        if (!this.state.roundTrip) {
+          this.setState({ price: 500000 });
+          console.log("24");
+        } else {
+          this.setState({ price: 900000 });
+          console.log("24_1");
+        }
+      }
     }
   }
 
@@ -872,10 +1202,20 @@ class bookCarForm extends Component {
         ) {
           console.log("data", details.formatted_address.split(",")[i]);
           this.setState({ locate: "noi" });
-          this._checkTimeNoi(this.state.timeH);
+          if (this.state.router == "nb") {
+            this._checkTimeNoi(this.state.timeH);
+          } else {
+            this._checkTimeNoinb(this.state.timeH);
+          }
+          // this._checkTimeNoi(this.state.timeH);
           break;
         } else {
-          this._checkTimeNgoai(this.state.timeH);
+          if (this.state.router == "nb") {
+            this._checkTimeNgoai(this.state.timeH);
+          } else {
+            this._checkTimeNgoainb(this.state.timeH);
+          }
+          // this._checkTimeNgoai(this.state.timeH);
           console.log("no data");
           this.setState({ locate: "ngoai" });
           // break;
