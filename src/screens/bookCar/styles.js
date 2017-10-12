@@ -221,10 +221,9 @@ export default {
   },
   containerTimePicker: {
     flex: 1,
-    height: 40,
     flexDirection: "row",
     justifyContent: "space-between",
-    borderColor: "#31404B"
+    // borderColor: "#31404B"
   },
   TimePicker: {
     width: "40%",
@@ -284,7 +283,7 @@ export default {
   noteContainer: {
     flex: 1,
     flexDirection: "column",
-    borderBottomWidth: 0.5,
+    // borderBottomWidth: 0.5,
     borderColor: "#31404B",
     justifyContent: "center",
     marginTop:3,

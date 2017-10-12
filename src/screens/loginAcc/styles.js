@@ -101,8 +101,8 @@ export default {
     fontSize:17
   },
   button: {
-    marginTop:5,
-    borderRadius:10,
+    marginTop: deviceHeight < 5 ? 5 : Platform.OS === "android" ? 5 : 10,
+    borderRadius:5,
     height: 50,
     width: "100%",
     // backgroundColor: 'aqua',
