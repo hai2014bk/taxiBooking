@@ -155,7 +155,7 @@ export default {
     alignItems: "center"
   },
   Id: {
-    flex: 10,
+    flex: 8,
     justifyContent: "center",
     alignItems: "flex-end"
   }

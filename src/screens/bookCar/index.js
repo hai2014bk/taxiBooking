@@ -9,7 +9,8 @@ import {
   View as RNView,
   AsyncStorage,
   Modal,
-  Alert
+  Alert,
+  BackHandler
 } from "react-native";
 import { connect } from "react-redux";
 import { Field, reduxForm } from "redux-form";
@@ -46,13 +47,16 @@ const car4W = require("../../Icon/PNG/Car/cho4Dis.png");
 const car7W = require("../../Icon/PNG/Car/cho7Dis.png");
 const car16W = require("../../Icon/PNG/Car/cho16Dis.png");
 const icon = require("./icon.jpg");
+import RNGooglePlacePicker from "react-native-google-place-picker";
 import styles from "./styles";
+var dismissKeyboard = require("dismissKeyboard");
 const deviceWidth = Dimensions.get("window").width;
 const headerLogo = require("../../../assets/header-logo.png");
 var noiBaiLat = 21.2187149;
 var noiBaiLng = 105.8041709;
 var lat = 21.218714;
 var lng = 105.80417;
+var mainScreen = true;
 var name = "Sân bay Nội Bài, Sóc Sơn, Hà Nội, Việt Nam";
 var timeH = new Date().getHours();
 var timeMi = new Date().getMinutes();
@@ -96,7 +100,7 @@ class bookCarForm extends Component {
       distance: 0,
       duration: 0,
       visible: false,
-      router: "hn",
+      router: "hn"
     };
   }
   componentWillReceiveProps(props) {
@@ -154,9 +158,19 @@ class bookCarForm extends Component {
     });
     // AsyncStorage.removeItem(mConstants.LOGIN_INFO);
   }
-  componentWillMount() {}
+  componentWillMount() {
+    const navigation = this.props.navigation;
+    BackHandler.addEventListener("hardwareBackPress", function() {
+      if (mainScreen) {
+        BackHandler.exitApp();
+        return true;
+      }
+      navigation.navigate("bookCar");
+      return false;
+    });
+  }
   render() {
-    console.log(timeMi, this.state.timeH, this.state.dateString);
+    // console.log(timeMi, this.state.timeH, this.state.dateString);
     var date = new Date();
     return (
       <Container>
@@ -164,7 +178,10 @@ class bookCarForm extends Component {
           <Left>
             <Button
               transparent
-              onPress={() => this.props.navigation.navigate("DrawerOpen")}
+              onPress={() => {
+                this.props.navigation.navigate("DrawerOpen");
+                dismissKeyboard();
+              }}
             >
               <Image source={setting} />
             </Button>
@@ -181,7 +198,7 @@ class bookCarForm extends Component {
           style={{ backgroundColor: "#fff" }}
         >
           <View style={{ height: 70, borderBottomWidth: 0.5, marginTop: 10 }}>
-            <Text note style={styles.text}>
+            <Text style={[styles.text, { color: "#31404B", fontSize: 15 }]}>
               Chọn tuyến
             </Text>
             <View
@@ -228,7 +245,10 @@ class bookCarForm extends Component {
               borderBottomWidth: 0.5
             }}
           >
-            <Text note style={styles.text}>
+            <Text
+              note
+              style={[styles.text, { color: "#31404B", fontSize: 15 }]}
+            >
               Loại Xe
             </Text>
             {this._cartype()}
@@ -336,7 +356,10 @@ class bookCarForm extends Component {
       [
         {
           text: "Hủy",
-          onPress: () => console.log("Cancel Pressed"),
+          onPress: () => {
+            press = true;
+            console.log("Cancel Pressed");
+          },
           style: "cancel"
         },
         {
@@ -406,8 +429,6 @@ class bookCarForm extends Component {
       params.delete_flag = 0;
       console.log(params);
       this.props.carbooking(params);
-      var test = JSON.stringify(params);
-      console.log("asdasdasdas", test);
     }
   }
   _timePicker() {
@@ -419,7 +440,7 @@ class bookCarForm extends Component {
             { marginLeft: 10, alignItems: "flex-start" }
           ]}
         >
-          <Text note>Thời gian</Text>
+          <Text style={{ color: "#31404B", fontSize: 15 }}>Thời gian</Text>
         </View>
         <View
           style={[
@@ -449,6 +470,45 @@ class bookCarForm extends Component {
   }
 
   handleDatePicked(date) {
+    var minuteValue = "";
+    var hourValue = "";
+    if (
+      date.getMinutes() == 0 ||
+      date.getMinutes() == 1 ||
+      date.getMinutes() == 2 ||
+      date.getMinutes() == 3 ||
+      date.getMinutes() == 4 ||
+      date.getMinutes() == 5 ||
+      date.getMinutes() == 6 ||
+      date.getMinutes() == 7 ||
+      date.getMinutes() == 8 ||
+      date.getMinutes() == 9
+    ) {
+      console.log("123456789");
+      minuteValue = "0" + date.getMinutes().toString();
+    } else {
+      console.log("#123456789");
+      minuteValue = date.getMinutes();
+    }
+    if (
+      date.getHours() == 0 ||
+      date.getHours() == 1 ||
+      date.getHours() == 2 ||
+      date.getHours() == 3 ||
+      date.getHours() == 4 ||
+      date.getHours() == 5 ||
+      date.getHours() == 6 ||
+      date.getHours() == 7 ||
+      date.getHours() == 8 ||
+      date.getHours() == 9
+    ) {
+      console.log("123456789");
+      hourValue = "0" + date.getHours().toString();
+    } else {
+      console.log("#123456789");
+      hourValue = date.getHours();
+    }
+    console.log("length", hourValue);
     this.setState({
       dateString:
         date.getFullYear() +
@@ -466,9 +526,9 @@ class bookCarForm extends Component {
       date:
         date.getDate() + "/" + (date.getMonth() + 1) + "/" + date.getFullYear(),
       dateStringshow:
-        date.getHours() +
+        hourValue +
         ":" +
-        date.getMinutes() +
+        minuteValue +
         " " +
         date.getDate() +
         "-" +
@@ -477,17 +537,22 @@ class bookCarForm extends Component {
         date.getFullYear()
     });
     this.hideTimePicker();
-    if (this.state.router == "nb") {
-      if (this.state.locate == "noi") {
-        this._checkTimeNoi(this.state.timeH);
+    if (
+      this.state.start.trim() != "Chọn điểm đón" &&
+      this.state.stop.trim() != "Chọn điểm đến"
+    ) {
+      if (this.state.router == "nb") {
+        if (this.state.locate == "noi") {
+          this._checkTimeNoi(this.state.timeH);
+        } else {
+          this._checkTimeNgoai(this.state.timeH);
+        }
       } else {
-        this._checkTimeNgoai(this.state.timeH);
-      }
-    } else {
-      if (this.state.locate == "noi") {
-        this._checkTimeNoinb(this.state.timeH);
-      } else {
-        this._checkTimeNgoainb(this.state.timeH);
+        if (this.state.locate == "noi") {
+          this._checkTimeNoinb(this.state.timeH);
+        } else {
+          this._checkTimeNgoainb(this.state.timeH);
+        }
       }
     }
   }
@@ -501,7 +566,7 @@ class bookCarForm extends Component {
             { marginLeft: 10, alignItems: "flex-start" }
           ]}
         >
-          <Text style={{ color: "#31404B" }}>Khứ hồi</Text>
+          <Text style={{ color: "#31404B", fontSize: 15 }}>Khứ hồi</Text>
         </View>
         <View
           style={[
@@ -525,13 +590,13 @@ class bookCarForm extends Component {
   _note() {
     return (
       <View style={styles.noteContainer}>
-        <View style={{ height: "30%", marginLeft: 10 }}>
-          <Text note> Ghi chú</Text>
+        <View style={{ height: "30%", marginLeft: 7 }}>
+          <Text style={{ color: "#31404B", fontSize: 15 }}> Ghi chú</Text>
         </View>
-        <View style={{ marginTop: 5, height: "70%", marginLeft: 10 }}>
+        <View style={{ marginTop: 5, height: "70%", marginLeft: 7 }}>
           <Input
             placeholder="Nhập ghi chú..."
-            placeholderTextColor="#31404B"
+            placeholderTextColor="#848484"
             autoCapitalize="none"
             autoCorrect={false}
             secureTextEntry={false}
@@ -548,9 +613,9 @@ class bookCarForm extends Component {
     return (
       <View style={[styles.noteContainer, { marginBottom: 10 }]}>
         <View style={styles.textNote}>
-          <Text note> Thành tiền</Text>
+          <Text style={{ color: "#31404B", fontSize: 15 }}> Thành tiền</Text>
         </View>
-        <View style={{ height: "70%", marginLeft: 10 }}>
+        <View style={{ height: "70%", marginLeft: 7 }}>
           <Text style={styles.textPrice}>
             {this.state.price} VNĐ
           </Text>
@@ -561,39 +626,47 @@ class bookCarForm extends Component {
 
   async _upDate(val) {
     if (val) {
-      var priceRoundTrip = this.state.price + this.state.price + 100000;
-      console.log("price________", priceRoundTrip);
       await this.setState({
-        roundTrip: true,
+        roundTrip: true
       });
-      if (this.state.router == "nb") {
-        if (this.state.locate == "noi") {
-          this._checkTimeNoi(this.state.timeH);
+      if (
+        this.state.start.trim() != "Chọn điểm đón" &&
+        this.state.stop.trim() != "Chọn điểm đến"
+      ) {
+        if (this.state.router == "nb") {
+          if (this.state.locate == "noi") {
+            this._checkTimeNoi(this.state.timeH);
+          } else {
+            this._checkTimeNgoai(this.state.timeH);
+          }
         } else {
-          this._checkTimeNgoai(this.state.timeH);
-        }
-      } else {
-        if (this.state.locate == "noi") {
-          this._checkTimeNoinb(this.state.timeH);
-        } else {
-          this._checkTimeNgoainb(this.state.timeH);
+          if (this.state.locate == "noi") {
+            this._checkTimeNoinb(this.state.timeH);
+          } else {
+            this._checkTimeNgoainb(this.state.timeH);
+          }
         }
       }
     } else {
       await this.setState({
-        roundTrip: false,
+        roundTrip: false
       });
-      if (this.state.router == "nb") {
-        if (this.state.locate == "noi") {
-          this._checkTimeNoi(this.state.timeH);
+      if (
+        this.state.start.trim() != "Chọn điểm đón" &&
+        this.state.stop.trim() != "Chọn điểm đến"
+      ) {
+        if (this.state.router == "nb") {
+          if (this.state.locate == "noi") {
+            this._checkTimeNoi(this.state.timeH);
+          } else {
+            this._checkTimeNgoai(this.state.timeH);
+          }
         } else {
-          this._checkTimeNgoai(this.state.timeH);
-        }
-      } else {
-        if (this.state.locate == "noi") {
-          this._checkTimeNoinb(this.state.timeH);
-        } else {
-          this._checkTimeNgoainb(this.state.timeH);
+          if (this.state.locate == "noi") {
+            this._checkTimeNoinb(this.state.timeH);
+          } else {
+            this._checkTimeNgoainb(this.state.timeH);
+          }
         }
       }
     }
@@ -641,17 +714,22 @@ class bookCarForm extends Component {
       car16: car16W,
       car_type_id: 1
     });
-    if (this.state.router == "nb") {
-      if (this.state.locate == "noi") {
-        this._checkTimeNoi(this.state.timeH);
+    if (
+      this.state.start.trim() != "Chọn điểm đón" &&
+      this.state.stop.trim() != "Chọn điểm đến"
+    ) {
+      if (this.state.router == "nb") {
+        if (this.state.locate == "noi") {
+          this._checkTimeNoi(this.state.timeH);
+        } else {
+          this._checkTimeNgoai(this.state.timeH);
+        }
       } else {
-        this._checkTimeNgoai(this.state.timeH);
-      }
-    } else {
-      if (this.state.locate == "noi") {
-        this._checkTimeNoinb(this.state.timeH);
-      } else {
-        this._checkTimeNgoainb(this.state.timeH);
+        if (this.state.locate == "noi") {
+          this._checkTimeNoinb(this.state.timeH);
+        } else {
+          this._checkTimeNgoainb(this.state.timeH);
+        }
       }
     }
   }
@@ -663,17 +741,22 @@ class bookCarForm extends Component {
       car16: car16W,
       car_type_id: 2
     });
-    if (this.state.router == "nb") {
-      if (this.state.locate == "noi") {
-        this._checkTimeNoi(this.state.timeH);
+    if (
+      this.state.start.trim() != "Chọn điểm đón" &&
+      this.state.stop.trim() != "Chọn điểm đến"
+    ) {
+      if (this.state.router == "nb") {
+        if (this.state.locate == "noi") {
+          this._checkTimeNoi(this.state.timeH);
+        } else {
+          this._checkTimeNgoai(this.state.timeH);
+        }
       } else {
-        this._checkTimeNgoai(this.state.timeH);
-      }
-    } else {
-      if (this.state.locate == "noi") {
-        this._checkTimeNoinb(this.state.timeH);
-      } else {
-        this._checkTimeNgoainb(this.state.timeH);
+        if (this.state.locate == "noi") {
+          this._checkTimeNoinb(this.state.timeH);
+        } else {
+          this._checkTimeNgoainb(this.state.timeH);
+        }
       }
     }
   }
@@ -684,17 +767,22 @@ class bookCarForm extends Component {
       car16: car16Y,
       car_type_id: 4
     });
-    if (this.state.router == "nb") {
-      if (this.state.locate == "noi") {
-        this._checkTimeNoi(this.state.timeH);
+    if (
+      this.state.start.trim() != "Chọn điểm đón" &&
+      this.state.stop.trim() != "Chọn điểm đến"
+    ) {
+      if (this.state.router == "nb") {
+        if (this.state.locate == "noi") {
+          this._checkTimeNoi(this.state.timeH);
+        } else {
+          this._checkTimeNgoai(this.state.timeH);
+        }
       } else {
-        this._checkTimeNgoai(this.state.timeH);
-      }
-    } else {
-      if (this.state.locate == "noi") {
-        this._checkTimeNoinb(this.state.timeH);
-      } else {
-        this._checkTimeNgoainb(this.state.timeH);
+        if (this.state.locate == "noi") {
+          this._checkTimeNoinb(this.state.timeH);
+        } else {
+          this._checkTimeNgoainb(this.state.timeH);
+        }
       }
     }
   }
@@ -1039,7 +1127,7 @@ class bookCarForm extends Component {
           this.setState({ price: 400000 });
           console.log("12");
         } else {
-          this.setState({ price: 1000000 });
+          this.setState({ price: 900000 });
           console.log("12_1");
         }
       }
@@ -1047,7 +1135,6 @@ class bookCarForm extends Component {
   }
 
   _checkTimeNoinb(timeH) {
-    console.log(timeH, "adasdasdasd");
     if (
       timeH == 22 ||
       timeH == 23 ||
@@ -1198,7 +1285,8 @@ class bookCarForm extends Component {
           details.formatted_address.split(",")[i].trim() == "Đống Đa" ||
           details.formatted_address.split(",")[i].trim() == "Ba Đình" ||
           details.formatted_address.split(",")[i].trim() == "Cầu Giấy" ||
-          details.formatted_address.split(",")[i].trim() == "Long Biên"
+          details.formatted_address.split(",")[i].trim() == "Long Biên" ||
+          details.formatted_address.split(",")[i].trim() == "Từ Liêm"
         ) {
           console.log("data", details.formatted_address.split(",")[i]);
           this.setState({ locate: "noi" });
@@ -1224,6 +1312,22 @@ class bookCarForm extends Component {
     }
     return i;
   }
+  // onPress() {
+  //   console.log("map")
+  //   RNGooglePlacePicker.show((response) => {
+  //     if (response.didCancel) {
+  //       console.log("User cancelled GooglePlacePicker");
+  //     }
+  //     else if (response.error) {
+  //       console.log("GooglePlacePicker Error: ", response.error);
+  //     }
+  //     else {
+  //       this.setState({
+  //         location: response
+  //       });
+  //     }
+  //   });
+  // }
 
   _pickLocation() {
     return (
@@ -1244,7 +1348,10 @@ class bookCarForm extends Component {
           >
             <TouchableOpacity
               disabled={this.state.disabledstart}
-              onPress={() => this.setState({ close: true })}
+              onPress={() =>
+                // this.onPress()}
+                this.setState({ close: true })
+                }
             >
               <View
                 style={{
@@ -1252,7 +1359,9 @@ class bookCarForm extends Component {
                   alignItems: "flex-start"
                 }}
               >
-                <Text note> Điểm đón</Text>
+                <Text style={{ color: "#31404B", fontSize: 15 }}>
+                  {" "}Điểm đón
+                </Text>
               </View>
               <View
                 style={{
@@ -1287,7 +1396,9 @@ class bookCarForm extends Component {
                   alignItems: "flex-start"
                 }}
               >
-                <Text note> Điểm đến</Text>
+                <Text style={{ color: "#31404B", fontSize: 15 }}>
+                  {" "}Điểm đến
+                </Text>
               </View>
               <View
                 style={{

@@ -240,7 +240,7 @@ export default {
     flex:1,
     height:40,
     // backgroundColor:"red",
-    borderBottomWidth: 0.5,
+    // borderBottomWidth: 0.3,
     borderColor: "#31404B",
     justifyContent: "space-between",
     flexDirection: "row"
@@ -277,8 +277,7 @@ export default {
   },
   textNote: {
     height:"30%",
-    marginLeft: 10,
-    marginRight: 10
+    marginLeft: 7
   },
   noteContainer: {
     flex: 1,
@@ -292,7 +291,7 @@ export default {
   textPrice: {
     marginBottom: 5,
     fontSize: 25,
-    marginLeft: 10,
+    marginLeft: 5,
     color: "orange"
   }
 };
