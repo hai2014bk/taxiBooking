@@ -470,6 +470,7 @@ class bookCarForm extends Component {
   }
 
   handleDatePicked(date) {
+    console.log(date)
     var minuteValue = "";
     var hourValue = "";
     if (
@@ -591,7 +592,7 @@ class bookCarForm extends Component {
     return (
       <View style={styles.noteContainer}>
         <View style={{ height: "30%", marginLeft: 7 }}>
-          <Text style={{ color: "#31404B", fontSize: 15 }}> Ghi chú</Text>
+          <Text style={{ color: "#31404B", fontSize: 15, marginTop:5 }}> Ghi chú</Text>
         </View>
         <View style={{ marginTop: 5, height: "70%", marginLeft: 7 }}>
           <Input
@@ -613,9 +614,9 @@ class bookCarForm extends Component {
     return (
       <View style={[styles.noteContainer, { marginBottom: 10 }]}>
         <View style={styles.textNote}>
-          <Text style={{ color: "#31404B", fontSize: 15 }}> Thành tiền</Text>
+          <Text style={{ color: "#31404B", fontSize: 15, marginTop:3 }}> Thành tiền</Text>
         </View>
-        <View style={{ height: "70%", marginLeft: 7 }}>
+        <View style={{ height: "70%", marginLeft: 7, marginTop:5 }}>
           <Text style={styles.textPrice}>
             {this.state.price} VNĐ
           </Text>
@@ -898,7 +899,7 @@ class bookCarForm extends Component {
               }
             }}
             query={{
-              key: "AIzaSyC42xdMVQZ0xmoe5fhfaRUwmYHUvpfEyk8",
+              key: "AIzaSyB-O4m9EPQ3aL-ZCjdWnghoepXlQOlGDYg",
               language: "vi" // language of the results
             }}
           />
@@ -987,7 +988,7 @@ class bookCarForm extends Component {
               }
             }}
             query={{
-              key: "AIzaSyC42xdMVQZ0xmoe5fhfaRUwmYHUvpfEyk8",
+              key: "AIzaSyB-O4m9EPQ3aL-ZCjdWnghoepXlQOlGDYg",
               language: "vi"
             }}
           />
@@ -1349,7 +1350,7 @@ class bookCarForm extends Component {
             <TouchableOpacity
               disabled={this.state.disabledstart}
               onPress={() =>
-                // this.onPress()}
+                // this.onPress()
                 this.setState({ close: true })
                 }
             >
