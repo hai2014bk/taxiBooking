@@ -6,7 +6,8 @@ import {
   StatusBar,
   AsyncStorage,
   Alert,
-  TouchableOpacity
+  TouchableOpacity,
+  BackHandler,
 } from "react-native";
 import {
   Container,
@@ -33,7 +34,7 @@ import AccountKit, {
   Color,
   StatusBarStyle
 } from "react-native-facebook-account-kit";
-
+var mainScreen = true;
 import Spinner from "react-native-loading-spinner-overlay";
 import styles from "./styles";
 // import {checkNumber} from "./actions"
@@ -58,6 +59,17 @@ class loginAccForm extends Component {
   }
   textInput: Any;
 
+  componentWillMount() {
+    const navigation = this.props.navigation;
+    BackHandler.addEventListener("hardwareBackPress", function() {
+      if (mainScreen) {
+      BackHandler.exitApp();
+        return true;
+      }
+      navigation.navigate("bookCar");
+      return false;
+     });
+  }
   componentWillReceiveProps(props) {
     const navigation = this.props.navigation;
     console.log("Items", props.items);
@@ -181,7 +193,7 @@ class loginAccForm extends Component {
         }, 100);
       } else {
         params.phonenumber = data;
-        this.accConfigure(data);
+        this.number(data);
         RNAccountKit.loginWithPhone(data).then(token => {
           if (!token) {
             check = true;
@@ -189,7 +201,7 @@ class loginAccForm extends Component {
           } else {
             check = true;
             press = true;
-            navigation.navigate("Register", { data: data });
+            this.props.login(params);
           }
         });
       }
@@ -262,19 +274,18 @@ class loginAccForm extends Component {
                   if (press) {
                     var data = this.state.phoneNumber;
                     var params = {};
-                    // params.phonenumber = data;
-                    // this.props.login(params);
                     press = false;
-                    RNAccountKit.loginWithPhone(data).then(token => {
-                      if (!token) {
-                        console.log("Cancel", token);
-                      } else {
-                        params.phonenumber = data;
-                        check = true;
-                        press = true;
-                        this.props.login(params);
-                      }
-                    });
+                    this.checkaNumber(data)
+                    // RNAccountKit.loginWithPhone(data).then(token => {
+                    //   if (!token) {
+                    //     console.log("Cancel", token);
+                    //   } else {
+                    //     params.phonenumber = data;
+                    //     check = true;
+                    //     press = true;
+                    //     this.props.login(params);
+                    //   }
+                    // });
                   }
                 }}
               >

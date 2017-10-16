@@ -1,6 +1,6 @@
 // @flow
 import React, { Component } from "react";
-import { Image, TouchableOpacity, ListView } from "react-native";
+import { Image, TouchableOpacity, ListView, AsyncStorage } from "react-native";
 
 import {
   Container,
@@ -22,6 +22,7 @@ import { connect } from "react-redux";
 import { Grid, Col } from "react-native-easy-grid";
 import { updateProfile } from "./actions";
 import CustomHeader from "../../components/CustomHeader";
+import * as mConstants from "../../utils/Constants";
 
 import styles from "./styles";
 // const settings = require("../../Icon/PNG/settings.png");
@@ -37,13 +38,30 @@ class profileBookCarForm extends Component {
   constructor(props) {
     super(props);
     this.state = {
-      firstName: "An",
-      lastName: "Nguyễn Hoàng",
-      phoneNumber: "012364535345",
-      email: "annguyenhoang@gmail.com",
-      userId: "1234567",
-      avartar: "http://www.novelupdates.com/img/noimagefound.jpg"
+      firstName: "",
+      lastName: "",
+      phoneNumber: "",
+      email: "",
+      userId: "",
+      avartar: ""
     };
+  }
+
+  async componentDidMount() {
+    var avartar = "";
+    var loginInfo = await AsyncStorage.getItem(mConstants.LOGIN_INFO);
+    var ObjloginInfo = JSON.parse(loginInfo);
+    if (ObjloginInfo.img_url) {
+      avartar = ObjloginInfo.img_url;
+    } else { avartar = "http://www.novelupdates.com/img/noimagefound.jpg" }
+    this.setState({
+      userId: ObjloginInfo.id,
+      firstName: ObjloginInfo.first_name,
+      lastName : ObjloginInfo.last_name,
+      email : ObjloginInfo.email,
+      avartar: avartar
+    });
+    // AsyncStorage.removeItem(mConstants.LOGIN_INFO);
   }
 
   render() {

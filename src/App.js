@@ -12,6 +12,7 @@ import ForgotPassword from "./screens/ForgotPassword";
 import SignUp from "./screens/SignUp/";
 import Register from "./screens/register/";
 import Walkthrough from "./screens/Walkthrough/";
+import welcomeSrc from "./screens/welcomeSrc/";
 import Comments from "./screens/Comments/";
 import Channel from "./screens/Channel";
 import Story from "./screens/Story";
@@ -29,6 +30,7 @@ const App = ({ initialRouteName }) => {
   const Drawer = DrawerNavigator(
     {
       history: { screen: history },
+      welcomeSrc: { screen: welcomeSrc },
       profileBookCar: { screen: profileBookCar },
       bookCar: { screen: bookCar },
       Home: { screen: Home },
@@ -46,7 +48,7 @@ const App = ({ initialRouteName }) => {
     },
     {
       initialRouteName: initialRouteName,
-      // initialRouteName: "bookCar",
+      // initialRouteName: "welcomeSrc",
       contentComponent: props => <Sidebar {...props} />
     }
   );

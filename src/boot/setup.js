@@ -26,23 +26,34 @@ export default class Setup extends Component {
     super();
     this.state = {
       loginInfo: "",
+      firstUse: "",
       isLoading: false,
       isLoaded: false,
       store: configureStore(() => this.setState({ isLoading: false }))
     };
   }
   async componentWillMount() {
+    var firstUse = await AsyncStorage.getItem(mConstants.FIRSTUSE);
+    if (firstUse){
+      this.setState({ firstUse: firstUse, isLoaded: true });
+    } else {
+      this.setState({ isLoaded: false });
+    }
     var loginInfo = await AsyncStorage.getItem(mConstants.LOGIN_INFO);
     if (loginInfo) {
       this.setState({ loginInfo: loginInfo, isLoaded: true });
     } else {
-      this.setState({ isLoaded: true });
+      this.setState({ isLoaded: false });
     }
   }
 
   render() {
-    // console.log(this.state.loginInfo)
-    var initialRoute = this.state.loginInfo ? "bookCar" : "loginAcc";
+    var initialRoute = "";
+    if (!this.state.firstUse){
+      initialRoute = "welcomeSrc";
+    } else {
+      initialRoute = this.state.loginInfo ? "bookCar" : "loginAcc";
+    }
     console.log("initialRoute", initialRoute);
     if (!this.state.isLoaded) {
       return null;

@@ -16,8 +16,8 @@ export function historySuccess(items) {
 
 export function history() {
   return dispatch => {
-    var url = mConstants.HISTORY;
-    var isAuth = false;
+    var url = mConstants.BOOKCAR;
+    var isAuth = true;
     APIRequestGET(
       url,
       isAuth,

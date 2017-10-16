@@ -35,75 +35,90 @@ const gradient = require("./gradient.png");
 //   navigation: () => void
 // };
 var dataArray = [
-  {
-    time: "06:00 SA",
-    date: "2/9/2017",
-    start: "Chùa Láng, Láng Thượng, Đống Đa, Hà Nội",
-    stop: "Sân bay quốc tế Nội Bài, Hà Nội",
-    taixe: "Nguyễn Hoàng An",
-    price: "170.000"
-  },
-  {
-    time: "06:00 SA",
-    date: "2/9/2017",
-    start: "Chùa Láng, Láng Thượng, Đống Đa, Hà Nội",
-    stop: "Sân bay quốc tế Nội Bài, Hà Nội",
-    taixe: "Nguyễn Hoàng An",
-    price: "170.000"
-  },
-  {
-    time: "06:00 SA",
-    date: "2/9/2017",
-    start: "Chùa Láng, Láng Thượng, Đống Đa, Hà Nội",
-    stop: "Sân bay quốc tế Nội Bài, Hà Nội",
-    taixe: "Nguyễn Hoàng An",
-    price: "170.000"
-  },
-  {
-    time: "06:00 SA",
-    date: "2/9/2017",
-    start: "Chùa Láng, Láng Thượng, Đống Đa, Hà Nội",
-    stop: "Sân bay quốc tế Nội Bài, Hà Nội",
-    taixe: "Nguyễn Hoàng An",
-    price: "170.000"
-  },
-  {
-    time: "06:00 SA",
-    date: "2/9/2017",
-    start: "Chùa Láng, Láng Thượng, Đống Đa, Hà Nội",
-    stop: "Sân bay quốc tế Nội Bài, Hà Nội",
-    taixe: "Nguyễn Hoàng An",
-    price: "170.000"
-  },
-  {
-    time: "06:00 SA",
-    date: "2/9/2017",
-    start: "Chùa Láng, Láng Thượng, Đống Đa, Hà Nội",
-    stop: "Sân bay quốc tế Nội Bài, Hà Nội",
-    taixe: "Nguyễn Hoàng An",
-    price: "170.000"
-  },
-  {
-    time: "06:00 SA",
-    date: "2/9/2017",
-    start: "Chùa Láng, Láng Thượng, Đống Đa, Hà Nội",
-    stop: "Sân bay quốc tế Nội Bài, Hà Nội",
-    taixe: "Nguyễn Hoàng An",
-    price: "170.000"
-  }
+  // {
+  //   time: "06:00 SA",
+  //   date: "2/9/2017",
+  //   start: "Chùa Láng, Láng Thượng, Đống Đa, Hà Nội",
+  //   stop: "Sân bay quốc tế Nội Bài, Hà Nội",
+  //   taixe: "Nguyễn Hoàng An",
+  //   price: "170.000"
+  // },
+  // {
+  //   time: "06:00 SA",
+  //   date: "2/9/2017",
+  //   start: "Chùa Láng, Láng Thượng, Đống Đa, Hà Nội",
+  //   stop: "Sân bay quốc tế Nội Bài, Hà Nội",
+  //   taixe: "Nguyễn Hoàng An",
+  //   price: "170.000"
+  // },
+  // {
+  //   time: "06:00 SA",
+  //   date: "2/9/2017",
+  //   start: "Chùa Láng, Láng Thượng, Đống Đa, Hà Nội",
+  //   stop: "Sân bay quốc tế Nội Bài, Hà Nội",
+  //   taixe: "Nguyễn Hoàng An",
+  //   price: "170.000"
+  // },
+  // {
+  //   time: "06:00 SA",
+  //   date: "2/9/2017",
+  //   start: "Chùa Láng, Láng Thượng, Đống Đa, Hà Nội",
+  //   stop: "Sân bay quốc tế Nội Bài, Hà Nội",
+  //   taixe: "Nguyễn Hoàng An",
+  //   price: "170.000"
+  // },
+  // {
+  //   time: "06:00 SA",
+  //   date: "2/9/2017",
+  //   start: "Chùa Láng, Láng Thượng, Đống Đa, Hà Nội",
+  //   stop: "Sân bay quốc tế Nội Bài, Hà Nội",
+  //   taixe: "Nguyễn Hoàng An",
+  //   price: "170.000"
+  // },
+  // {
+  //   time: "06:00 SA",
+  //   date: "2/9/2017",
+  //   start: "Chùa Láng, Láng Thượng, Đống Đa, Hà Nội",
+  //   stop: "Sân bay quốc tế Nội Bài, Hà Nội",
+  //   taixe: "Nguyễn Hoàng An",
+  //   price: "170.000"
+  // },
+  // {
+  //   time: "06:00 SA",
+  //   date: "2/9/2017",
+  //   start: "Chùa Láng, Láng Thượng, Đống Đa, Hà Nội",
+  //   stop: "Sân bay quốc tế Nội Bài, Hà Nội",
+  //   taixe: "Nguyễn Hoàng An",
+  //   price: "170.000"
+  // }
 ];
+
 class historyForm extends Component {
   constructor(props) {
     super(props);
     this.state = {
       firstName: "An",
-      dataArray: dataArray,
+      dataArray: "",
       lastName: "Nguyễn Hoàng",
       phoneNumber: "012364535345",
       email: "annguyenhoang@gmail.com",
       userId: "1234567",
       avartar: "http://www.novelupdates.com/img/noimagefound.jpg"
     };
+  }
+
+  async componentDidMount() {
+    await this.props.history();
+  }
+
+  componentWillReceiveProps(props) {
+    if (props.items) {
+      this.setState({ dataArray: props.items });
+      console.log("items", props.items);
+      dataArray = props.items;
+    } else {
+      console.log("nodata");
+    }
   }
 
   render() {
@@ -121,13 +136,8 @@ class historyForm extends Component {
       return (
         <Container>
           {this._header(navigation)}
-          <Image
-              source={gradient}
-              style={styles.gradient}
-              resizeMode="cover"
-            />
+          <Image source={gradient} style={styles.gradient} resizeMode="cover" />
           <Content style={{ backgroundColor: "#fff" }}>
-
             <List
               dataArray={this.state.dataArray}
               renderRow={this._renderrow.bind(this)}
@@ -164,6 +174,51 @@ class historyForm extends Component {
     );
   }
   _renderrow(item) {
+    var date = new Date(item.start_time);
+    var minuteValue = "";
+    var hourValue = "";
+    if (
+      date.getMinutes() == 0 ||
+      date.getMinutes() == 1 ||
+      date.getMinutes() == 2 ||
+      date.getMinutes() == 3 ||
+      date.getMinutes() == 4 ||
+      date.getMinutes() == 5 ||
+      date.getMinutes() == 6 ||
+      date.getMinutes() == 7 ||
+      date.getMinutes() == 8 ||
+      date.getMinutes() == 9
+    ) {
+      console.log("123456789");
+      minuteValue = "0" + date.getMinutes().toString();
+    } else {
+      console.log("#123456789");
+      minuteValue = date.getMinutes();
+    }
+
+    if (
+      date.getHours() == 0 ||
+      date.getHours() == 1 ||
+      date.getHours() == 2 ||
+      date.getHours() == 3 ||
+      date.getHours() == 4 ||
+      date.getHours() == 5 ||
+      date.getHours() == 6 ||
+      date.getHours() == 7 ||
+      date.getHours() == 8 ||
+      date.getHours() == 9
+    ) {
+      console.log("123456789");
+      hourValue = "0" + date.getHours().toString();
+    } else {
+      console.log("#123456789");
+      hourValue = date.getHours();
+    }
+    var time = hourValue + ":" + minuteValue;
+    var dateshow =
+      date.getDate() + "-" + date.getMonth() + "-" + date.getFullYear();
+    var price = item.price.toString();
+    console.log(price);
     return (
       <ListItem>
         <Body>
@@ -184,12 +239,10 @@ class historyForm extends Component {
               }}
             >
               <Text style={{ color: "#31404B", fontSize: 16 }}>
-                {item.time} {item.date}
+                {time} {dateshow}
               </Text>
             </View>
-            <View
-              style={styles.timeView}
-            >
+            <View style={styles.timeView}>
               <Text style={{ color: "#31404B", fontSize: 16 }}>
                 {item.price} VNĐ
               </Text>
@@ -201,7 +254,7 @@ class historyForm extends Component {
             </View>
             <View style={styles.start}>
               <Text note>
-                {item.start}{" "}
+                {item.from_text}{" "}
               </Text>
             </View>
           </View>
@@ -211,7 +264,7 @@ class historyForm extends Component {
             </View>
             <View style={styles.start}>
               <Text note>
-                {item.stop}{" "}
+                {item.to_text}{" "}
               </Text>
             </View>
           </View>
