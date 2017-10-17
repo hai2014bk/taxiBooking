@@ -37,13 +37,13 @@ export default class Setup extends Component {
     if (firstUse){
       this.setState({ firstUse: firstUse, isLoaded: true });
     } else {
-      this.setState({ isLoaded: false });
+      this.setState({ isLoaded: true });
     }
     var loginInfo = await AsyncStorage.getItem(mConstants.LOGIN_INFO);
     if (loginInfo) {
       this.setState({ loginInfo: loginInfo, isLoaded: true });
     } else {
-      this.setState({ isLoaded: false });
+      this.setState({ isLoaded: true });
     }
   }
 

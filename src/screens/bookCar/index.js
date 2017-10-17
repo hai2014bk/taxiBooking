@@ -47,7 +47,6 @@ const car4W = require("../../Icon/PNG/Car/cho4Dis.png");
 const car7W = require("../../Icon/PNG/Car/cho7Dis.png");
 const car16W = require("../../Icon/PNG/Car/cho16Dis.png");
 const icon = require("./icon.jpg");
-import RNGooglePlacePicker from "react-native-google-place-picker";
 import styles from "./styles";
 var dismissKeyboard = require("dismissKeyboard");
 const deviceWidth = Dimensions.get("window").width;
