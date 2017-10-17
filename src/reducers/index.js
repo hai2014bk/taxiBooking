@@ -8,6 +8,7 @@ import registerReducer from "../screens/register/reducer";
 import bookCarReducer from "../screens/bookCar/reducer";
 import profileReducer from "../screens/profileBookCar/reducer";
 import historyReducer from "../screens/history/reducer";
+import sidebarReducer from "../screens/Sidebar/reducer";
 
 export default combineReducers({
   form: formReducer,
@@ -17,5 +18,6 @@ export default combineReducers({
   registerReducer,
   bookCarReducer,
   profileReducer,
-  historyReducer
+  historyReducer,
+  sidebarReducer
 });

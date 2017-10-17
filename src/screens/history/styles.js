@@ -113,6 +113,7 @@ export default {
   },
   start: {
     flex: 12,
+    marginLeft:-10,
     justifyContent: "center",
     alignItems: "flex-start"
   },
@@ -123,6 +124,7 @@ export default {
   },
   iconview: {
     flex: 1,
+    marginLeft:20,
     justifyContent: "center",
     alignItems: "flex-start"
   },
@@ -143,11 +145,12 @@ export default {
   },
   textNor: {
     color: "#31404B",
-    fontSize: 16
+    fontSize: 16,
+    marginLeft:10
   },
   gradient: {
-    width: 720,
-    height: 15
+    width: deviceWidth,
+    height: 40,
   },
   timeview: {
     flex: 1,

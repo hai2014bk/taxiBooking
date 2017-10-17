@@ -15,7 +15,8 @@ import {
   Left,
   Body,
   Right,
-  Header
+  Header,
+  Footer
 } from "native-base";
 import { Field, reduxForm } from "redux-form";
 import { connect } from "react-redux";
@@ -24,74 +25,10 @@ import CustomHeader from "../../components/CustomHeader";
 import { history } from "../../actions";
 
 import styles from "./styles";
-// const settings = require("../../Icon/PNG/settings.png");
 const back = require("../../Icon/PNG/Back.png");
 const dot = require("./dot.png");
 const gradient = require("./gradient.png");
-// const profile = require("../../Icon/PNG/profile.png");
-// const mail = require("../../Icon/PNG/Mail2.png");
-// const phone = require("../../Icon/PNG/Phone2.png");
-// type Props = {
-//   navigation: () => void
-// };
-var dataArray = [
-  // {
-  //   time: "06:00 SA",
-  //   date: "2/9/2017",
-  //   start: "Chùa Láng, Láng Thượng, Đống Đa, Hà Nội",
-  //   stop: "Sân bay quốc tế Nội Bài, Hà Nội",
-  //   taixe: "Nguyễn Hoàng An",
-  //   price: "170.000"
-  // },
-  // {
-  //   time: "06:00 SA",
-  //   date: "2/9/2017",
-  //   start: "Chùa Láng, Láng Thượng, Đống Đa, Hà Nội",
-  //   stop: "Sân bay quốc tế Nội Bài, Hà Nội",
-  //   taixe: "Nguyễn Hoàng An",
-  //   price: "170.000"
-  // },
-  // {
-  //   time: "06:00 SA",
-  //   date: "2/9/2017",
-  //   start: "Chùa Láng, Láng Thượng, Đống Đa, Hà Nội",
-  //   stop: "Sân bay quốc tế Nội Bài, Hà Nội",
-  //   taixe: "Nguyễn Hoàng An",
-  //   price: "170.000"
-  // },
-  // {
-  //   time: "06:00 SA",
-  //   date: "2/9/2017",
-  //   start: "Chùa Láng, Láng Thượng, Đống Đa, Hà Nội",
-  //   stop: "Sân bay quốc tế Nội Bài, Hà Nội",
-  //   taixe: "Nguyễn Hoàng An",
-  //   price: "170.000"
-  // },
-  // {
-  //   time: "06:00 SA",
-  //   date: "2/9/2017",
-  //   start: "Chùa Láng, Láng Thượng, Đống Đa, Hà Nội",
-  //   stop: "Sân bay quốc tế Nội Bài, Hà Nội",
-  //   taixe: "Nguyễn Hoàng An",
-  //   price: "170.000"
-  // },
-  // {
-  //   time: "06:00 SA",
-  //   date: "2/9/2017",
-  //   start: "Chùa Láng, Láng Thượng, Đống Đa, Hà Nội",
-  //   stop: "Sân bay quốc tế Nội Bài, Hà Nội",
-  //   taixe: "Nguyễn Hoàng An",
-  //   price: "170.000"
-  // },
-  // {
-  //   time: "06:00 SA",
-  //   date: "2/9/2017",
-  //   start: "Chùa Láng, Láng Thượng, Đống Đa, Hà Nội",
-  //   stop: "Sân bay quốc tế Nội Bài, Hà Nội",
-  //   taixe: "Nguyễn Hoàng An",
-  //   price: "170.000"
-  // }
-];
+var dataArray = [];
 
 class historyForm extends Component {
   constructor(props) {
@@ -112,7 +49,7 @@ class historyForm extends Component {
   }
 
   componentWillReceiveProps(props) {
-    if (props.items) {
+    if (props.items[0]) {
       this.setState({ dataArray: props.items });
       console.log("items", props.items);
       dataArray = props.items;
@@ -134,10 +71,10 @@ class historyForm extends Component {
       );
     } else {
       return (
-        <Container>
+        <Container style={styles.container}>
           {this._header(navigation)}
+          <Content style={{ backgroundColor: "#ffffff", marginBottom:-15}}>
           <Image source={gradient} style={styles.gradient} resizeMode="cover" />
-          <Content style={{ backgroundColor: "#fff" }}>
             <List
               dataArray={this.state.dataArray}
               renderRow={this._renderrow.bind(this)}
@@ -153,7 +90,7 @@ class historyForm extends Component {
       <Header style={{ backgroundColor: "white" }}>
         <Left style={{ flex: 2 }}>
           <Button transparent onPress={() => navigation.navigate("bookCar")}>
-            <Image source={back} />
+            <Image source={back} style={{width:30,height:30}} resizeMode="contain" />
           </Button>
         </Left>
         <Body style={{ flex: 6 }}>
@@ -174,6 +111,8 @@ class historyForm extends Component {
     );
   }
   _renderrow(item) {
+    var priceshow = item.price.toString().split(".")[0];
+    // console.log("priceshow",priceshow)
     var date = new Date(item.start_time);
     var minuteValue = "";
     var hourValue = "";
@@ -220,7 +159,7 @@ class historyForm extends Component {
     var price = item.price.toString();
     console.log(price);
     return (
-      <ListItem>
+      <ListItem style={{borderColor:"white", marginLeft:0}}>
         <Body>
           <View
             style={{
@@ -238,13 +177,13 @@ class historyForm extends Component {
                 justifyContent: "flex-start"
               }}
             >
-              <Text style={{ color: "#31404B", fontSize: 16 }}>
+              <Text style={{ color: "#31404B", fontSize: 16, marginLeft:10 }}>
                 {time} {dateshow}
               </Text>
             </View>
             <View style={styles.timeView}>
               <Text style={{ color: "#31404B", fontSize: 16 }}>
-                {item.price} VNĐ
+                {priceshow} VNĐ
               </Text>
             </View>
           </View>
@@ -274,10 +213,10 @@ class historyForm extends Component {
             </Text>
           </View>
           <Image
-            source={gradient}
-            style={styles.gradient}
-            resizeMode="contain"
-          />
+                source={gradient}
+                style={styles.gradient}
+                resizeMode="cover"
+              />
         </Body>
       </ListItem>
     );

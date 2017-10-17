@@ -16,7 +16,8 @@ import variables from "../theme/variables/commonColor";
 //   loginInfo=result;
 //   console.log(loginInfo)
 // });
-
+var initialRoute = "";
+var isLoaded = false;
 export default class Setup extends Component {
   state: {
     store: Object,
@@ -25,6 +26,7 @@ export default class Setup extends Component {
   constructor() {
     super();
     this.state = {
+      initialRoute: "",
       loginInfo: "",
       firstUse: "",
       isLoading: false,
@@ -32,30 +34,43 @@ export default class Setup extends Component {
       store: configureStore(() => this.setState({ isLoading: false }))
     };
   }
-  async componentWillMount() {
+  async componentDidMount() {
+    console.log(123);
     var firstUse = await AsyncStorage.getItem(mConstants.FIRSTUSE);
-    if (firstUse){
-      this.setState({ firstUse: firstUse, isLoaded: true });
+    if (firstUse) {
+      // this.setState({ firstUse: firstUse, isLoaded: true });
+      var loginInfo = await AsyncStorage.getItem(mConstants.LOGIN_INFO);
+      if (loginInfo) {
+        // await this.setState({
+        //   loginInfo: loginInfo,
+        isLoaded = true;
+        initialRoute = "bookCar";
+        // });
+      } else {
+        // await this.setState({
+        initialRoute = "loginAcc";
+        isLoaded = true;
+        // });
+        // this.setState({ isLoaded: true });
+      }
     } else {
-      this.setState({ isLoaded: true });
-    }
-    var loginInfo = await AsyncStorage.getItem(mConstants.LOGIN_INFO);
-    if (loginInfo) {
-      this.setState({ loginInfo: loginInfo, isLoaded: true });
-    } else {
-      this.setState({ isLoaded: true });
+      // await this.setState({
+      initialRoute = "welcomeSrc";
+      isLoaded = true;
+      // });
+      // this.setState({ isLoaded: true });
     }
   }
 
   render() {
-    var initialRoute = "";
-    if (!this.state.firstUse){
-      initialRoute = "welcomeSrc";
-    } else {
-      initialRoute = this.state.loginInfo ? "bookCar" : "loginAcc";
-    }
-    console.log("initialRoute", initialRoute);
-    if (!this.state.isLoaded) {
+    // var initialRoute = "";
+    // if (!this.state.firstUse) {
+    //   initialRoute = "welcomeSrc";
+    // } else {
+    //   initialRoute = this.state.loginInfo ? "bookCar" : "loginAcc";
+    // }
+    // console.log("initialRoute", initialRoute);
+    if (!isLoaded) {
       return null;
     }
     return (

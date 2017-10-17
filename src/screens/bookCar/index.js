@@ -99,7 +99,8 @@ class bookCarForm extends Component {
       distance: 0,
       duration: 0,
       visible: false,
-      router: "hn"
+      router: "hn",
+      hanoi: ""
     };
   }
   componentWillReceiveProps(props) {
@@ -182,7 +183,7 @@ class bookCarForm extends Component {
                 dismissKeyboard();
               }}
             >
-              <Image source={setting} />
+              <Image source={setting} style={{width:30,height:30}} resizeMode="contain"/>
             </Button>
           </Left>
           <Body>
@@ -469,7 +470,7 @@ class bookCarForm extends Component {
   }
 
   handleDatePicked(date) {
-    console.log(date)
+    console.log(date);
     var minuteValue = "";
     var hourValue = "";
     if (
@@ -591,7 +592,9 @@ class bookCarForm extends Component {
     return (
       <View style={styles.noteContainer}>
         <View style={{ height: "30%", marginLeft: 7 }}>
-          <Text style={{ color: "#31404B", fontSize: 15, marginTop:5 }}> Ghi chú</Text>
+          <Text style={{ color: "#31404B", fontSize: 15, marginTop: 5 }}>
+            {" "}Ghi chú
+          </Text>
         </View>
         <View style={{ marginTop: 5, height: "70%", marginLeft: 7 }}>
           <Input
@@ -613,9 +616,11 @@ class bookCarForm extends Component {
     return (
       <View style={[styles.noteContainer, { marginBottom: 10 }]}>
         <View style={styles.textNote}>
-          <Text style={{ color: "#31404B", fontSize: 15, marginTop:3 }}> Thành tiền</Text>
+          <Text style={{ color: "#31404B", fontSize: 15, marginTop: 3 }}>
+            {" "}Thành tiền
+          </Text>
         </View>
-        <View style={{ height: "70%", marginLeft: 7, marginTop:5 }}>
+        <View style={{ height: "70%", marginLeft: 7, marginTop: 5 }}>
           <Text style={styles.textPrice}>
             {this.state.price} VNĐ
           </Text>
@@ -868,33 +873,56 @@ class bookCarForm extends Component {
               "administrative_area_level_3"
             ]}
             onPress={(data, details) => {
-              console.log("awesome", longitude, latitude);
               console.log(data, details);
-              if (
-                details.geometry.location.lat == noiBaiLat &&
-                details.geometry.location.lng == noiBaiLng
-              ) {
-                this._haNoi();
+              this._checkHanoi(data, details);
+              console.log(this.state.hanoi);
+              if (this.state.hanoi == "hanoi") {
+                if (
+                  details.geometry.location.lat == noiBaiLat &&
+                  details.geometry.location.lng == noiBaiLng
+                ) {
+                  this._haNoi();
+                } else {
+                  var stringLat = details.geometry.location.lat.toString();
+                  var splitLat = stringLat.split(".")[1].slice(0, 6);
+                  var latitude = stringLat.split(".")[0] + "." + splitLat;
+                  var stringLng = details.geometry.location.lat.toString();
+                  var splitLng = stringLng.split(".")[1].slice(0, 6);
+                  var longitude = stringLng.split(".")[0] + "." + splitLng;
+                  this._checklocation(data, details);
+                  this.setState({
+                    start: details.formatted_address,
+                    startLat: latitude,
+                    startLng: longitude,
+                    close: false
+                  });
+                  console.log(
+                    this.state.startLat,
+                    this.state.startLng,
+                    this.state.stopLat,
+                    this.state.stopLng
+                  );
+                }
               } else {
-                var stringLat = details.geometry.location.lat.toString();
-                var splitLat = stringLat.split(".")[1].slice(0, 6);
-                var latitude = stringLat.split(".")[0] + "." + splitLat;
-                var stringLng = details.geometry.location.lat.toString();
-                var splitLng = stringLng.split(".")[1].slice(0, 6);
-                var longitude = stringLng.split(".")[0] + "." + splitLng;
-                this._checklocation(data, details);
                 this.setState({
-                  start: details.formatted_address,
-                  startLat: latitude,
-                  startLng: longitude,
                   close: false
                 });
-                console.log(
-                  this.state.startLat,
-                  this.state.startLng,
-                  this.state.stopLat,
-                  this.state.stopLng
-                );
+                setTimeout(() => {
+                  this.showAlert(
+                    "Thông báo",
+                    "Hiện tại chúng tôi chưa hỗ trợ khu vực ngoài Hà Nội. Vui lòng thử lại sau",
+                    [
+                      {
+                        text: "OK",
+                        onPress: () => {
+                          this.setState({
+                            start: "Chọn điểm đón"
+                          });
+                        }
+                      }
+                    ]
+                  );
+                }, 100);
               }
             }}
             query={{
@@ -965,25 +993,49 @@ class bookCarForm extends Component {
             ]}
             onPress={(data, details) => {
               console.log(data, details);
-              if (
-                details.geometry.location.lat == noiBaiLat &&
-                details.geometry.location.lng == noiBaiLng
-              ) {
-                this._noiBai();
+              this._checkHanoi(data, details);
+              console.log(this.state.hanoi);
+              if (this.state.hanoi == "hanoi") {
+                if (
+                  details.geometry.location.lat == noiBaiLat &&
+                  details.geometry.location.lng == noiBaiLng
+                ) {
+                  this._noiBai();
+                } else {
+                  var stringLat = details.geometry.location.lat.toString();
+                  var splitLat = stringLat.split(".")[1].slice(0, 6);
+                  var latitude = stringLat.split(".")[0] + "." + splitLat;
+                  var stringLng = details.geometry.location.lat.toString();
+                  var splitLng = stringLng.split(".")[1].slice(0, 6);
+                  var longitude = stringLng.split(".")[0] + "." + splitLng;
+                  this._checklocation(data, details);
+                  this.setState({
+                    stop: details.formatted_address,
+                    stopLat: latitude,
+                    stopLng: longitude,
+                    open: false
+                  });
+                }
               } else {
-                var stringLat = details.geometry.location.lat.toString();
-                var splitLat = stringLat.split(".")[1].slice(0, 6);
-                var latitude = stringLat.split(".")[0] + "." + splitLat;
-                var stringLng = details.geometry.location.lat.toString();
-                var splitLng = stringLng.split(".")[1].slice(0, 6);
-                var longitude = stringLng.split(".")[0] + "." + splitLng;
-                this._checklocation(data, details);
                 this.setState({
-                  stop: details.formatted_address,
-                  stopLat: latitude,
-                  stopLng: longitude,
                   open: false
                 });
+                setTimeout(() => {
+                  this.showAlert(
+                    "Thông báo",
+                    "Hiện tại chúng tôi chưa hỗ trợ khu vực ngoài Hà Nội. Vui lòng thử lại sau",
+                    [
+                      {
+                        text: "OK",
+                        onPress: () => {
+                          this.setState({
+                            stop: "Chọn điểm đến"
+                          });
+                        }
+                      }
+                    ]
+                  );
+                }, 100);
               }
             }}
             query={{
@@ -1272,7 +1324,24 @@ class bookCarForm extends Component {
     }
   }
 
-  _checklocation(data, details) {
+  _checkHanoi(data, details) {
+    var i = "";
+    for (i in details.formatted_address.split(",")) {
+      if (!details.formatted_address.split(",")[i]) {
+        break;
+      } else {
+        if (details.formatted_address.split(",")[i].trim() == "Hà Nội") {
+          this.setState({ hanoi: "hanoi" });
+          break;
+        } else {
+          this.setState({ hanoi: "no hanoi" });
+        }
+      }
+    }
+    return i;
+  }
+  async _checklocation(data, details) {
+    await this._checkHanoi(data, details);
     var i = "";
     for (i in details.formatted_address.split(",")) {
       if (!details.formatted_address.split(",")[i]) {
@@ -1295,7 +1364,6 @@ class bookCarForm extends Component {
           } else {
             this._checkTimeNoinb(this.state.timeH);
           }
-          // this._checkTimeNoi(this.state.timeH);
           break;
         } else {
           if (this.state.router == "nb") {
@@ -1303,7 +1371,6 @@ class bookCarForm extends Component {
           } else {
             this._checkTimeNgoainb(this.state.timeH);
           }
-          // this._checkTimeNgoai(this.state.timeH);
           console.log("no data");
           this.setState({ locate: "ngoai" });
           // break;
@@ -1350,8 +1417,7 @@ class bookCarForm extends Component {
               disabled={this.state.disabledstart}
               onPress={() =>
                 // this.onPress()
-                this.setState({ close: true })
-                }
+                this.setState({ close: true })}
             >
               <View
                 style={{
