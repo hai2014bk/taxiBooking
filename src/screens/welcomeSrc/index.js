@@ -20,17 +20,17 @@ import * as mConstants from "../../utils/Constants";
 const deviceHeight = Dimensions.get("window").height;
 const deviceWidth = Dimensions.get("window").width;
 class welcomeSrc extends Component {
-  componentDidMount() {
-    AsyncStorage.setItem(
-      mConstants.FIRSTUSE,
-      JSON.stringify("firstUse"),
-      () => {
-        AsyncStorage.getItem(mConstants.FIRSTUSE, (err, result) => {
-          console.log("AsyncStorage_index_welcome", result);
-        });
-      }
-    );
-  }
+  // componentDidMount() {
+  //   AsyncStorage.setItem(
+  //     mConstants.FIRSTUSE,
+  //     JSON.stringify("firstUse"),
+  //     () => {
+  //       AsyncStorage.getItem(mConstants.FIRSTUSE, (err, result) => {
+  //         console.log("AsyncStorage_index_welcome", result);
+  //       });
+  //     }
+  //   );
+  // }
 
   render() {
     console.log(deviceHeight);
@@ -45,10 +45,10 @@ class welcomeSrc extends Component {
               height={deviceHeight}
               loop={false}
               indicatorAtBottom
-              indicatorOffset={deviceHeight / 15}
-              indicatorSize={Platform.OS === "android" ? 15 : 10}
+              indicatorOffset={65}
+              indicatorSize={Platform.OS === "android" ? 10 : 10}
               indicatorColor="#FFFFFF"
-              animate={false}
+              animate={true}
               delay={3000}
             >
               <View style={styles.slides}>
@@ -86,7 +86,8 @@ class welcomeSrc extends Component {
                       width: deviceWidth,
                       justifyContent: "center",
                       alignItems: "center",
-                      backgroundColor: "#31404B"
+                      backgroundColor: "#31404B",
+                      borderRadius:0
                     }}
                   >
                     <Text style={{ fontSize: 20, fontWeight: "bold" }}>
@@ -101,8 +102,17 @@ class welcomeSrc extends Component {
       </Container>
     );
   }
-  _continue() {
-    const navigation = this.props.navigation;
+  async _continue() {
+    const navigation = await this.props.navigation;
+    await AsyncStorage.setItem(
+      mConstants.FIRSTUSE,
+      JSON.stringify("firstUse"),
+      () => {
+        AsyncStorage.getItem(mConstants.FIRSTUSE, (err, result) => {
+          console.log("AsyncStorage_index_welcome", result);
+        });
+      }
+    );
     navigation.navigate("loginAcc");
   }
 }

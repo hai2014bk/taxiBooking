@@ -103,50 +103,6 @@ class loginAccForm extends Component {
         ]);
       }, 100);
     }
-    // AsyncStorage.setItem(
-    //   mConstants.LOGIN_INFO,
-    //   JSON.stringify(props.items),
-    //   () => {
-    //     AsyncStorage.getItem(mConstants.LOGIN_INFO, (err, result) => {
-    //       console.log("AsyncStorage_index_log", result);
-    //     });
-    //   });
-    // var data = this.state.phoneNumber;
-    // const navigation = this.props.navigation;
-    // if (props.items.id) {
-    //   this.setState({
-    //     visible: false
-    //   });
-    //   press = true;
-    //   navigation.navigate("LoginSrc", { data: data });
-    // } else {
-    //   if (props.error.status) {
-    //     this.setState({
-    //       visible: false
-    //     });
-    //     press = true;
-    //     this.accConfigure(data);
-    //     RNAccountKit.loginWithPhone(data).then(token => {
-    //       if (!token) {
-    //         check = true;
-    //         press = true;
-    //         console.log("Login cancelled", props);
-    //       } else {
-    //         check = true;
-    //         press = true;
-    //         navigation.navigate("Register", { data: data });
-    //       }
-    //     });
-    //   } else {
-    //     this.setState({
-    //       visible: false
-    //     });
-    //     press = true;
-    //     setTimeout(() => {
-    //       alert("Đã xảy ra sự cố với kết nối mạng");
-    //     }, 100);
-    //   }
-    // }
   }
   showAlert(title, content, button) {
     Alert.alert(title, content, button, { cancelable: false });
@@ -276,6 +232,7 @@ class loginAccForm extends Component {
                     var params = {};
                     press = false;
                     this.checkaNumber(data)
+                    // this.props.login(params);
                     // RNAccountKit.loginWithPhone(data).then(token => {
                     //   if (!token) {
                     //     console.log("Cancel", token);

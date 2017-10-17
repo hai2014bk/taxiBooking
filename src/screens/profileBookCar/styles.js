@@ -2,6 +2,7 @@ const React = require("react-native");
 const { Platform, Dimensions } = React;
 
 const deviceWidth = Dimensions.get("window").width;
+const deviceHeight = Dimensions.get("window").height;
 const primary = require("../../theme/variables/commonColor").brandPrimary;
 
 export default {
@@ -116,7 +117,8 @@ export default {
   containerImg: {
     flex: 1,
     flexDirection: "row",
-    width: "100%"
+    width: "100%",
+    borderBottomWidth:0.5
   },
   viewtextPhone: {
     flex: 10,
@@ -137,13 +139,15 @@ export default {
     flexDirection: "row",
     width: "100%",
     borderBottomWidth: 0.5,
-    borderBottomColor: "gray"
+    borderBottomColor: "gray",
   },
   viewContent: {
     flex: 1,
     flexDirection: "column",
-    height: 160,
-    width: "100%"
+    height: 200,
+    width: deviceWidth,
+    // marginTop:50,
+    // marginBottom:50,
   },
   name: {
     flex: 8,

@@ -71,7 +71,7 @@ class profileBookCarForm extends Component {
         <Header style={{ backgroundColor: "white" }}>
           <Left style={{ flex: 2 }}>
             <Button transparent onPress={() => navigation.navigate("bookCar")}>
-              <Image source={back} />
+              <Image source={back} style={{width:30,height:30}} resizeMode="contain" />
             </Button>
           </Left>
           <Body style={{ flex: 6 }}>
@@ -85,7 +85,7 @@ class profileBookCarForm extends Component {
           <View style={styles.viewContent}>
             <View style={styles.viewName}>
               <View style={styles.containerIcon}>
-                <Image source={profile} />
+                <Image source={profile} style={{width:30,height:30}} resizeMode="contain" />
               </View>
               <View style={styles.name}>
                 <View
@@ -109,7 +109,7 @@ class profileBookCarForm extends Component {
             </View>
             <View style={styles.containerImg}>
               <View style={styles.containerIcon}>
-                <Image source={phone} />
+                <Image source={phone} style={{width:30,height:30}} resizeMode="contain" />
               </View>
               <View style={styles.viewtextPhone}>
                 <Text style={styles.text}>
@@ -124,7 +124,7 @@ class profileBookCarForm extends Component {
               ]}
             >
               <View style={styles.containerIcon}>
-                <Image source={mail} />
+                <Image source={mail} style={{width:30,height:30}} resizeMode="contain" />
               </View>
               <View style={styles.viewtextPhone}>
                 <Text style={styles.text}>

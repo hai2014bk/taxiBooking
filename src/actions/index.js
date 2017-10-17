@@ -43,3 +43,9 @@ export {
   historyError,
   history
 } from "../screens/history/actions";
+
+export {
+  openSidebar,
+  closeSidebar,
+  reloadSidebar
+} from "../screens/Sidebar/actions";

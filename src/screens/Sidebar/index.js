@@ -12,15 +12,68 @@ import {
   Thumbnail,
   View
 } from "native-base";
+import { Field, reduxForm } from "redux-form";
+import { connect } from "react-redux";
 import { Grid, Col, Row } from "react-native-easy-grid";
 const profile = require("../../Icon/PNG/profile.png");
 import * as mConstants from "../../utils/Constants";
 import styles from "./style";
+import { openSidebar, closeSidebar, reloadSidebar } from "./actions";
+var avartar = "";
 const resetAction = NavigationActions.reset({
   index: 0,
-  actions: [NavigationActions.navigate({ routeName: "Login" })]
+  actions: [NavigationActions.navigate({ routeName: "loginAcc" })]
 });
 class SideBar extends Component {
+  constructor(props) {
+    super(props);
+    this.state = {
+      firstName: "",
+      lastName: "",
+      phoneNumber: "",
+      email: "",
+      userId: "",
+      avartar: ""
+    };
+  }
+  async componentDidMount() {
+    var loginInfo = await AsyncStorage.getItem(mConstants.LOGIN_INFO);
+    var ObjloginInfo = JSON.parse(loginInfo);
+    if (ObjloginInfo.img_url) {
+      avartar = ObjloginInfo.img_url;
+    } else {
+      avartar = "http://www.novelupdates.com/img/noimagefound.jpg";
+    }
+    this.setState({
+      userId: ObjloginInfo.id,
+      firstName: ObjloginInfo.first_name,
+      lastName: ObjloginInfo.last_name,
+      email: ObjloginInfo.email,
+      avartar: avartar
+    });
+    // AsyncStorage.removeItem(mConstants.LOGIN_INFO);
+  }
+  315703;
+  async componentWillReceiveProps(props) {
+    // console.log("props", props.navigation);
+    // console.log("props", props.kind);
+    if (props.kind === "close") {
+      var loginInfo = await AsyncStorage.getItem(mConstants.LOGIN_INFO);
+      var ObjloginInfo = JSON.parse(loginInfo);
+      if (ObjloginInfo.img_url) {
+        avartar = ObjloginInfo.img_url;
+      } else {
+        avartar = "http://www.novelupdates.com/img/noimagefound.jpg";
+      }
+      this.setState({
+        userId: ObjloginInfo.id,
+        firstName: ObjloginInfo.first_name,
+        lastName: ObjloginInfo.last_name,
+        email: ObjloginInfo.email,
+        avartar: avartar
+      });
+    }
+  }
   render() {
     const navigation = this.props.navigation;
     return (
@@ -38,16 +91,22 @@ class SideBar extends Component {
                 }}
               >
                 <Thumbnail
-                  source={require("../../../assets/Contacts/sanket.png")}
+                  source={{ uri: this.state.avartar }}
                   style={styles.profilePic}
                 />
               </TouchableOpacity>
             </Col>
             <Text
               note
-              style={{ color: "#fff", alignSelf: "center", fontSize: 17 }}
+              style={{
+                color: "#fff",
+                alignSelf: "center",
+                fontSize: 17,
+                marginTop: 10,
+                marginBottom: 10
+              }}
             >
-              Kumar Sanket
+              {this.state.firstName}
             </Text>
             <ListItem
               button
@@ -85,13 +144,19 @@ class SideBar extends Component {
                     style={{
                       alignSelf: "flex-start",
                       backgroundColor: "transparent",
-                      flexDirection:"row",
-                      alignItems:"center",
-                      justifyContent:"center"
+                      flexDirection: "row",
+                      alignItems: "center",
+                      justifyContent: "center"
                     }}
                   >
-                  <Icon name="ios-log-out-outline" />
-                    <Text style={{ fontWeight: "bold", color: "#fff", marginLeft:10 }}>
+                    <Icon name="ios-log-out-outline" />
+                    <Text
+                      style={{
+                        fontWeight: "bold",
+                        color: "#fff",
+                        marginLeft: 10
+                      }}
+                    >
                       Đăng xuất
                     </Text>
                   </TouchableOpacity>
@@ -104,11 +169,30 @@ class SideBar extends Component {
     );
   }
 
-  async _logout(){
-      let keys = [mConstants.LOGIN_INFO,mConstants.REMEMBER];
-      await AsyncStorage.multiRemove(keys);
-      this.props.navigation.navigate("loginAcc");
+  async _logout() {
+    let keys = [mConstants.LOGIN_INFO, mConstants.REMEMBER];
+    await AsyncStorage.multiRemove(keys);
+    this.props.navigation.navigate("loginAcc");
   }
 }
 
-export default SideBar;
+function bindAction(dispatch) {
+  return {
+    closeSidebar: () => dispatch(closeSidebar()),
+    reloadSidebar: () => dispatch(reloadSidebar()),
+    openSidebar: () => dispatch(openSidebar())
+    // fetchData: url => dispatch(itemsFetchData(url))
+  };
+}
+const mapStateToProps = state => ({
+  // navigation: state.cardNavigation,
+  // Sidebar : state.Sidebar
+  kind: state.sidebarReducer.kind
+});
+
+const sidebar = reduxForm({
+  form: "sidebar"
+})(SideBar);
+export default connect(mapStateToProps, bindAction)(SideBar);
+
+// export default SideBar;
