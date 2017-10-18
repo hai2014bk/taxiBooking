@@ -63,6 +63,7 @@ var timeY = new Date().getFullYear();
 var timeMo = new Date().getMonth();
 var timeD = new Date().getDate();
 var press = true;
+var sidebar = true;
 class bookCarForm extends Component {
   constructor(props) {
     super(props);
@@ -100,7 +101,8 @@ class bookCarForm extends Component {
       duration: 0,
       visible: false,
       router: "hn",
-      hanoi: ""
+      hanoi: "",
+      sidebar:false,
     };
   }
   componentWillReceiveProps(props) {
@@ -159,14 +161,16 @@ class bookCarForm extends Component {
     // AsyncStorage.removeItem(mConstants.LOGIN_INFO);
   }
   componentWillMount() {
+    console.log(222);
     const navigation = this.props.navigation;
     BackHandler.addEventListener("hardwareBackPress", function() {
       if (mainScreen) {
+        console.log(444);
         BackHandler.exitApp();
-        return true;
+      } else {
+        console.log(333);
+        navigation.navigate("bookCar");
       }
-      navigation.navigate("bookCar");
-      return false;
     });
   }
   render() {
@@ -176,14 +180,22 @@ class bookCarForm extends Component {
       <Container>
         <Header style={{ backgroundColor: "white" }}>
           <Left>
-            <Button
+            <Button disabled={this.state.sidebar}
               transparent
               onPress={() => {
-                this.props.navigation.navigate("DrawerOpen");
                 dismissKeyboard();
+                this.props.navigation.navigate("DrawerOpen");
+                this.setState({sidebar:true})
+                setTimeout(()=> {
+                  this.setState({sidebar:false})
+                }, 1000);
               }}
             >
-              <Image source={setting} style={{width:30,height:30}} resizeMode="contain"/>
+              <Image
+                source={setting}
+                style={{ width: 30, height: 30 }}
+                resizeMode="contain"
+              />
             </Button>
           </Left>
           <Body>
@@ -863,6 +875,7 @@ class bookCarForm extends Component {
                 color: "#1faadb"
               }
             }}
+            enableHighAccuracyLocation={true}
             currentLocation={true}
             currentLocationLabel="Vị trí hiện tại"
             nearbyPlacesAPI={"GoogleReverseGeocoding"}
@@ -926,7 +939,7 @@ class bookCarForm extends Component {
               }
             }}
             query={{
-              key: "AIzaSyB-O4m9EPQ3aL-ZCjdWnghoepXlQOlGDYg",
+              key: "AIzaSyBYoB8zl4bBliFHq4ok7LWM8Eqon0v_IqE",
               language: "vi" // language of the results
             }}
           />
@@ -982,6 +995,7 @@ class bookCarForm extends Component {
                 color: "#1faadb"
               }
             }}
+            enableHighAccuracyLocation={true}
             currentLocation={true}
             currentLocationLabel="Vị trí hiện tại"
             nearbyPlacesAPI={"GoogleReverseGeocoding"}
@@ -1039,7 +1053,7 @@ class bookCarForm extends Component {
               }
             }}
             query={{
-              key: "AIzaSyB-O4m9EPQ3aL-ZCjdWnghoepXlQOlGDYg",
+              key: "AIzaSyBYoB8zl4bBliFHq4ok7LWM8Eqon0v_IqE",
               language: "vi"
             }}
           />

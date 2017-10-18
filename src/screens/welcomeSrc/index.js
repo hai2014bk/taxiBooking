@@ -6,7 +6,8 @@ import {
   StatusBar,
   View,
   Image,
-  AsyncStorage
+  AsyncStorage,
+  BackHandler
 } from "react-native";
 import { Container, Content, Text, Button, Icon } from "native-base";
 import Carousel from "react-native-carousel-view";
@@ -16,7 +17,7 @@ const welcome3 = require("../../Icon/preview/Welcome3.png");
 const welcome1 = require("../../Icon/preview/Welcome1.png");
 import styles from "./styles";
 import * as mConstants from "../../utils/Constants";
-
+var mainScreen = true;
 const deviceHeight = Dimensions.get("window").height;
 const deviceWidth = Dimensions.get("window").width;
 class welcomeSrc extends Component {
@@ -31,6 +32,16 @@ class welcomeSrc extends Component {
   //     }
   //   );
   // }
+  componentWillUnmount() {
+    const navigation = this.props.navigation;
+    BackHandler.addEventListener("hardwareBackPress", function() {
+      if (mainScreen) {
+        BackHandler.exitApp();
+      } else {
+      navigation.navigate("bookCar");
+    }
+    });
+  }
 
   render() {
     console.log(deviceHeight);

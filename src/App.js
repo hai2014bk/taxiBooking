@@ -29,13 +29,13 @@ import Settings from "./screens/Settings";
 const App = ({ initialRouteName }) => {
   const Drawer = DrawerNavigator(
     {
-      history: { screen: history },
-      welcomeSrc: { screen: welcomeSrc },
-      profileBookCar: { screen: profileBookCar },
-      bookCar: { screen: bookCar },
-      Home: { screen: Home },
-      LoginSrc: { screen: LoginSrc },
       loginAcc: { screen: loginAcc },
+      bookCar: { screen: bookCar },
+      profileBookCar: { screen: profileBookCar },
+      history: { screen: history },
+      LoginSrc: { screen: LoginSrc },
+      welcomeSrc: { screen: welcomeSrc },
+      Home: { screen: Home },
       Login: { screen: Login },
       Register: { screen: Register },
       Channels: { screen: Channels },
@@ -48,7 +48,7 @@ const App = ({ initialRouteName }) => {
     },
     {
       initialRouteName: initialRouteName,
-      // initialRouteName: "welcomeSrc",
+      // initialRouteName: "bookCar",
       contentComponent: props => <Sidebar {...props} />
     }
   );
