@@ -1,14 +1,10 @@
 import React, { Component } from "react";
 import { Provider } from "react-redux";
-import {
-  StyleProvider,
-  Container,
-  Header,
-  Content,
-} from "native-base";
-import { AsyncStorage, Image } from "react-native";
+import { StyleProvider } from "native-base";
+import { AsyncStorage } from "react-native";
 import * as mConstants from "../utils/Constants";
 import { Root } from "native-base";
+// import Expo from "expo";
 
 import App from "../App";
 import configureStore from "./configureStore";
@@ -20,10 +16,7 @@ import variables from "../theme/variables/commonColor";
 //   loginInfo=result;
 //   console.log(loginInfo)
 // });
-// var initialRoute = "";
-// var isLoaded = false;
-import Spinner from "react-native-loading-spinner-overlay";
-// const logo = require("../Icon/PNG/Back.png");
+var initialRoute = "";
 export default class Setup extends Component {
   state: {
     store: Object,
@@ -37,51 +30,37 @@ export default class Setup extends Component {
       firstUse: "",
       isLoading: false,
       isLoaded: false,
-      visible:true,
       store: configureStore(() => this.setState({ isLoading: false }))
     };
   }
-
-  async componentWillMount() {
+  async componentDidMount() {
+    console.log(123);
     var firstUse = await AsyncStorage.getItem(mConstants.FIRSTUSE);
-    if (!firstUse) {
-      // console.log(1);
-      setTimeout(()=> {
-        this.setState({
-          firstUse: firstUse,
-          isLoaded: true,
-          initialRoute: "welcomeSrc",
-          visible:false,
-        });
-      }, 1000);
-    } else {
-      // console.log(2);
+    if (firstUse) {
+      // this.setState({ firstUse: firstUse, isLoaded: true });
       var loginInfo = await AsyncStorage.getItem(mConstants.LOGIN_INFO);
       if (loginInfo) {
-        // console.log(2.1);
-        setTimeout(()=> {
-          this.setState({
-            isLoaded: true,
-            initialRoute: "bookCar",
-            visible:false
-          });
-        }, 1000);
+        // await this.setState({
+        //   loginInfo: loginInfo,
+        this.setState({isLoaded:true})
+        initialRoute = "bookCar";
+        // });
       } else {
-        // console.log(2.2);
-        setTimeout(()=> {
-          this.setState({
-            initialRoute: "loginAcc",
-            isLoaded: true,
-            visible:false
-          });
-        }, 1000);
+        // await this.setState({
+        initialRoute = "loginAcc";
+        this.setState({isLoaded:true})
+        // });
         // this.setState({ isLoaded: true });
       }
+    } else {
       // await this.setState({
+      initialRoute = "welcomeSrc";
+        this.setState({isLoaded:true})
       // });
       // this.setState({ isLoaded: true });
     }
   }
+
   render() {
     // var initialRoute = "";
     // if (!this.state.firstUse) {
@@ -90,20 +69,17 @@ export default class Setup extends Component {
     //   initialRoute = this.state.loginInfo ? "bookCar" : "loginAcc";
     // }
     // console.log("initialRoute", initialRoute);
-    if (!this.state.initialRoute) {
-      console.log(123);
+    if (this.state.isLoaded) {
       return null;
-    } else {
-      console.log(321)
-      return (
-        <StyleProvider style={getTheme(variables)}>
-          <Provider store={this.state.store}>
-            <Root>
-              <App initialRouteName={this.state.initialRoute} />
-            </Root>
-          </Provider>
-        </StyleProvider>
-      );
     }
+    return (
+      <StyleProvider style={getTheme(variables)}>
+        <Provider store={this.state.store}>
+          <Root>
+            <App initialRouteName={initialRoute} />
+          </Root>
+        </Provider>
+      </StyleProvider>
+    );
   }
 }
