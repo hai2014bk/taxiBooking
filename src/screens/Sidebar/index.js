@@ -53,7 +53,6 @@ class SideBar extends Component {
     });
     // AsyncStorage.removeItem(mConstants.LOGIN_INFO);
   }
-  315703;
   async componentWillReceiveProps(props) {
     // console.log("props", props.navigation);
     // console.log("props", props.kind);

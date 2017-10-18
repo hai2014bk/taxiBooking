@@ -1,7 +1,6 @@
 // @flow
 import React, { Component } from "react";
-import { Image, TouchableOpacity, ListView } from "react-native";
-
+import { Image, TouchableOpacity, ListView, BackHandler } from "react-native";
 import {
   Container,
   Content,
@@ -29,7 +28,7 @@ const back = require("../../Icon/PNG/Back.png");
 const dot = require("./dot.png");
 const gradient = require("./gradient.png");
 var dataArray = [];
-
+var mainScreen = false;
 class historyForm extends Component {
   constructor(props) {
     super(props);
@@ -56,6 +55,18 @@ class historyForm extends Component {
     } else {
       console.log("nodata");
     }
+  }
+  componentWillUnmount() {
+    const navigation = this.props.navigation;
+    BackHandler.addEventListener("hardwareBackPress", function() {
+      if (mainScreen) {
+        BackHandler.exitApp();
+        return true;
+      } else {
+      navigation.navigate("bookCar");
+      return false;
+    }
+    });
   }
 
   render() {
