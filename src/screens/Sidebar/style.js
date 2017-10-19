@@ -32,7 +32,7 @@ export default {
     backgroundColor: "#31404B"
   },
   drawerContent: {
-    paddingTop: Platform.OS === "android" ? 20 : 30
+    paddingTop: Platform.OS === "android" ? 100 : 110
   },
   profilePic: {
     height: 100,

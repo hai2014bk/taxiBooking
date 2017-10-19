@@ -28,14 +28,13 @@ import {
   Item,
   Label,
   Input,
-  Switch
+  Switch, List,
 } from "native-base";
 import Spinner from "react-native-loading-spinner-overlay";
 import { Grid, Col } from "react-native-easy-grid";
 import Carousel from "react-native-carousel-view";
 import DateTimePicker from "react-native-modal-datetime-picker";
-import { itemsFetchData } from "../../actions";
-import { carbooking } from "../../actions";
+import { carbooking, getcartype } from "../../actions";
 import * as mConstants from "../../utils/Constants";
 import { GooglePlacesAutocomplete } from "react-native-google-places-autocomplete";
 // import LocationPicker from "../LocationPicker";
@@ -104,9 +103,17 @@ class bookCarForm extends Component {
       hanoi: "",
       sidebar: false,
       priceshow: 0,
+      dataArray:[],
     };
   }
   componentWillReceiveProps(props) {
+    if (props.cartypes[0]){
+        this.setState({ dataArray: props.cartypes });
+        console.log("items", props.items);
+      } else {
+        console.log("nodata");
+      }
+    console.log("props", props);
     if (props.items.id) {
       this.setState({ visible: false });
       setTimeout(() => {
@@ -159,6 +166,7 @@ class bookCarForm extends Component {
     this.setState({
       userId: userId
     });
+    this.props.getcartype();
     // AsyncStorage.removeItem(mConstants.LOGIN_INFO);
   }
   componentWillMount() {
@@ -363,6 +371,25 @@ class bookCarForm extends Component {
       </Container>
     );
   }
+
+  // _renderrow(item) {
+  //   return (
+  //     <View style={{ height:100, width:deviceWidth,
+  //       flexDirection:"row", justifyContent:"space-between"}}>
+  //     <Image source={{ uri: item.icon }} style={{width:47, height:47}} resizeMode="contain" />
+  //     <Image source={{ uri: item.icon_selected}} style={{width:47, height:47}} resizeMode="contain"/>
+  //     <Text note>{item.name}</Text>
+  //     </View>
+  //   )
+  
+  // <View style={{flexDirection:"row"}}>
+  // <List
+  //   style={{flexDirection:"column"}}
+  //   dataArray={this.state.dataArray}
+  //   renderRow={this._renderrow.bind(this)}
+  // />
+  // </View>
+  // }
 
   showAlert(title, content, button) {
     Alert.alert(title, content, button, { cancelable: false });
@@ -1568,13 +1595,16 @@ const bookCar = reduxForm({
 
 function bindAction(dispatch) {
   return {
-    carbooking: params => dispatch(carbooking(params))
+    carbooking: params => dispatch(carbooking(params)),
+    getcartype: () => dispatch(getcartype())
     // fetchData: url => dispatch(itemsFetchData(url))
   };
 }
 
 const mapStateToProps = state => ({
   items: state.bookCarReducer.items,
-  error: state.bookCarReducer.error
+  error: state.bookCarReducer.error,
+  cartypes: state.bookCarReducer.cartypes,
+  errorC: state.bookCarReducer.errorC,
 });
 export default connect(mapStateToProps, bindAction)(bookCarForm);
