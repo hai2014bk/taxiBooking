@@ -1,7 +1,12 @@
 // @flow
 import React, { Component } from "react";
-import { Image, TouchableOpacity, ListView, AsyncStorage } from "react-native";
-
+import {
+  Image,
+  TouchableOpacity,
+  ListView,
+  AsyncStorage,
+  BackHandler
+} from "react-native";
 import {
   Container,
   Content,
@@ -33,7 +38,7 @@ const phone = require("../../Icon/PNG/Phone2.png");
 // type Props = {
 //   navigation: () => void
 // };
-
+var mainScreen = false;
 class profileBookCarForm extends Component {
   constructor(props) {
     super(props);
@@ -47,18 +52,33 @@ class profileBookCarForm extends Component {
     };
   }
 
+  componentWillUnmount() {
+    const navigation = this.props.navigation;
+    BackHandler.addEventListener("hardwareBackPress", function() {
+      if (mainScreen) {
+        BackHandler.exitApp();
+        return true;
+      } else {
+        navigation.navigate("bookCar");
+        return false;
+      }
+    });
+  }
+
   async componentDidMount() {
     var avartar = "";
     var loginInfo = await AsyncStorage.getItem(mConstants.LOGIN_INFO);
     var ObjloginInfo = JSON.parse(loginInfo);
     if (ObjloginInfo.img_url) {
       avartar = ObjloginInfo.img_url;
-    } else { avartar = "http://www.novelupdates.com/img/noimagefound.jpg" }
+    } else {
+      avartar = "http://www.novelupdates.com/img/noimagefound.jpg";
+    }
     this.setState({
       userId: ObjloginInfo.id,
       firstName: ObjloginInfo.first_name,
-      lastName : ObjloginInfo.last_name,
-      email : ObjloginInfo.email,
+      lastName: ObjloginInfo.last_name,
+      email: ObjloginInfo.email,
       avartar: avartar
     });
     // AsyncStorage.removeItem(mConstants.LOGIN_INFO);
@@ -71,7 +91,11 @@ class profileBookCarForm extends Component {
         <Header style={{ backgroundColor: "white" }}>
           <Left style={{ flex: 2 }}>
             <Button transparent onPress={() => navigation.navigate("bookCar")}>
-              <Image source={back} style={{width:30,height:30}} resizeMode="contain" />
+              <Image
+                source={back}
+                style={{ width: 30, height: 30 }}
+                resizeMode="contain"
+              />
             </Button>
           </Left>
           <Body style={{ flex: 6 }}>
@@ -85,7 +109,11 @@ class profileBookCarForm extends Component {
           <View style={styles.viewContent}>
             <View style={styles.viewName}>
               <View style={styles.containerIcon}>
-                <Image source={profile} style={{width:30,height:30}} resizeMode="contain" />
+                <Image
+                  source={profile}
+                  style={{ width: 30, height: 30 }}
+                  resizeMode="contain"
+                />
               </View>
               <View style={styles.name}>
                 <View
@@ -109,7 +137,11 @@ class profileBookCarForm extends Component {
             </View>
             <View style={styles.containerImg}>
               <View style={styles.containerIcon}>
-                <Image source={phone} style={{width:30,height:30}} resizeMode="contain" />
+                <Image
+                  source={phone}
+                  style={{ width: 30, height: 30 }}
+                  resizeMode="contain"
+                />
               </View>
               <View style={styles.viewtextPhone}>
                 <Text style={styles.text}>
@@ -124,7 +156,11 @@ class profileBookCarForm extends Component {
               ]}
             >
               <View style={styles.containerIcon}>
-                <Image source={mail} style={{width:30,height:30}} resizeMode="contain" />
+                <Image
+                  source={mail}
+                  style={{ width: 30, height: 30 }}
+                  resizeMode="contain"
+                />
               </View>
               <View style={styles.viewtextPhone}>
                 <Text style={styles.text}>

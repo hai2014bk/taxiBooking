@@ -39,7 +39,8 @@ class historyForm extends Component {
       phoneNumber: "012364535345",
       email: "annguyenhoang@gmail.com",
       userId: "1234567",
-      avartar: "http://www.novelupdates.com/img/noimagefound.jpg"
+      avartar: "http://www.novelupdates.com/img/noimagefound.jpg",
+      priceshow:"",
     };
   }
 
@@ -121,8 +122,19 @@ class historyForm extends Component {
       </View>
     );
   }
+  priceHandle(price) {
+    var count = 0;
+    price = price.toString().replace(/(\d)(?=(\d\d\d)+(?!\d))/g, "$1.");
+    this.setState({
+      priceshow: price,
+    })
+    console.log("this.state.priceshow",this.state.priceshow)
+    // return price
+  }
   _renderrow(item) {
     var priceshow = item.price.toString().split(".")[0];
+    var price = priceshow.toString().replace(/(\d)(?=(\d\d\d)+(?!\d))/g, "$1.");
+    // this.priceHandle(priceshow);
     // console.log("priceshow",priceshow)
     var date = new Date(item.start_time);
     var minuteValue = "";
@@ -139,10 +151,8 @@ class historyForm extends Component {
       date.getMinutes() == 8 ||
       date.getMinutes() == 9
     ) {
-      console.log("123456789");
       minuteValue = "0" + date.getMinutes().toString();
     } else {
-      console.log("#123456789");
       minuteValue = date.getMinutes();
     }
 
@@ -158,17 +168,14 @@ class historyForm extends Component {
       date.getHours() == 8 ||
       date.getHours() == 9
     ) {
-      console.log("123456789");
       hourValue = "0" + date.getHours().toString();
     } else {
-      console.log("#123456789");
       hourValue = date.getHours();
     }
     var time = hourValue + ":" + minuteValue;
     var dateshow =
       date.getDate() + "-" + date.getMonth() + "-" + date.getFullYear();
-    var price = item.price.toString();
-    console.log(price);
+    console.log(item.price.split(".")[0]);
     return (
       <ListItem style={{borderColor:"white", marginLeft:0}}>
         <Body>
@@ -194,7 +201,7 @@ class historyForm extends Component {
             </View>
             <View style={styles.timeView}>
               <Text style={{ color: "#31404B", fontSize: 16 }}>
-                {priceshow} VNĐ
+                {price} VNĐ
               </Text>
             </View>
           </View>
