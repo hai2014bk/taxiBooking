@@ -1,11 +1,20 @@
+
+
+
 import React, { Component } from "react";
 import { Provider } from "react-redux";
-import { StyleProvider } from "native-base";
-import { AsyncStorage } from "react-native";
+import {
+  StyleProvider,
+  Container,
+  Header,
+  Content,View,
+  Text
+} from "native-base";
+import { AsyncStorage, Image } from "react-native";
 import * as mConstants from "../utils/Constants";
 import { Root } from "native-base";
-// import Expo from "expo";
 
+const logo = require("../Icon/Logo.jpg");
 import App from "../App";
 import configureStore from "./configureStore";
 import getTheme from "../theme/components";
@@ -16,7 +25,10 @@ import variables from "../theme/variables/commonColor";
 //   loginInfo=result;
 //   console.log(loginInfo)
 // });
-var initialRoute = "";
+// var initialRoute = "";
+// var isLoaded = false;
+// import Spinner from "react-native-loading-spinner-overlay";
+// const logo = require("../Icon/PNG/Back.png");
 export default class Setup extends Component {
   state: {
     store: Object,
@@ -30,37 +42,51 @@ export default class Setup extends Component {
       firstUse: "",
       isLoading: false,
       isLoaded: false,
+      visible:true,
       store: configureStore(() => this.setState({ isLoading: false }))
     };
   }
-  async componentDidMount() {
-    console.log(123);
+
+  async componentWillMount() {
     var firstUse = await AsyncStorage.getItem(mConstants.FIRSTUSE);
-    if (firstUse) {
-      // this.setState({ firstUse: firstUse, isLoaded: true });
+    if (!firstUse) {
+      // console.log(1);
+      setTimeout(()=> {
+        this.setState({
+          firstUse: firstUse,
+          isLoaded: true,
+          initialRoute: "welcomeSrc",
+          visible:false,
+        });
+      }, 1000);
+    } else {
+      // console.log(2);
       var loginInfo = await AsyncStorage.getItem(mConstants.LOGIN_INFO);
       if (loginInfo) {
-        // await this.setState({
-        //   loginInfo: loginInfo,
-        this.setState({isLoaded:true})
-        initialRoute = "bookCar";
-        // });
+        // console.log(2.1);
+        setTimeout(()=> {
+          this.setState({
+            isLoaded: true,
+            initialRoute: "bookCar",
+            visible:false
+          });
+        }, 1000);
       } else {
-        // await this.setState({
-        initialRoute = "loginAcc";
-        this.setState({isLoaded:true})
-        // });
+        // console.log(2.2);
+        setTimeout(()=> {
+          this.setState({
+            initialRoute: "loginAcc",
+            isLoaded: true,
+            visible:false
+          });
+        }, 1000);
         // this.setState({ isLoaded: true });
       }
-    } else {
       // await this.setState({
-      initialRoute = "welcomeSrc";
-        this.setState({isLoaded:true})
       // });
       // this.setState({ isLoaded: true });
     }
   }
-
   render() {
     // var initialRoute = "";
     // if (!this.state.firstUse) {
@@ -69,17 +95,39 @@ export default class Setup extends Component {
     //   initialRoute = this.state.loginInfo ? "bookCar" : "loginAcc";
     // }
     // console.log("initialRoute", initialRoute);
-    if (this.state.isLoaded) {
-      return null;
+    if (!this.state.initialRoute) {
+      return (
+        <Container>
+          <Content style={{ backgroundColor: "#ffffff" }}>
+            <View
+              style={{
+                justifyContent: "center",
+                alignItems: "center",
+                flex: 1,
+                marginTop: 100
+              }}
+            >
+              <Image
+                source={logo}
+                style={{ width: 350, height: 350 }}
+                resizeMode="contain"
+              />
+            </View>
+          </Content>
+        </Container>
+      );
+    } else {
+      console.log(321)
+      return (
+        <StyleProvider style={getTheme(variables)}>
+          <Provider store={this.state.store}>
+            <Root>
+              <App initialRouteName={this.state.initialRoute} />
+            </Root>
+          </Provider>
+        </StyleProvider>
+      );
     }
-    return (
-      <StyleProvider style={getTheme(variables)}>
-        <Provider store={this.state.store}>
-          <Root>
-            <App initialRouteName={initialRoute} />
-          </Root>
-        </Provider>
-      </StyleProvider>
-    );
   }
 }
+
