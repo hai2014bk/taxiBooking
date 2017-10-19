@@ -149,9 +149,9 @@ export default {
   },
   chooseBtn: {
     flex: 1,
+    width:(deviceWidth/2) -10,
     alignItems: "center",
     justifyContent: "center",
-    height: 25,
     marginBottom: 10
   },
   viewBtn: {

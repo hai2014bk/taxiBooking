@@ -102,7 +102,8 @@ class bookCarForm extends Component {
       visible: false,
       router: "hn",
       hanoi: "",
-      sidebar:false,
+      sidebar: false,
+      priceshow: 0,
     };
   }
   componentWillReceiveProps(props) {
@@ -209,12 +210,18 @@ class bookCarForm extends Component {
           showsVerticalScrollIndicator={false}
           style={{ backgroundColor: "#fff" }}
         >
-          <View style={{ height: 70, borderBottomWidth: 0.5, marginTop: 10 }}>
+          <View style={{ height: 100, borderBottomWidth: 0.5, marginTop: 10, marginBottom:10 }}>
             <Text style={[styles.text, { color: "#31404B", fontSize: 15 }]}>
               Chọn tuyến
             </Text>
             <View
-              style={{ marginLeft: 10, marginRight: 10, flexDirection: "row" }}
+              style={{
+                marginLeft: 10,
+                marginRight: 10,
+                flexDirection: "row",
+                marginTop: 5,
+                width:deviceWidth-20,
+                }}
             >
               <Button
                 style={[
@@ -223,7 +230,7 @@ class bookCarForm extends Component {
                 ]}
                 onPress={() => this._haNoi()}
               >
-                <Text style={{ color: this.state.textColor1 }}>
+                <Text numberOfLines={2} style={{ color: this.state.textColor1 }}>
                   Nội Bài -> Hà Nội
                 </Text>
               </Button>
@@ -594,6 +601,7 @@ class bookCarForm extends Component {
               disabled={false}
               onTintColor="#31404B"
               thumbTintColor="#ffffff"
+              tintColor = "#e0e0e0"
             />
           </View>
         </View>
@@ -624,6 +632,15 @@ class bookCarForm extends Component {
     );
   }
 
+  priceHandle(price) {
+    var count = 0;
+    price = price.toString().replace(/(\d)(?=(\d\d\d)+(?!\d))/g, "$1.");
+    this.setState({
+      priceshow: price,
+    })
+    // return price
+  }
+
   _price() {
     return (
       <View style={[styles.noteContainer, { marginBottom: 10 }]}>
@@ -634,7 +651,7 @@ class bookCarForm extends Component {
         </View>
         <View style={{ height: "70%", marginLeft: 7, marginTop: 5 }}>
           <Text style={styles.textPrice}>
-            {this.state.price} VNĐ
+            {this.state.priceshow} VNĐ
           </Text>
         </View>
       </View>
@@ -808,18 +825,18 @@ class bookCarForm extends Component {
     return (
       <View style={styles.containerCartype}>
         <TouchableOpacity onPress={() => this._color4()} style={styles.cartype}>
-          <Image source={this.state.car4} />
+          <Image source={this.state.car4} style={{height:"60%", width:"100%"}} resizeMode="contain"/>
           <Text style={{ color: this.state.color4 }}>5 Chỗ</Text>
         </TouchableOpacity>
         <TouchableOpacity onPress={() => this._color7()} style={styles.cartype}>
-          <Image source={this.state.car7} />
+          <Image source={this.state.car7} style={{height:"60%", width:"100%"}} resizeMode="contain"/>
           <Text style={{ color: this.state.color7 }}>7 Chỗ</Text>
         </TouchableOpacity>
         <TouchableOpacity
           onPress={() => this._color16()}
           style={styles.cartype}
         >
-          <Image source={this.state.car16} />
+          <Image source={this.state.car16} style={{height:"60%", width:"100%"}} resizeMode="contain"/>
           <Text style={{ color: this.state.color16 }}>16 Chỗ</Text>
         </TouchableOpacity>
       </View>
@@ -1076,27 +1093,33 @@ class bookCarForm extends Component {
       if (this.state.car_type_id == 1) {
         if (!this.state.roundTrip) {
           this.setState({ price: 200000 });
+          this.priceHandle(this.state.price);
           console.log("1");
         } else {
           this.setState({ price: 500000 });
+          this.priceHandle(this.state.price);
           console.log("1_1");
         }
       }
       if (this.state.car_type_id == 2) {
         if (!this.state.roundTrip) {
           this.setState({ price: 230000 });
+          this.priceHandle(this.state.price);
           console.log("2");
         } else {
           this.setState({ price: 560000 });
+          this.priceHandle(this.state.price);
           console.log("2_1");
         }
       }
       if (this.state.car_type_id == 4) {
         if (!this.state.roundTrip) {
           this.setState({ price: 400000 });
+          this.priceHandle(this.state.price);
           console.log("3");
         } else {
           this.setState({ price: 900000 });
+          this.priceHandle(this.state.price);
           console.log("3_1");
         }
       }
@@ -1104,27 +1127,33 @@ class bookCarForm extends Component {
       if (this.state.car_type_id == 1) {
         if (!this.state.roundTrip) {
           this.setState({ price: 170000 });
+          this.priceHandle(this.state.price);
           console.log("4");
         } else {
           this.setState({ price: 440000 });
+          this.priceHandle(this.state.price);
           console.log("4_1");
         }
       }
       if (this.state.car_type_id == 2) {
         if (!this.state.roundTrip) {
           this.setState({ price: 200000 });
+          this.priceHandle(this.state.price);
           console.log("5");
         } else {
           this.setState({ price: 500000 });
+          this.priceHandle(this.state.price);
           console.log("5_1");
         }
       }
       if (this.state.car_type_id == 4) {
         if (!this.state.roundTrip) {
           this.setState({ price: 350000 });
+          this.priceHandle(this.state.price);
           console.log("6");
         } else {
           this.setState({ price: 800000 });
+          this.priceHandle(this.state.price);
           console.log("6_1");
         }
       }
@@ -1145,27 +1174,33 @@ class bookCarForm extends Component {
       if (this.state.car_type_id == 1) {
         if (!this.state.roundTrip) {
           this.setState({ price: 230000 });
+          this.priceHandle(this.state.price);
           console.log("7");
         } else {
           this.setState({ price: 560000 });
+          this.priceHandle(this.state.price);
           console.log("7_1");
         }
       }
       if (this.state.car_type_id == 2) {
         if (!this.state.roundTrip) {
           this.setState({ price: 260000 });
+          this.priceHandle(this.state.price);
           console.log("8");
         } else {
           this.setState({ price: 620000 });
+          this.priceHandle(this.state.price);
           console.log("8_1");
         }
       }
       if (this.state.car_type_id == 4) {
         if (!this.state.roundTrip) {
           this.setState({ price: 450000 });
+          this.priceHandle(this.state.price);
           console.log("9");
         } else {
           this.setState({ price: 1000000 });
+          this.priceHandle(this.state.price);
           console.log("9_1");
         }
       }
@@ -1173,27 +1208,33 @@ class bookCarForm extends Component {
       if (this.state.car_type_id == 1) {
         if (!this.state.roundTrip) {
           this.setState({ price: 200000 });
+          this.priceHandle(this.state.price);
           console.log("10");
         } else {
           this.setState({ price: 500000 });
+          this.priceHandle(this.state.price);
           console.log("10_1");
         }
       }
       if (this.state.car_type_id == 2) {
         if (!this.state.roundTrip) {
           this.setState({ price: 230000 });
+          this.priceHandle(this.state.price);
           console.log("11");
         } else {
           this.setState({ price: 560000 });
+          this.priceHandle(this.state.price);
           console.log("11_1");
         }
       }
       if (this.state.car_type_id == 4) {
         if (!this.state.roundTrip) {
           this.setState({ price: 400000 });
+          this.priceHandle(this.state.price);
           console.log("12");
         } else {
           this.setState({ price: 900000 });
+          this.priceHandle(this.state.price);
           console.log("12_1");
         }
       }
@@ -1214,27 +1255,33 @@ class bookCarForm extends Component {
       if (this.state.car_type_id == 1) {
         if (!this.state.roundTrip) {
           this.setState({ price: 300000 });
+          this.priceHandle(this.state.price);
           console.log("13");
         } else {
           this.setState({ price: 500000 });
+          this.priceHandle(this.state.price);
           console.log("13_1");
         }
       }
       if (this.state.car_type_id == 2) {
         if (!this.state.roundTrip) {
           this.setState({ price: 330000 });
+          this.priceHandle(this.state.price);
           console.log("14");
         } else {
           this.setState({ price: 560000 });
+          this.priceHandle(this.state.price);
           console.log("14_1");
         }
       }
       if (this.state.car_type_id == 4) {
         if (!this.state.roundTrip) {
           this.setState({ price: 500000 });
+          this.priceHandle(this.state.price);
           console.log("15");
         } else {
           this.setState({ price: 900000 });
+          this.priceHandle(this.state.price);
           console.log("15_1");
         }
       }
@@ -1242,27 +1289,33 @@ class bookCarForm extends Component {
       if (this.state.car_type_id == 1) {
         if (!this.state.roundTrip) {
           this.setState({ price: 270000 });
+          this.priceHandle(this.state.price);
           console.log("16");
         } else {
           this.setState({ price: 440000 });
+          this.priceHandle(this.state.price);
           console.log("16_1");
         }
       }
       if (this.state.car_type_id == 2) {
         if (!this.state.roundTrip) {
           this.setState({ price: 300000 });
+          this.priceHandle(this.state.price);
           console.log("17");
         } else {
           this.setState({ price: 500000 });
+          this.priceHandle(this.state.price);
           console.log("17_1");
         }
       }
       if (this.state.car_type_id == 4) {
         if (!this.state.roundTrip) {
           this.setState({ price: 450000 });
+          this.priceHandle(this.state.price);
           console.log("18");
         } else {
           this.setState({ price: 800000 });
+          this.priceHandle(this.state.price);
           console.log("18_1");
         }
       }
@@ -1283,27 +1336,33 @@ class bookCarForm extends Component {
       if (this.state.car_type_id == 1) {
         if (!this.state.roundTrip) {
           this.setState({ price: 330000 });
+          this.priceHandle(this.state.price);
           console.log("19");
         } else {
           this.setState({ price: 560000 });
+          this.priceHandle(this.state.price);
           console.log("19_1");
         }
       }
       if (this.state.car_type_id == 2) {
         if (!this.state.roundTrip) {
           this.setState({ price: 360000 });
+          this.priceHandle(this.state.price);
           console.log("20");
         } else {
           this.setState({ price: 620000 });
+          this.priceHandle(this.state.price);
           console.log("20_1");
         }
       }
       if (this.state.car_type_id == 4) {
         if (!this.state.roundTrip) {
           this.setState({ price: 550000 });
+          this.priceHandle(this.state.price);
           console.log("21");
         } else {
           this.setState({ price: 1000000 });
+          this.priceHandle(this.state.price);
           console.log("21_1");
         }
       }
@@ -1311,27 +1370,33 @@ class bookCarForm extends Component {
       if (this.state.car_type_id == 1) {
         if (!this.state.roundTrip) {
           this.setState({ price: 300000 });
+          this.priceHandle(this.state.price);
           console.log("22");
         } else {
           this.setState({ price: 500000 });
+          this.priceHandle(this.state.price);
           console.log("22_1");
         }
       }
       if (this.state.car_type_id == 2) {
         if (!this.state.roundTrip) {
           this.setState({ price: 330000 });
+          this.priceHandle(this.state.price);
           console.log("23");
         } else {
           this.setState({ price: 560000 });
+          this.priceHandle(this.state.price);
           console.log("23_1");
         }
       }
       if (this.state.car_type_id == 4) {
         if (!this.state.roundTrip) {
           this.setState({ price: 500000 });
+          this.priceHandle(this.state.price);
           console.log("24");
         } else {
           this.setState({ price: 900000 });
+          this.priceHandle(this.state.price);
           console.log("24_1");
         }
       }

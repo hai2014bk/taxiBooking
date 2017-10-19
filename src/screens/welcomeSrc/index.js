@@ -85,7 +85,7 @@ class welcomeSrc extends Component {
                   }}
                 >
                   <Image
-                    source={welcome1}
+                    source={welcome3}
                     style={{ width: deviceWidth, height: deviceHeight - 40 }}
                   />
                 </View>
@@ -101,7 +101,7 @@ class welcomeSrc extends Component {
                       borderRadius:0
                     }}
                   >
-                    <Text style={{ fontSize: 20, fontWeight: "bold" }}>
+                    <Text style={{ fontSize: 18, fontWeight: "bold" }}>
                       Tiếp Theo
                     </Text>
                   </Button>
