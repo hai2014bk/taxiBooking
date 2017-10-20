@@ -107,7 +107,8 @@ export default {
   containerName: {
     flex: 4,
     alignItems: "flex-start",
-    justifyContent: "center"
+    justifyContent: "center",
+    height:50,
   },
   containerIcon: {
     flex: 2,
@@ -116,6 +117,7 @@ export default {
   },
   containerImg: {
     flex: 1,
+    height: 50,
     flexDirection: "row",
     width: "100%",
     borderBottomWidth:0.5
@@ -123,21 +125,23 @@ export default {
   viewtextPhone: {
     flex: 10,
     justifyContent: "center",
-    alignItems: "flex-start"
+    alignItems: "flex-start",
+    height: 50,
   },
   containerUserId: {
     flex: 2,
     flexDirection: "row",
     width: "100%",
-    height: 40,
+    height: 50,
     borderBottomWidth: 0.5,
     borderTopWidth: 0.5,
-    borderColor: "gray"
+    borderColor: "gray",
   },
   viewName: {
     flex: 2,
     flexDirection: "row",
     width: "100%",
+    height:100,
     borderBottomWidth: 0.5,
     borderBottomColor: "gray",
   },
@@ -151,7 +155,7 @@ export default {
   },
   name: {
     flex: 8,
-    flexDirection: "column"
+    flexDirection: "column",
   },
   userId: {
     flex: 2,

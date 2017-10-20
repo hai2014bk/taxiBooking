@@ -12,6 +12,8 @@ export default function(state: any = initialState, action: Function) {
       return { ...state, kind:"success", items: action.items };
     case "CARTYPES_SUCCESS":console.log("car success",action.cartypes)
       return { ...state, kind:"car", cartypes: action.cartypes };
+    case "CARTYPES_ERROR":console.log("car error",action.cartypes)
+      return { ...state, kind:"car", errorC: action.errorC };
     default:
       return state;
   }

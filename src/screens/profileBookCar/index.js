@@ -38,6 +38,13 @@ const phone = require("../../Icon/PNG/Phone2.png");
 // type Props = {
 //   navigation: () => void
 // };
+
+import { NavigationActions } from "react-navigation";
+
+const resetAction = NavigationActions.reset({
+  index: 0,
+  actions: [NavigationActions.navigate({ routeName: "bookCar" })]
+});
 var mainScreen = false;
 class profileBookCarForm extends Component {
   constructor(props) {
@@ -48,7 +55,7 @@ class profileBookCarForm extends Component {
       phoneNumber: "",
       email: "",
       userId: "",
-      avartar: ""
+      avartar: "http://www.novelupdates.com/img/noimagefound.jpg",
     };
   }
 
@@ -66,19 +73,44 @@ class profileBookCarForm extends Component {
   }
 
   async componentDidMount() {
-    var avartar = "";
     var loginInfo = await AsyncStorage.getItem(mConstants.LOGIN_INFO);
     var ObjloginInfo = JSON.parse(loginInfo);
+    var avartar = "";
+    var firstName = "";
+    var userId = "";
+    var lastName = "";
+    var email = "";
+    var userId = "";
     if (ObjloginInfo.img_url) {
       avartar = ObjloginInfo.img_url;
     } else {
       avartar = "http://www.novelupdates.com/img/noimagefound.jpg";
     }
+    if (ObjloginInfo.first_name) {
+      firstName = ObjloginInfo.first_name;
+    } else {
+      firstName = "";
+    }
+    if (ObjloginInfo.last_name) {
+      lastName = ObjloginInfo.last_name;
+    } else {
+      lastName = "";
+    }
+    if (ObjloginInfo.email) {
+      email = ObjloginInfo.email;
+    } else {
+      email = "";
+    }
+    if (ObjloginInfo.id) {
+      userId = ObjloginInfo.id;
+    } else {
+      userId = "";
+    }
     this.setState({
-      userId: ObjloginInfo.id,
-      firstName: ObjloginInfo.first_name,
-      lastName: ObjloginInfo.last_name,
-      email: ObjloginInfo.email,
+      userId: userId,
+      firstName: firstName,
+      lastName: lastName,
+      email: email,
       avartar: avartar
     });
     // AsyncStorage.removeItem(mConstants.LOGIN_INFO);
@@ -152,7 +184,7 @@ class profileBookCarForm extends Component {
             <View
               style={[
                 styles.containerImg,
-                { marginBottom: 10, borderBottomWidth: 0.5 }
+                { marginBottom: 10 }
               ]}
             >
               <View style={styles.containerIcon}>
@@ -167,16 +199,6 @@ class profileBookCarForm extends Component {
                   {this.state.email}
                 </Text>
               </View>
-            </View>
-          </View>
-          <View style={styles.containerUserId}>
-            <View style={styles.userId}>
-              <Text style={styles.text}> User ID </Text>
-            </View>
-            <View style={styles.Id}>
-              <Text note style={{ marginRight: 15 }}>
-                {this.state.userId}
-              </Text>
             </View>
           </View>
         </Content>

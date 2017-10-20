@@ -51,6 +51,7 @@
     "react-native-loading-spinner-overlay": "^0.5.2",
     "react-native-modal-datetime-picker": "^4.11.0",
     "react-native-modalbox": "1.4.2",
+    "react-native-popup-dialog": "^0.9.36",
     "react-native-vector-icons": "4.3.0",
     "react-navigation": "1.0.0-beta.11",
     "react-redux": "5.0.5",

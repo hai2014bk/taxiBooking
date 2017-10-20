@@ -101,7 +101,7 @@ class welcomeSrc extends Component {
                       borderRadius:0
                     }}
                   >
-                    <Text style={{ fontSize: 18, fontWeight: "bold" }}>
+                    <Text style={{ fontSize: 18, fontWeight: "bold", marginTop: 5 }}>
                       Tiếp Theo
                     </Text>
                   </Button>

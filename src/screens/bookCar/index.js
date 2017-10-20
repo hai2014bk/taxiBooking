@@ -28,17 +28,18 @@ import {
   Item,
   Label,
   Input,
-  Switch
+  Switch,
+  List
 } from "native-base";
 import Spinner from "react-native-loading-spinner-overlay";
 import { Grid, Col } from "react-native-easy-grid";
 import Carousel from "react-native-carousel-view";
 import DateTimePicker from "react-native-modal-datetime-picker";
-import { itemsFetchData } from "../../actions";
-import { carbooking } from "../../actions";
+import { carbooking, getcartype } from "../../actions";
 import * as mConstants from "../../utils/Constants";
 import { GooglePlacesAutocomplete } from "react-native-google-places-autocomplete";
 // import LocationPicker from "../LocationPicker";
+import PopupDialog from "react-native-popup-dialog";
 const setting = require("../../Icon/PNG/settings.png");
 const car4Y = require("../../Icon/PNG/Car/cho4Atv.png");
 const car7Y = require("../../Icon/PNG/Car/cho7Atv.png");
@@ -47,16 +48,17 @@ const car4W = require("../../Icon/PNG/Car/cho4Dis.png");
 const car7W = require("../../Icon/PNG/Car/cho7Dis.png");
 const car16W = require("../../Icon/PNG/Car/cho16Dis.png");
 const icon = require("./icon.jpg");
+const successDialog = require("../../Icon/successDialog.png");
 import styles from "./styles";
 var dismissKeyboard = require("dismissKeyboard");
 const deviceWidth = Dimensions.get("window").width;
-const headerLogo = require("../../../assets/header-logo.png");
+// const headerLogo = require("../../../assets/header-logo.png");
 var noiBaiLat = 21.2187149;
 var noiBaiLng = 105.8041709;
 var lat = 21.218714;
 var lng = 105.80417;
 var mainScreen = true;
-var name = "Sân bay Nội Bài, Sóc Sơn, Hà Nội, Việt Nam";
+var name = "Sân bay Nội Bài";
 var timeH = new Date().getHours();
 var timeMi = new Date().getMinutes();
 var timeY = new Date().getFullYear();
@@ -64,6 +66,7 @@ var timeMo = new Date().getMonth();
 var timeD = new Date().getDate();
 var press = true;
 var sidebar = true;
+var dialog = false;
 class bookCarForm extends Component {
   constructor(props) {
     super(props);
@@ -104,61 +107,79 @@ class bookCarForm extends Component {
       hanoi: "",
       sidebar: false,
       priceshow: 0,
+      dataArray: [],
+      dialogShow: false
     };
   }
   componentWillReceiveProps(props) {
-    if (props.items.id) {
-      this.setState({ visible: false });
-      setTimeout(() => {
-        this.showAlert("Thành công", "Đặt xe thành công", [
-          {
-            text: "OK",
-            onPress: () => {
-              press = true;
-            }
-          }
-        ]);
-      }, 100);
+    if (props.cartypes[0]) {
+      this.setState({ dataArray: props.cartypes });
+      console.log("items", props.items);
     } else {
-      if (props.error.message == "Network request failed") {
+      console.log("nodata");
+    }
+    console.log("props", props);
+    if (dialog) {
+      if (props.items.id) {
         this.setState({ visible: false });
         setTimeout(() => {
-          this.showAlert(
-            "Thất bại",
-            "Đặt xe đặt xe thất bại\nKết nối mạng không ổn định, vui lòng thử lại sau",
-            [
-              {
-                text: "OK",
-                onPress: () => {
-                  press = true;
-                }
-              }
-            ]
-          );
+          this.popupDialog.show();
+          press = true;
+          dialog = false;
+          //   this.showAlert("Thành công", "Đặt xe thành công", [
+          //     {
+          //       text: "OK",
+          //       onPress: () => {
+          //         press = true;
+          //       }
+          //     }
+          //   ]);
         }, 100);
       } else {
-        this.setState({ visible: false });
-        setTimeout(() => {
-          this.showAlert("Thất bại", "Đặt xe đặt xe thất bại", [
-            {
-              text: "OK",
-              onPress: () => {
-                press = true;
-              }
-            }
-          ]);
-        }, 100);
+        if (props.error) {
+          if (props.error.message === "Network request failed") {
+            this.setState({ visible: false });
+            setTimeout(() => {
+              this.showAlert(
+                "Thất bại",
+                "Đặt xe đặt xe thất bại\nKết nối mạng không ổn định, vui lòng thử lại sau",
+                [
+                  {
+                    text: "OK",
+                    onPress: () => {
+                      press = true;
+                    }
+                  }
+                ]
+              );
+            }, 100);
+          } else {
+            this.setState({ visible: false });
+            setTimeout(() => {
+              this.showAlert("Thất bại", "Đặt xe đặt xe thất bại", [
+                {
+                  text: "OK",
+                  onPress: () => {
+                    press = true;
+                  }
+                }
+              ]);
+            }, 100);
+          }
+        }
       }
     }
     console.log("123", props);
   }
   async componentDidMount() {
+    this.popupDialog.dismiss();
     var loginInfo = await AsyncStorage.getItem(mConstants.LOGIN_INFO);
     var ObjloginInfo = JSON.parse(loginInfo);
     var userId = ObjloginInfo.id;
     this.setState({
       userId: userId
     });
+    this.props.getcartype();
     // AsyncStorage.removeItem(mConstants.LOGIN_INFO);
   }
   componentWillMount() {
@@ -181,14 +202,15 @@ class bookCarForm extends Component {
       <Container>
         <Header style={{ backgroundColor: "white" }}>
           <Left>
-            <Button disabled={this.state.sidebar}
+            <Button
+              disabled={this.state.sidebar}
               transparent
               onPress={() => {
                 dismissKeyboard();
                 this.props.navigation.navigate("DrawerOpen");
-                this.setState({sidebar:true})
-                setTimeout(()=> {
-                  this.setState({sidebar:false})
+                this.setState({ sidebar: true });
+                setTimeout(() => {
+                  this.setState({ sidebar: false });
                 }, 1000);
               }}
             >
@@ -210,7 +232,14 @@ class bookCarForm extends Component {
           showsVerticalScrollIndicator={false}
           style={{ backgroundColor: "#fff" }}
         >
-          <View style={{ height: 100, borderBottomWidth: 0.5, marginTop: 10, marginBottom:10 }}>
+          <View
+            style={{
+              height: 100,
+              borderBottomWidth: 0.5,
+              marginTop: 10,
+              marginBottom: 10
+            }}
+          >
             <Text style={[styles.text, { color: "#31404B", fontSize: 15 }]}>
               Chọn tuyến
             </Text>
@@ -220,8 +249,8 @@ class bookCarForm extends Component {
                 marginRight: 10,
                 flexDirection: "row",
                 marginTop: 5,
-                width:deviceWidth-20,
-                }}
+                width: deviceWidth - 20
+              }}
             >
               <Button
                 style={[
@@ -230,7 +259,10 @@ class bookCarForm extends Component {
                 ]}
                 onPress={() => this._haNoi()}
               >
-                <Text numberOfLines={2} style={{ color: this.state.textColor1 }}>
+                <Text
+                  numberOfLines={2}
+                  style={{ color: this.state.textColor1 }}
+                >
                   Nội Bài -> Hà Nội
                 </Text>
               </Button>
@@ -349,6 +381,7 @@ class bookCarForm extends Component {
               full
               style={{ backgroundColor: "#2E3B45" }}
               onPress={() => {
+                // this.popupDialog.show();
                 if (press) {
                   press = false;
                   this._alertBook();
@@ -358,6 +391,43 @@ class bookCarForm extends Component {
               <Text>Đặt ngay</Text>
             </Button>
           </View>
+          <PopupDialog
+            ref={popupDialog => {
+              this.popupDialog = popupDialog;
+            }}
+            dismissOnTouchOutside={false}
+            height={315}
+            width={deviceWidth - 15}
+            show={false}
+          >
+            <View style={{ justifyContent: "center", alignItems: "center" }}>
+              <Image
+                source={successDialog}
+                style={{ width: 150, height: 150 }}
+                resizeMode="contain"
+              />
+              <Text style={{ color: "#31404B", fontWeight: "bold" }}>
+                ĐẶT XE THÀNH CÔNG
+              </Text>
+              <Text
+                style={{ color: "#31404B", textAlign: "center", margin: 20 }}
+              >
+                Xin vui lòng để ý điện thoại, tổng đài sẽ liên lạc sau ít phút
+              </Text>
+              <Button
+                full
+                style={{
+                  backgroundColor: "#2E3B45",
+                  width: deviceWidth - 35,
+                  marginLeft: 10,
+                  marginRight: 10
+                }}
+                onPress={() => this.popupDialog.dismiss()}
+              >
+                <Text style={{ fontWeight: "bold" }}>HOÀN TẤT</Text>
+              </Button>
+            </View>
+          </PopupDialog>
           <Spinner visible={this.state.visible} />
         </Content>
       </Container>
@@ -384,6 +454,7 @@ class bookCarForm extends Component {
         {
           text: "Đặt ngay",
           onPress: () => {
+            dialog = true;
             setTimeout(() => {
               this._book();
             }, 100);
@@ -601,7 +672,7 @@ class bookCarForm extends Component {
               disabled={false}
               onTintColor="#31404B"
               thumbTintColor="#ffffff"
-              tintColor = "#e0e0e0"
+              tintColor="#b5b5b5"
             />
           </View>
         </View>
@@ -636,8 +707,8 @@ class bookCarForm extends Component {
     var count = 0;
     price = price.toString().replace(/(\d)(?=(\d\d\d)+(?!\d))/g, "$1.");
     this.setState({
-      priceshow: price,
-    })
+      priceshow: price
+    });
     // return price
   }
 
@@ -825,18 +896,30 @@ class bookCarForm extends Component {
     return (
       <View style={styles.containerCartype}>
         <TouchableOpacity onPress={() => this._color4()} style={styles.cartype}>
-          <Image source={this.state.car4} style={{height:"60%", width:"100%"}} resizeMode="contain"/>
+          <Image
+            source={this.state.car4}
+            style={{ height: "60%", width: "100%" }}
+            resizeMode="contain"
+          />
           <Text style={{ color: this.state.color4 }}>5 Chỗ</Text>
         </TouchableOpacity>
         <TouchableOpacity onPress={() => this._color7()} style={styles.cartype}>
-          <Image source={this.state.car7} style={{height:"60%", width:"100%"}} resizeMode="contain"/>
+          <Image
+            source={this.state.car7}
+            style={{ height: "60%", width: "100%" }}
+            resizeMode="contain"
+          />
           <Text style={{ color: this.state.color7 }}>7 Chỗ</Text>
         </TouchableOpacity>
         <TouchableOpacity
           onPress={() => this._color16()}
           style={styles.cartype}
         >
-          <Image source={this.state.car16} style={{height:"60%", width:"100%"}} resizeMode="contain"/>
+          <Image
+            source={this.state.car16}
+            style={{ height: "60%", width: "100%" }}
+            resizeMode="contain"
+          />
           <Text style={{ color: this.state.color16 }}>16 Chỗ</Text>
         </TouchableOpacity>
       </View>
@@ -1568,13 +1651,16 @@ const bookCar = reduxForm({
 
 function bindAction(dispatch) {
   return {
-    carbooking: params => dispatch(carbooking(params))
+    carbooking: params => dispatch(carbooking(params)),
+    getcartype: () => dispatch(getcartype())
     // fetchData: url => dispatch(itemsFetchData(url))
   };
 }
 
 const mapStateToProps = state => ({
   items: state.bookCarReducer.items,
-  error: state.bookCarReducer.error
+  error: state.bookCarReducer.error,
+  cartypes: state.bookCarReducer.cartypes,
+  errorC: state.bookCarReducer.errorC
 });
 export default connect(mapStateToProps, bindAction)(bookCarForm);
