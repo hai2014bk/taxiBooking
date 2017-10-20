@@ -21,4 +21,9 @@ Libs:[
         install:"npm install react-native-modal-datetime-picker --save",
         linking:"react-native link react-native-modal-datetime-picker"
     },
-]
+    react-native-popup-dialog:{
+        link:https://github.com/jacklam718/react-native-popup-dialog,
+        install:"npm install react-native-popup-dialog --save",
+        linking:"react-native link react-native-popup-dialog,
+    }
+]   
