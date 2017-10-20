@@ -125,7 +125,8 @@ export default {
   viewtextPhone: {
     flex: 10,
     justifyContent: "center",
-    alignItems: "flex-start",height: 50,
+    alignItems: "flex-start",
+    height: 50,
   },
   containerUserId: {
     flex: 2,

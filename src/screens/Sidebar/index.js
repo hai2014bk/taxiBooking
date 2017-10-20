@@ -19,7 +19,6 @@ const profile = require("../../Icon/PNG/profile.png");
 import * as mConstants from "../../utils/Constants";
 import styles from "./style";
 import { openSidebar, closeSidebar, reloadSidebar } from "./actions";
-var avartar = "";
 const resetAction = NavigationActions.reset({
   index: 0,
   actions: [NavigationActions.navigate({ routeName: "loginAcc" })]
@@ -33,26 +32,71 @@ class SideBar extends Component {
       phoneNumber: "",
       email: "",
       userId: "",
-      avartar: ""
+      avartar: "http://www.novelupdates.com/img/noimagefound.jpg",
     };
   }
+
   async componentDidMount() {
     var loginInfo = await AsyncStorage.getItem(mConstants.LOGIN_INFO);
+    var avartar = "";
+    var firstName = "";
+    var userId = "";
+    var lastName = "";
+    var email = "";
+    var userId = "";
     var ObjloginInfo = JSON.parse(loginInfo);
     if (ObjloginInfo.img_url) {
       avartar = ObjloginInfo.img_url;
     } else {
       avartar = "http://www.novelupdates.com/img/noimagefound.jpg";
     }
+    if (ObjloginInfo.first_name) {
+      firstName = ObjloginInfo.first_name;
+    } else {
+      firstName = "";
+    }
+    if (ObjloginInfo.last_name) {
+      lastName = ObjloginInfo.last_name;
+    } else {
+      lastName = "";
+    }
+    if (ObjloginInfo.email) {
+      email = ObjloginInfo.email;
+    } else {
+      email = "";
+    }
+    if (ObjloginInfo.id) {
+      userId = ObjloginInfo.id;
+    } else {
+      userId = "";
+    }
     this.setState({
-      userId: ObjloginInfo.id,
-      firstName: ObjloginInfo.first_name,
-      lastName: ObjloginInfo.last_name,
-      email: ObjloginInfo.email,
+      userId: userId,
+      firstName: firstName,
+      lastName: lastName,
+      email: email,
       avartar: avartar
     });
     // AsyncStorage.removeItem(mConstants.LOGIN_INFO);
   }
+
+  // async componentDidMount() {
+  //   var loginInfo = await AsyncStorage.getItem(mConstants.LOGIN_INFO);
+  //   var ObjloginInfo = JSON.parse(loginInfo);
+  //   if (ObjloginInfo.img_url) {
+  //     avartar = ObjloginInfo.img_url;
+  //   } else {
+  //     avartar = "http://www.novelupdates.com/img/noimagefound.jpg";
+  //   }
+  //   this.setState({
+  //     userId: ObjloginInfo.id,
+  //     firstName: ObjloginInfo.first_name,
+  //     lastName: ObjloginInfo.last_name,
+  //     email: ObjloginInfo.email,
+  //     avartar: avartar
+  //   });
+    // AsyncStorage.removeItem(mConstants.LOGIN_INFO);
+  // }
   async componentWillReceiveProps(props) {
     // console.log("props", props.navigation);
     // console.log("props", props.kind);
@@ -83,17 +127,19 @@ class SideBar extends Component {
         >
           <Content style={styles.drawerContent}>
             <Col>
+            <View>
               <TouchableOpacity
                 style={{ alignSelf: "center" }}
                 onPress={() => {
                   navigation.navigate("profileBookCar");
                 }}
               >
-                <Thumbnail
+                <Image
                   source={{ uri: this.state.avartar }}
                   style={styles.profilePic}
                 />
               </TouchableOpacity>
+              </View>
             </Col>
             <Text
               note
@@ -138,7 +184,6 @@ class SideBar extends Component {
                   <TouchableOpacity
                     onPress={() => {
                       this._logout();
-                      navigation.dispatch(resetAction);
                     }}
                     style={{
                       alignSelf: "flex-start",
@@ -169,6 +214,7 @@ class SideBar extends Component {
   }
 
   async _logout() {
+    await this.props.navigation.dispatch(resetAction);
     let keys = [mConstants.LOGIN_INFO, mConstants.REMEMBER];
     await AsyncStorage.multiRemove(keys);
     this.props.navigation.navigate("loginAcc");

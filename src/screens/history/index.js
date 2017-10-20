@@ -225,11 +225,6 @@ class historyForm extends Component {
               </Text>
             </View>
           </View>
-          <View style={styles.startView}>
-            <Text style={styles.textNor}>
-              Tài xế: {item.taixe}
-            </Text>
-          </View>
           <Image
                 source={gradient}
                 style={styles.gradient}
