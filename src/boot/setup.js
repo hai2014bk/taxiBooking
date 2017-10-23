@@ -19,16 +19,7 @@ import App from "../App";
 import configureStore from "./configureStore";
 import getTheme from "../theme/components";
 import variables from "../theme/variables/commonColor";
-// var loginInfo = AsyncStorage.getItem(mConstants.LOGIN_INFO);
-// var loginInfo = AsyncStorage.getItem(mConstants.LOGIN_INFO, (err, result) => {
-//   console.log("result",result);
-//   loginInfo=result;
-//   console.log(loginInfo)
-// });
-// var initialRoute = "";
-// var isLoaded = false;
-// import Spinner from "react-native-loading-spinner-overlay";
-// const logo = require("../Icon/PNG/Back.png");
+
 export default class Setup extends Component {
   state: {
     store: Object,
@@ -50,7 +41,6 @@ export default class Setup extends Component {
   async componentWillMount() {
     var firstUse = await AsyncStorage.getItem(mConstants.FIRSTUSE);
     if (!firstUse) {
-      // console.log(1);
       setTimeout(()=> {
         this.setState({
           firstUse: firstUse,
@@ -60,19 +50,16 @@ export default class Setup extends Component {
         });
       }, 1000);
     } else {
-      // console.log(2);
       var loginInfo = await AsyncStorage.getItem(mConstants.LOGIN_INFO);
       if (loginInfo) {
-        // console.log(2.1);
         setTimeout(()=> {
           this.setState({
             isLoaded: true,
-            initialRoute: "bookCar",
+            initialRoute: "Drawer",
             visible:false
           });
         }, 1000);
       } else {
-        // console.log(2.2);
         setTimeout(()=> {
           this.setState({
             initialRoute: "loginAcc",
@@ -80,21 +67,10 @@ export default class Setup extends Component {
             visible:false
           });
         }, 1000);
-        // this.setState({ isLoaded: true });
       }
-      // await this.setState({
-      // });
-      // this.setState({ isLoaded: true });
     }
   }
   render() {
-    // var initialRoute = "";
-    // if (!this.state.firstUse) {
-    //   initialRoute = "welcomeSrc";
-    // } else {
-    //   initialRoute = this.state.loginInfo ? "bookCar" : "loginAcc";
-    // }
-    // console.log("initialRoute", initialRoute);
     if (!this.state.initialRoute) {
       return (
         <Container>

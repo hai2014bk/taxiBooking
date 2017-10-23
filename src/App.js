@@ -1,5 +1,6 @@
 // @flow
 import React from "react";
+import { AsyncStorage, Image } from "react-native";
 import { StackNavigator, DrawerNavigator } from "react-navigation";
 import { Root } from "native-base";
 import Login from "./screens/Login/";
@@ -26,36 +27,31 @@ import Feedback from "./screens/Feedback/";
 import Profile from "./screens/Profile/";
 import Settings from "./screens/Settings";
 
+const Drawer = DrawerNavigator(
+  {
+    bookCar: { screen: bookCar },
+    profileBookCar: { screen: profileBookCar },
+    history: { screen: history },
+  },
+  {
+    initialRouteName: "bookCar",
+    contentComponent: props => <Sidebar {...props} />
+  }
+);
+
 const App = ({ initialRouteName }) => {
-  const Drawer = DrawerNavigator(
+  const Main = StackNavigator(
     {
-      loginAcc: { screen: loginAcc },
-      bookCar: { screen: bookCar },
-      profileBookCar: { screen: profileBookCar },
-      history: { screen: history },
-      LoginSrc: { screen: LoginSrc },
       welcomeSrc: { screen: welcomeSrc },
-      Home: { screen: Home },
-      Login: { screen: Login },
-      Register: { screen: Register },
-      Channels: { screen: Channels },
-      Overview: { screen: Overview },
-      Calendar: { screen: Calendar },
-      Timeline: { screen: Timeline },
-      Feedback: { screen: Feedback },
-      Profile: { screen: Profile },
-      Settings: { screen: Settings }
+      loginAcc: { screen: loginAcc },
+      Drawer: { screen: Drawer }
     },
     {
+      headerMode: "none",
       initialRouteName: initialRouteName,
-      // initialRouteName: "bookCar",
       contentComponent: props => <Sidebar {...props} />
     }
   );
-  return <Drawer />;
+  return <Main />;
 };
 export default App;
-// export default () =>
-//   <Root>
-//     <App />
-//   </Root>;

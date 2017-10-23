@@ -226,7 +226,7 @@ export default {
     // borderColor: "#31404B"
   },
   TimePicker: {
-    width: "40%",
+    flex: 1,
     height: 40,
     justifyContent: "center"
   },

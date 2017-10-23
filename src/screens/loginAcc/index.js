@@ -75,7 +75,7 @@ class loginAccForm extends Component {
       if (mainScreen) {
       BackHandler.exitApp();
       } else {
-      navigation.navigate("bookCar");
+      navigation.navigate("Drawer");
       }
      });
   }
@@ -96,7 +96,7 @@ class loginAccForm extends Component {
         }
       );
       setTimeout(() => {
-        navigation.navigate("bookCar");
+        navigation.navigate("Drawer");
       }, 300);
     } else {
       // console.log("mang")

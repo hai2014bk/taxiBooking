@@ -69,7 +69,7 @@ class registerForm extends Component {
             text: "OK",
             onPress: () => {
               pressable = true;
-              navigation.navigate("bookCar");
+              navigation.navigate("Drawer");
               // this.email._root.focus();
             }
           }

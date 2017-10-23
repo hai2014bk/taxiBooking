@@ -82,7 +82,7 @@ class LoginSrcForm extends Component {
         }
       );
       setTimeout(() => {
-        navigation.navigate("bookCar");
+        navigation.navigate("Drawer");
       }, 300);
     } else {
       if (props.error.status == 401) {
