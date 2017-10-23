@@ -10,7 +10,7 @@ import {
   AsyncStorage,
   Modal,
   Alert,
-  BackHandler
+  BackHandler, Linking
 } from "react-native";
 import { connect } from "react-redux";
 import { Field, reduxForm } from "redux-form";
@@ -96,8 +96,7 @@ class bookCarForm extends Component {
       night: true,
       userId: "",
       car_type_id: 1,
-      dateString:
-        timeY + "-" + timeMo + "-" + timeD + " " + timeH + ":" + timeMi,
+      dateString: "",
       note: "",
       timeH: timeH,
       distance: 0,
@@ -108,7 +107,8 @@ class bookCarForm extends Component {
       sidebar: false,
       priceshow: 0,
       dataArray: [],
-      dialogShow: false
+      dialogShow: false,
+      supPhone:"tel: 19006744"
     };
   }
   componentWillReceiveProps(props) {
@@ -137,12 +137,14 @@ class bookCarForm extends Component {
         }, 100);
       } else {
         if (props.error) {
+          
           if (props.error.message === "Network request failed") {
+            dialog = false;
             this.setState({ visible: false });
             setTimeout(() => {
               this.showAlert(
                 "Thất bại",
-                "Đặt xe đặt xe thất bại\nKết nối mạng không ổn định, vui lòng thử lại sau",
+                "Đặt xe thất bại\nKết nối mạng không ổn định, vui lòng thử lại sau",
                 [
                   {
                     text: "OK",
@@ -154,6 +156,7 @@ class bookCarForm extends Component {
               );
             }, 100);
           } else {
+            dialog = false;
             this.setState({ visible: false });
             setTimeout(() => {
               this.showAlert("Thất bại", "Đặt xe đặt xe thất bại", [
@@ -196,7 +199,7 @@ class bookCarForm extends Component {
     });
   }
   render() {
-    // console.log(timeMi, this.state.timeH, this.state.dateString);
+    console.log(this.state.dateString);
     var date = new Date();
     return (
       <Container>
@@ -226,11 +229,17 @@ class bookCarForm extends Component {
               ĐẶT XE
             </Text>
           </Body>
-          <Right />
+          <Right>
+            <Button style={{backgroundColor:"orange", height:30, justifyContent:"center", alignItems:"center"}}
+              onPress={()=> Linking.openURL(this.state.supPhone)} >
+              <Icon name={"ios-call"}/>
+              <Text style={{fontSize:16}}>1900-6744</Text>
+            </Button>
+          </Right>
         </Header>
         <Content
           showsVerticalScrollIndicator={false}
-          style={{ backgroundColor: "#fff" }}
+          style={{ backgroundColor: "#ffffff" }}
         >
           <View
             style={{
@@ -467,6 +476,12 @@ class bookCarForm extends Component {
   }
 
   _book() {
+    if (!this.state.dateString){
+      var date = new Date();
+      this.setState({
+        dateString: date.getFullYear() + "-" + (date.getMonth() + 1) + "-" + date.getDate() + " " + date.getHours() + ":" + date.getMinutes(),
+      });
+    }
     var params = {};
     if (this.state.start.trim() == "Chọn điểm đón") {
       this.setState({ visible: false });
@@ -1179,7 +1194,7 @@ class bookCarForm extends Component {
           this.priceHandle(this.state.price);
           console.log("1");
         } else {
-          this.setState({ price: 500000 });
+          this.setState({ price: 480000 });
           this.priceHandle(this.state.price);
           console.log("1_1");
         }
@@ -1190,7 +1205,7 @@ class bookCarForm extends Component {
           this.priceHandle(this.state.price);
           console.log("2");
         } else {
-          this.setState({ price: 560000 });
+          this.setState({ price: 540000 });
           this.priceHandle(this.state.price);
           console.log("2_1");
         }
@@ -1201,7 +1216,7 @@ class bookCarForm extends Component {
           this.priceHandle(this.state.price);
           console.log("3");
         } else {
-          this.setState({ price: 900000 });
+          this.setState({ price: 850000 });
           this.priceHandle(this.state.price);
           console.log("3_1");
         }
@@ -1213,7 +1228,7 @@ class bookCarForm extends Component {
           this.priceHandle(this.state.price);
           console.log("4");
         } else {
-          this.setState({ price: 440000 });
+          this.setState({ price: 420000 });
           this.priceHandle(this.state.price);
           console.log("4_1");
         }
@@ -1224,7 +1239,7 @@ class bookCarForm extends Component {
           this.priceHandle(this.state.price);
           console.log("5");
         } else {
-          this.setState({ price: 500000 });
+          this.setState({ price: 480000 });
           this.priceHandle(this.state.price);
           console.log("5_1");
         }
@@ -1235,7 +1250,7 @@ class bookCarForm extends Component {
           this.priceHandle(this.state.price);
           console.log("6");
         } else {
-          this.setState({ price: 800000 });
+          this.setState({ price: 750000 });
           this.priceHandle(this.state.price);
           console.log("6_1");
         }
@@ -1260,7 +1275,7 @@ class bookCarForm extends Component {
           this.priceHandle(this.state.price);
           console.log("7");
         } else {
-          this.setState({ price: 560000 });
+          this.setState({ price: 540000 });
           this.priceHandle(this.state.price);
           console.log("7_1");
         }
@@ -1271,7 +1286,7 @@ class bookCarForm extends Component {
           this.priceHandle(this.state.price);
           console.log("8");
         } else {
-          this.setState({ price: 620000 });
+          this.setState({ price: 600000 });
           this.priceHandle(this.state.price);
           console.log("8_1");
         }
@@ -1282,7 +1297,7 @@ class bookCarForm extends Component {
           this.priceHandle(this.state.price);
           console.log("9");
         } else {
-          this.setState({ price: 1000000 });
+          this.setState({ price: 950000 });
           this.priceHandle(this.state.price);
           console.log("9_1");
         }
@@ -1294,7 +1309,7 @@ class bookCarForm extends Component {
           this.priceHandle(this.state.price);
           console.log("10");
         } else {
-          this.setState({ price: 500000 });
+          this.setState({ price: 480000 });
           this.priceHandle(this.state.price);
           console.log("10_1");
         }
@@ -1305,7 +1320,7 @@ class bookCarForm extends Component {
           this.priceHandle(this.state.price);
           console.log("11");
         } else {
-          this.setState({ price: 560000 });
+          this.setState({ price: 540000 });
           this.priceHandle(this.state.price);
           console.log("11_1");
         }
@@ -1316,7 +1331,7 @@ class bookCarForm extends Component {
           this.priceHandle(this.state.price);
           console.log("12");
         } else {
-          this.setState({ price: 900000 });
+          this.setState({ price: 850000 });
           this.priceHandle(this.state.price);
           console.log("12_1");
         }
@@ -1341,7 +1356,7 @@ class bookCarForm extends Component {
           this.priceHandle(this.state.price);
           console.log("13");
         } else {
-          this.setState({ price: 500000 });
+          this.setState({ price: 480000 });
           this.priceHandle(this.state.price);
           console.log("13_1");
         }
@@ -1352,7 +1367,7 @@ class bookCarForm extends Component {
           this.priceHandle(this.state.price);
           console.log("14");
         } else {
-          this.setState({ price: 560000 });
+          this.setState({ price: 540000 });
           this.priceHandle(this.state.price);
           console.log("14_1");
         }
@@ -1363,7 +1378,7 @@ class bookCarForm extends Component {
           this.priceHandle(this.state.price);
           console.log("15");
         } else {
-          this.setState({ price: 900000 });
+          this.setState({ price: 850000 });
           this.priceHandle(this.state.price);
           console.log("15_1");
         }
@@ -1375,7 +1390,7 @@ class bookCarForm extends Component {
           this.priceHandle(this.state.price);
           console.log("16");
         } else {
-          this.setState({ price: 440000 });
+          this.setState({ price: 420000 });
           this.priceHandle(this.state.price);
           console.log("16_1");
         }
@@ -1386,7 +1401,7 @@ class bookCarForm extends Component {
           this.priceHandle(this.state.price);
           console.log("17");
         } else {
-          this.setState({ price: 500000 });
+          this.setState({ price: 480000 });
           this.priceHandle(this.state.price);
           console.log("17_1");
         }
@@ -1397,7 +1412,7 @@ class bookCarForm extends Component {
           this.priceHandle(this.state.price);
           console.log("18");
         } else {
-          this.setState({ price: 800000 });
+          this.setState({ price: 750000 });
           this.priceHandle(this.state.price);
           console.log("18_1");
         }
@@ -1422,7 +1437,7 @@ class bookCarForm extends Component {
           this.priceHandle(this.state.price);
           console.log("19");
         } else {
-          this.setState({ price: 560000 });
+          this.setState({ price: 540000 });
           this.priceHandle(this.state.price);
           console.log("19_1");
         }
@@ -1433,7 +1448,7 @@ class bookCarForm extends Component {
           this.priceHandle(this.state.price);
           console.log("20");
         } else {
-          this.setState({ price: 620000 });
+          this.setState({ price: 600000 });
           this.priceHandle(this.state.price);
           console.log("20_1");
         }
@@ -1444,7 +1459,7 @@ class bookCarForm extends Component {
           this.priceHandle(this.state.price);
           console.log("21");
         } else {
-          this.setState({ price: 1000000 });
+          this.setState({ price: 950000 });
           this.priceHandle(this.state.price);
           console.log("21_1");
         }
@@ -1456,7 +1471,7 @@ class bookCarForm extends Component {
           this.priceHandle(this.state.price);
           console.log("22");
         } else {
-          this.setState({ price: 500000 });
+          this.setState({ price: 480000 });
           this.priceHandle(this.state.price);
           console.log("22_1");
         }
@@ -1467,7 +1482,7 @@ class bookCarForm extends Component {
           this.priceHandle(this.state.price);
           console.log("23");
         } else {
-          this.setState({ price: 560000 });
+          this.setState({ price: 540000 });
           this.priceHandle(this.state.price);
           console.log("23_1");
         }
@@ -1478,7 +1493,7 @@ class bookCarForm extends Component {
           this.priceHandle(this.state.price);
           console.log("24");
         } else {
-          this.setState({ price: 900000 });
+          this.setState({ price: 850000 });
           this.priceHandle(this.state.price);
           console.log("24_1");
         }
