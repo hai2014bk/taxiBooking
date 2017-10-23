@@ -52,10 +52,6 @@ const icon = require("./icon.jpg");
 const successDialog = require("../../Icon/successDialog.png");
 import styles from "./styles";
 import { NavigationActions } from "react-navigation";
-const resetAction = NavigationActions.reset({
-  index: 0,
-  actions: [NavigationActions.navigate({ routeName: "history" })]
-});
 var dismissKeyboard = require("dismissKeyboard");
 const deviceWidth = Dimensions.get("window").width;
 // const headerLogo = require("../../../assets/header-logo.png");
@@ -132,14 +128,6 @@ class bookCarForm extends Component {
           this.popupDialog.show();
           press = true;
           dialog = false;
-          //   this.showAlert("Thành công", "Đặt xe thành công", [
-          //     {
-          //       text: "OK",
-          //       onPress: () => {
-          //         press = true;
-          //       }
-          //     }
-          //   ]);
         }, 100);
       } else {
         if (props.error) {

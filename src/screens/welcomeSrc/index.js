@@ -38,7 +38,7 @@ class welcomeSrc extends Component {
       if (mainScreen) {
         BackHandler.exitApp();
       } else {
-      navigation.navigate("bookCar");
+      navigation.navigate("Drawer");
     }
     });
   }

@@ -44,7 +44,7 @@ class SideBar extends Component {
     var lastName = "";
     var email = "";
     var userId = "";
-    var ObjloginInfo = JSON.parse(loginInfo);
+    var ObjloginInfo = await JSON.parse(loginInfo);
     if (ObjloginInfo.img_url) {
       avartar = ObjloginInfo.img_url;
     } else {
@@ -100,6 +100,7 @@ class SideBar extends Component {
   async componentWillReceiveProps(props) {
     // console.log("props", props.navigation);
     // console.log("props", props.kind);
+    var avartar = "";
     if (props.kind === "close") {
       var loginInfo = await AsyncStorage.getItem(mConstants.LOGIN_INFO);
       var ObjloginInfo = JSON.parse(loginInfo);
@@ -214,10 +215,10 @@ class SideBar extends Component {
   }
 
   async _logout() {
-    await this.props.navigation.dispatch(resetAction);
-    let keys = [mConstants.LOGIN_INFO, mConstants.REMEMBER];
+    let keys = await [mConstants.LOGIN_INFO, mConstants.REMEMBER];
     await AsyncStorage.multiRemove(keys);
-    this.props.navigation.navigate("loginAcc");
+    await this.props.navigation.dispatch(resetAction);
+    // this.props.navigation.navigate("loginAcc");
   }
 }
 

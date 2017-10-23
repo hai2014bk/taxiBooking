@@ -56,6 +56,7 @@ class profileBookCarForm extends Component {
       email: "",
       userId: "",
       avartar: "http://www.novelupdates.com/img/noimagefound.jpg",
+      disabled: false,
     };
   }
 
@@ -66,7 +67,7 @@ class profileBookCarForm extends Component {
         BackHandler.exitApp();
         return true;
       } else {
-        navigation.navigate("bookCar");
+        navigation.navigate("Drawer");
         return false;
       }
     });
@@ -122,7 +123,14 @@ class profileBookCarForm extends Component {
       <Container>
         <Header style={{ backgroundColor: "white" }}>
           <Left style={{ flex: 2 }}>
-            <Button transparent onPress={() => navigation.navigate("bookCar")}>
+            <Button
+              transparent
+              disabled={this.state.disabled}
+              onPress={() => {
+                this.setState({ disabled: true });
+                navigation.navigate("Drawer");
+              }}
+            >
               <Image
                 source={back}
                 style={{ width: 30, height: 30 }}
@@ -181,12 +189,7 @@ class profileBookCarForm extends Component {
                 </Text>
               </View>
             </View>
-            <View
-              style={[
-                styles.containerImg,
-                { marginBottom: 10 }
-              ]}
-            >
+            <View style={[styles.containerImg, { marginBottom: 10 }]}>
               <View style={styles.containerIcon}>
                 <Image
                   source={mail}
