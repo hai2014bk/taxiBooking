@@ -10,7 +10,8 @@ import {
   AsyncStorage,
   Modal,
   Alert,
-  BackHandler, Linking
+  BackHandler,
+  Linking
 } from "react-native";
 import { connect } from "react-redux";
 import { Field, reduxForm } from "redux-form";
@@ -50,6 +51,11 @@ const car16W = require("../../Icon/PNG/Car/cho16Dis.png");
 const icon = require("./icon.jpg");
 const successDialog = require("../../Icon/successDialog.png");
 import styles from "./styles";
+import { NavigationActions } from "react-navigation";
+const resetAction = NavigationActions.reset({
+  index: 0,
+  actions: [NavigationActions.navigate({ routeName: "history" })]
+});
 var dismissKeyboard = require("dismissKeyboard");
 const deviceWidth = Dimensions.get("window").width;
 // const headerLogo = require("../../../assets/header-logo.png");
@@ -108,16 +114,16 @@ class bookCarForm extends Component {
       priceshow: 0,
       dataArray: [],
       dialogShow: false,
-      supPhone:"tel: 19006744"
+      supPhone: "tel: 19006744"
     };
   }
   componentWillReceiveProps(props) {
-    if (props.cartypes[0]) {
-      this.setState({ dataArray: props.cartypes });
-      console.log("items", props.items);
-    } else {
-      console.log("nodata");
-    }
+    // if (props.cartypes[0]) {
+    //   this.setState({ dataArray: props.cartypes });
+    //   console.log("items", props.items);
+    // } else {
+    //   console.log("nodata");
+    // }
     console.log("props", props);
     if (dialog) {
       if (props.items.id) {
@@ -137,7 +143,6 @@ class bookCarForm extends Component {
         }, 100);
       } else {
         if (props.error) {
-          
           if (props.error.message === "Network request failed") {
             dialog = false;
             this.setState({ visible: false });
@@ -182,7 +187,7 @@ class bookCarForm extends Component {
     this.setState({
       userId: userId
     });
-    this.props.getcartype();
+    // this.props.getcartype();
     // AsyncStorage.removeItem(mConstants.LOGIN_INFO);
   }
   componentWillMount() {
@@ -199,7 +204,7 @@ class bookCarForm extends Component {
     });
   }
   render() {
-    console.log(this.state.dateString);
+    console.log(this.state.dateString, timeH);
     var date = new Date();
     return (
       <Container>
@@ -230,10 +235,17 @@ class bookCarForm extends Component {
             </Text>
           </Body>
           <Right>
-            <Button style={{backgroundColor:"orange", height:30, justifyContent:"center", alignItems:"center"}}
-              onPress={()=> Linking.openURL(this.state.supPhone)} >
-              <Icon name={"ios-call"}/>
-              <Text style={{fontSize:16}}>1900-6744</Text>
+            <Button
+              style={{
+                backgroundColor: "orange",
+                height: 30,
+                justifyContent: "center",
+                alignItems: "center"
+              }}
+              onPress={() => Linking.openURL(this.state.supPhone)}
+            >
+              <Icon name={"ios-call"} />
+              <Text style={{ fontSize: 16 }}>1900-6744</Text>
             </Button>
           </Right>
         </Header>
@@ -407,7 +419,6 @@ class bookCarForm extends Component {
             dismissOnTouchOutside={false}
             height={315}
             width={deviceWidth - 15}
-            show={false}
           >
             <View style={{ justifyContent: "center", alignItems: "center" }}>
               <Image
@@ -431,7 +442,7 @@ class bookCarForm extends Component {
                   marginLeft: 10,
                   marginRight: 10
                 }}
-                onPress={() => this.popupDialog.dismiss()}
+                onPress={() => this._popupdismiss()}
               >
                 <Text style={{ fontWeight: "bold" }}>HOÀN TẤT</Text>
               </Button>
@@ -445,6 +456,14 @@ class bookCarForm extends Component {
 
   showAlert(title, content, button) {
     Alert.alert(title, content, button, { cancelable: false });
+  }
+
+  _popupdismiss() {
+    this.popupDialog.dismiss();
+    setTimeout(() => {
+      const navigation = this.props.navigation;
+      navigation.navigate("history");
+    }, 100);
   }
 
   _alertBook() {
@@ -476,10 +495,19 @@ class bookCarForm extends Component {
   }
 
   _book() {
-    if (!this.state.dateString){
+    if (!this.state.dateString) {
       var date = new Date();
       this.setState({
-        dateString: date.getFullYear() + "-" + (date.getMonth() + 1) + "-" + date.getDate() + " " + date.getHours() + ":" + date.getMinutes(),
+        dateString:
+          date.getFullYear() +
+          "-" +
+          (date.getMonth() + 1) +
+          "-" +
+          date.getDate() +
+          " " +
+          date.getHours() +
+          ":" +
+          date.getMinutes()
       });
     }
     var params = {};
@@ -806,7 +834,8 @@ class bookCarForm extends Component {
       startLng: lng,
       close: false,
       price: 0,
-      router: "hn"
+      router: "hn",
+      priceshow: 0
     });
   }
   _noiBai() {
@@ -823,7 +852,8 @@ class bookCarForm extends Component {
       stopLng: lng,
       open: false,
       price: 0,
-      router: "nb"
+      router: "nb",
+      priceshow: 0
     });
   }
 
