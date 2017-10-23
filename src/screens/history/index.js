@@ -22,7 +22,7 @@ import { connect } from "react-redux";
 import { Grid, Col } from "react-native-easy-grid";
 import CustomHeader from "../../components/CustomHeader";
 import { history } from "../../actions";
-
+import Spinner from "react-native-loading-spinner-overlay";
 import styles from "./styles";
 const back = require("../../Icon/PNG/Back.png");
 const dot = require("./dot.png");
@@ -33,14 +33,15 @@ class historyForm extends Component {
   constructor(props) {
     super(props);
     this.state = {
-      firstName: "An",
+      firstName: "",
       dataArray: "",
-      lastName: "Nguyễn Hoàng",
-      phoneNumber: "012364535345",
-      email: "annguyenhoang@gmail.com",
-      userId: "1234567",
+      lastName: "",
+      phoneNumber: "",
+      email: "",
+      userId: "",
       avartar: "http://www.novelupdates.com/img/noimagefound.jpg",
-      priceshow:"",
+      priceshow: "",
+      visible:true
     };
   }
 
@@ -50,10 +51,12 @@ class historyForm extends Component {
 
   componentWillReceiveProps(props) {
     if (props.items[0]) {
-      this.setState({ dataArray: props.items });
+      this.setState({ dataArray: props.items, visible:false });
       console.log("items", props.items);
       dataArray = props.items;
     } else {
+      this.setState({
+        visible:false })
       console.log("nodata");
     }
   }
@@ -64,9 +67,9 @@ class historyForm extends Component {
         BackHandler.exitApp();
         return true;
       } else {
-      navigation.navigate("bookCar");
-      return false;
-    }
+        navigation.navigate("bookCar");
+        return false;
+      }
     });
   }
 
@@ -79,19 +82,26 @@ class historyForm extends Component {
           <Content style={{ backgroundColor: "#fff" }}>
             {this._renderNodata()}
           </Content>
+          <Spinner visible={this.state.visible} />
         </Container>
       );
     } else {
       return (
         <Container style={styles.container}>
           {this._header(navigation)}
-          <Content style={{ backgroundColor: "#ffffff", marginBottom:-15}}>
-          <Image source={gradient} style={styles.gradient} resizeMode="cover" />
+          <Content style={{ backgroundColor: "#ffffff", marginBottom: -15 }}>
+            <Image
+              source={gradient}
+              style={styles.gradient}
+              resizeMode="cover"
+            />
             <List
               dataArray={this.state.dataArray}
               renderRow={this._renderrow.bind(this)}
             />
           </Content>
+
+          <Spinner visible={this.state.visible} />
         </Container>
       );
     }
@@ -102,7 +112,11 @@ class historyForm extends Component {
       <Header style={{ backgroundColor: "white" }}>
         <Left style={{ flex: 2 }}>
           <Button transparent onPress={() => navigation.navigate("bookCar")}>
-            <Image source={back} style={{width:30,height:30}} resizeMode="contain" />
+            <Image
+              source={back}
+              style={{ width: 30, height: 30 }}
+              resizeMode="contain"
+            />
           </Button>
         </Left>
         <Body style={{ flex: 6 }}>
@@ -126,9 +140,9 @@ class historyForm extends Component {
     var count = 0;
     price = price.toString().replace(/(\d)(?=(\d\d\d)+(?!\d))/g, "$1.");
     this.setState({
-      priceshow: price,
-    })
-    console.log("this.state.priceshow",this.state.priceshow)
+      priceshow: price
+    });
+    console.log("this.state.priceshow", this.state.priceshow);
     // return price
   }
   _renderrow(item) {
@@ -174,10 +188,10 @@ class historyForm extends Component {
     }
     var time = hourValue + ":" + minuteValue;
     var dateshow =
-      date.getDate() + "-" + date.getMonth() + "-" + date.getFullYear();
+      date.getDate() + "-" + (date.getMonth() + 1) + "-" + date.getFullYear();
     console.log(item.price.split(".")[0]);
     return (
-      <ListItem style={{borderColor:"white", marginLeft:0}}>
+      <ListItem style={{ borderColor: "white", marginLeft: 0 }}>
         <Body>
           <View
             style={{
@@ -195,7 +209,7 @@ class historyForm extends Component {
                 justifyContent: "flex-start"
               }}
             >
-              <Text style={{ color: "#31404B", fontSize: 16, marginLeft:10 }}>
+              <Text style={{ color: "#31404B", fontSize: 16, marginLeft: 10 }}>
                 {time} {dateshow}
               </Text>
             </View>
@@ -225,11 +239,7 @@ class historyForm extends Component {
               </Text>
             </View>
           </View>
-          <Image
-                source={gradient}
-                style={styles.gradient}
-                resizeMode="cover"
-              />
+          <Image source={gradient} style={styles.gradient} resizeMode="cover" />
         </Body>
       </ListItem>
     );
