@@ -114,7 +114,7 @@ class bookCarForm extends Component {
       priceshow: 0,
       dataArray: [],
       dialogShow: false,
-      supPhone: "tel: 19006744"
+      supPhone: "tel: 18001182"
     };
   }
   componentWillReceiveProps(props) {
@@ -245,7 +245,7 @@ class bookCarForm extends Component {
               onPress={() => Linking.openURL(this.state.supPhone)}
             >
               <Icon name={"ios-call"} />
-              <Text style={{ fontSize: 16 }}>1900-6744</Text>
+              <Text style={{ fontSize: 16 }}>1800-1182</Text>
             </Button>
           </Right>
         </Header>
@@ -419,6 +419,7 @@ class bookCarForm extends Component {
             dismissOnTouchOutside={false}
             height={315}
             width={deviceWidth - 15}
+            show={false}
           >
             <View style={{ justifyContent: "center", alignItems: "center" }}>
               <Image
@@ -442,7 +443,12 @@ class bookCarForm extends Component {
                   marginLeft: 10,
                   marginRight: 10
                 }}
-                onPress={() => this._popupdismiss()}
+                onPress={() => {
+                  this.popupDialog.dismiss();
+                  setTimeout(() => {
+                    this._popupdismiss();
+                  }, 1000);
+                  }}
               >
                 <Text style={{ fontWeight: "bold" }}>HOÀN TẤT</Text>
               </Button>
@@ -459,7 +465,6 @@ class bookCarForm extends Component {
   }
 
   _popupdismiss() {
-    this.popupDialog.dismiss();
     setTimeout(() => {
       const navigation = this.props.navigation;
       navigation.navigate("history");
@@ -714,8 +719,8 @@ class bookCarForm extends Component {
               onValueChange={val => this._upDate(val)}
               disabled={false}
               onTintColor="#31404B"
-              thumbTintColor="#ffffff"
-              tintColor="#b5b5b5"
+              thumbTintColor="#b5b5b5"
+              tintColor="#e1e1e1"
             />
           </View>
         </View>
