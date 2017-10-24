@@ -29,6 +29,11 @@ const dot = require("./dot.png");
 const gradient = require("./gradient.png");
 var dataArray = [];
 var mainScreen = false;
+import { NavigationActions } from "react-navigation";
+const backAction = NavigationActions.back({
+  key: "bookCar"
+});
+
 class historyForm extends Component {
   constructor(props) {
     super(props);
@@ -39,7 +44,7 @@ class historyForm extends Component {
       phoneNumber: "",
       email: "",
       userId: "",
-      avartar: "http://www.novelupdates.com/img/noimagefound.jpg",
+      avartar: "",
       priceshow: "",
       visible:true,
       disabled:false,
@@ -57,26 +62,28 @@ class historyForm extends Component {
       dataArray = props.items;
     } else {
       this.setState({
-        visible:false })
+        visible:false });
       console.log("nodata");
     }
   }
-  componentWillUnmount() {
+
+  componentWillUnMount() {
+    console.log(222);
     const navigation = this.props.navigation;
     BackHandler.addEventListener("hardwareBackPress", function() {
-      if (mainScreen) {
-        BackHandler.exitApp();
-        return true;
-      } else {
+      if (!mainScreen) {
+        console.log(444);
         navigation.navigate("Drawer");
-        return false;
+      } else {
+        console.log(333);
+        BackHandler.exitApp();
       }
     });
   }
 
   render() {
     const navigation = this.props.navigation;
-    if (!this.state.dataArray) {
+    if (!this.state.dataArray[0]) {
       return (
         <Container>
           {this._header(navigation)}
@@ -116,7 +123,7 @@ class historyForm extends Component {
           disabled= {this.state.disabled}
           onPress={() => {
             this.setState({disabled:true});
-            navigation.navigate("Drawer");
+            navigation.navigate("bookCar");
             }}>
             <Image
               source={back}

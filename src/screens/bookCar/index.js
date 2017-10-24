@@ -55,19 +55,19 @@ import { NavigationActions } from "react-navigation";
 var dismissKeyboard = require("dismissKeyboard");
 const deviceWidth = Dimensions.get("window").width;
 // const headerLogo = require("../../../assets/header-logo.png");
-var noiBaiLat = 21.2187149;
-var noiBaiLng = 105.8041709;
-var lat = 21.218714;
-var lng = 105.80417;
+const noiBaiLat = 21.2187149;
+const noiBaiLng = 105.8041709;
+const lat = 21.218714;
+const lng = 105.80417;
 var mainScreen = true;
 var name = "Sân bay Nội Bài";
 var timeH = new Date().getHours();
-var timeMi = new Date().getMinutes();
-var timeY = new Date().getFullYear();
-var timeMo = new Date().getMonth();
-var timeD = new Date().getDate();
+// var timeMi = new Date().getMinutes();
+// var timeY = new Date().getFullYear();
+// var timeMo = new Date().getMonth();
+// var timeD = new Date().getDate();
 var press = true;
-var sidebar = true;
+// var sidebar = true;
 var dialog = false;
 class bookCarForm extends Component {
   constructor(props) {
@@ -113,12 +113,25 @@ class bookCarForm extends Component {
       supPhone: "tel: 18001182"
     };
   }
+  async componentDidMount() {
+    this.popupDialog.dismiss();
+    var loginInfo = await AsyncStorage.getItem(mConstants.LOGIN_INFO);
+    var ObjloginInfo = JSON.parse(loginInfo);
+    var userId = ObjloginInfo.id;
+    this.setState({
+      userId: userId
+    });
+    // this.props.getcartype();
+  }
+
   componentWillReceiveProps(props) {
-    // if (props.cartypes[0]) {
-    //   this.setState({ dataArray: props.cartypes });
-    //   console.log("items", props.items);
-    // } else {
-    //   console.log("nodata");
+    //   if(props.cartypes){
+    //   if (props.cartypes[0]) {
+    //     this.setState({ dataArray: props.cartypes });
+    //     console.log("items", props.items);
+    //   } else {
+    //     console.log("nodata");
+    //   }
     // }
     console.log("props", props);
     if (dialog) {
@@ -152,7 +165,7 @@ class bookCarForm extends Component {
             dialog = false;
             this.setState({ visible: false });
             setTimeout(() => {
-              this.showAlert("Thất bại", "Đặt xe đặt xe thất bại", [
+              this.showAlert("Thất bại", "Đặt xe thất bại", [
                 {
                   text: "OK",
                   onPress: () => {
@@ -167,27 +180,17 @@ class bookCarForm extends Component {
     }
     console.log("123", props);
   }
-  async componentDidMount() {
-    this.popupDialog.dismiss();
-    var loginInfo = await AsyncStorage.getItem(mConstants.LOGIN_INFO);
-    var ObjloginInfo = JSON.parse(loginInfo);
-    var userId = ObjloginInfo.id;
-    this.setState({
-      userId: userId
-    });
-    // this.props.getcartype();
-    // AsyncStorage.removeItem(mConstants.LOGIN_INFO);
-  }
-  componentWillMount() {
+
+  componentWillUnMount() {
     console.log(222);
     const navigation = this.props.navigation;
     BackHandler.addEventListener("hardwareBackPress", function() {
-      if (mainScreen) {
+      if (!mainScreen) {
         console.log(444);
-        BackHandler.exitApp();
+        navigation.navigate("Drawer");
       } else {
         console.log(333);
-        navigation.navigate("bookCar");
+        BackHandler.exitApp();
       }
     });
   }
@@ -228,12 +231,12 @@ class bookCarForm extends Component {
                 backgroundColor: "orange",
                 height: 30,
                 justifyContent: "center",
-                alignItems: "center"
+                alignItems: "center",
               }}
               onPress={() => Linking.openURL(this.state.supPhone)}
             >
               <Icon name={"ios-call"} />
-              <Text style={{ fontSize: 16 }}>1800-1182</Text>
+              <Text style={{fontSize: 12, paddingRight:10 }}>1800-1182</Text>
             </Button>
           </Right>
         </Header>
@@ -258,7 +261,7 @@ class bookCarForm extends Component {
                 marginRight: 10,
                 flexDirection: "row",
                 marginTop: 5,
-                width: deviceWidth - 20
+                width: "100%" - 20
               }}
             >
               <Button
@@ -269,8 +272,8 @@ class bookCarForm extends Component {
                 onPress={() => this._haNoi()}
               >
                 <Text
-                  numberOfLines={2}
-                  style={{ color: this.state.textColor1 }}
+                  numberOfLines={1}
+                  style={{ color: this.state.textColor1, fontSize: 12 }}
                 >
                   Nội Bài -> Hà Nội
                 </Text>
@@ -282,7 +285,10 @@ class bookCarForm extends Component {
                 ]}
                 onPress={() => this._noiBai()}
               >
-                <Text style={{ color: this.state.textColor2 }}>
+                <Text
+                  numberOfLines={1}
+                  style={{ color: this.state.textColor2, fontSize: 12 }}
+                >
                   Hà Nội -> Nội Bài
                 </Text>
               </Button>
@@ -436,7 +442,7 @@ class bookCarForm extends Component {
                   setTimeout(() => {
                     this._popupdismiss();
                   }, 1000);
-                  }}
+                }}
               >
                 <Text style={{ fontWeight: "bold" }}>HOÀN TẤT</Text>
               </Button>
@@ -566,13 +572,17 @@ class bookCarForm extends Component {
             { marginLeft: 10, alignItems: "flex-start" }
           ]}
         >
-          <Text style={{ color: "#31404B", fontSize: 15 }}>Thời gian</Text>
+          <Text style={{ color: "#31404B" }}>Thời gian</Text>
         </View>
         <View
-          style={[
-            styles.TimePicker,
-            { marginRight: 10, alignItems: "flex-end" }
-          ]}
+          style={{
+            marginRight: 10,
+            alignItems: "flex-end",
+            height: 40,
+            justifyContent: "center",
+            flex: 3,
+            // backgroundColor: "red"
+          }}
         >
           <TouchableOpacity
             style={{
@@ -1037,7 +1047,7 @@ class bookCarForm extends Component {
                   var stringLat = details.geometry.location.lat.toString();
                   var splitLat = stringLat.split(".")[1].slice(0, 6);
                   var latitude = stringLat.split(".")[0] + "." + splitLat;
-                  var stringLng = details.geometry.location.lat.toString();
+                  var stringLng = details.geometry.location.lng.toString();
                   var splitLng = stringLng.split(".")[1].slice(0, 6);
                   var longitude = stringLng.split(".")[0] + "." + splitLng;
                   this._checklocation(data, details);
@@ -1157,7 +1167,7 @@ class bookCarForm extends Component {
                   var stringLat = details.geometry.location.lat.toString();
                   var splitLat = stringLat.split(".")[1].slice(0, 6);
                   var latitude = stringLat.split(".")[0] + "." + splitLat;
-                  var stringLng = details.geometry.location.lat.toString();
+                  var stringLng = details.geometry.location.lng.toString();
                   var splitLng = stringLng.split(".")[1].slice(0, 6);
                   var longitude = stringLng.split(".")[0] + "." + splitLng;
                   this._checklocation(data, details);
