@@ -60,15 +60,16 @@ class profileBookCarForm extends Component {
     };
   }
 
-  componentWillUnmount() {
+  componentWillUnMount() {
+    console.log(222);
     const navigation = this.props.navigation;
     BackHandler.addEventListener("hardwareBackPress", function() {
-      if (mainScreen) {
-        BackHandler.exitApp();
-        return true;
+      if (!mainScreen) {
+        console.log(444);
+        navigation.navigate("bookCar");
       } else {
-        navigation.navigate("Drawer");
-        return false;
+        console.log(333);
+        BackHandler.exitApp();
       }
     });
   }
@@ -128,7 +129,7 @@ class profileBookCarForm extends Component {
               disabled={this.state.disabled}
               onPress={() => {
                 this.setState({ disabled: true });
-                navigation.navigate("Drawer");
+                navigation.navigate("bookCar");
               }}
             >
               <Image

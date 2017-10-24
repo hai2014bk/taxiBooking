@@ -58,23 +58,25 @@ class loginAccForm extends Component {
     };
   }
   textInput: Any;
-   async componentDidMount() {
-    await AsyncStorage.setItem(
-      mConstants.FIRSTUSE,
-      JSON.stringify("firstUse"),
-      () => {
-        AsyncStorage.getItem(mConstants.FIRSTUSE, (err, result) => {
-          console.log("AsyncStorage_index_welcome", result);
-        });
-      }
-    );
-  }
-  componentWillUnmount() {
+  //  async componentDidMount() {
+  //   await AsyncStorage.setItem(
+  //     mConstants.FIRSTUSE,
+  //     JSON.stringify("firstUse"),
+  //     () => {
+  //       AsyncStorage.getItem(mConstants.FIRSTUSE, (err, result) => {
+  //         console.log("AsyncStorage_index_welcome", result);
+  //       });
+  //     }
+  //   );
+  // }
+  componentWillMount() {
     const navigation = this.props.navigation;
     BackHandler.addEventListener("hardwareBackPress", function() {
       if (mainScreen) {
+        console.log("main")
       BackHandler.exitApp();
       } else {
+        console.log("no main")
       navigation.navigate("Drawer");
       }
      });

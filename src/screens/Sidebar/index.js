@@ -23,6 +23,10 @@ const resetAction = NavigationActions.reset({
   index: 0,
   actions: [NavigationActions.navigate({ routeName: "loginAcc" })]
 });
+const resetActionProfile = NavigationActions.reset({
+  index: 0,
+  actions: [NavigationActions.navigate({ routeName: "profileBookCar" })]
+});
 class SideBar extends Component {
   constructor(props) {
     super(props);
@@ -83,6 +87,7 @@ class SideBar extends Component {
   // async componentDidMount() {
   //   var loginInfo = await AsyncStorage.getItem(mConstants.LOGIN_INFO);
   //   var ObjloginInfo = JSON.parse(loginInfo);
+  //   var avartar = "";
   //   if (ObjloginInfo.img_url) {
   //     avartar = ObjloginInfo.img_url;
   //   } else {
@@ -95,7 +100,7 @@ class SideBar extends Component {
   //     email: ObjloginInfo.email,
   //     avartar: avartar
   //   });
-    // AsyncStorage.removeItem(mConstants.LOGIN_INFO);
+  //   AsyncStorage.removeItem(mConstants.LOGIN_INFO);
   // }
   async componentWillReceiveProps(props) {
     // console.log("props", props.navigation);

@@ -149,10 +149,10 @@ export default {
   },
   chooseBtn: {
     flex: 1,
-    width:(deviceWidth/2) -10,
+    width:"50%" - 10,
     alignItems: "center",
     justifyContent: "center",
-    marginBottom: 10
+    marginBottom: 10,
   },
   viewBtn: {
     flex: 1,
