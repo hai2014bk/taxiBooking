@@ -85,7 +85,7 @@ export default class Setup extends Component {
             >
               <Image
                 source={logo}
-                style={{ width: 350, height: 350 }}
+                style={{ width: 330, height: 330 }}
                 resizeMode="contain"
               />
             </View>
