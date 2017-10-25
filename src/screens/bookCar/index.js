@@ -605,7 +605,7 @@ class bookCarForm extends Component {
     this.setState({ openTimePicker: false });
   }
 
-  handleDatePicked(date) {
+  async handleDatePicked(date) {
     console.log(date);
     var minuteValue = "";
     var hourValue = "";
@@ -646,7 +646,7 @@ class bookCarForm extends Component {
       hourValue = date.getHours();
     }
     console.log("length", hourValue);
-    this.setState({
+    await this.setState({
       dateString:
         date.getFullYear() +
         "-" +
@@ -678,6 +678,7 @@ class bookCarForm extends Component {
       this.state.start.trim() != "Chọn điểm đón" &&
       this.state.stop.trim() != "Chọn điểm đến"
     ) {
+      console.log("zo")
       if (this.state.router == "nb") {
         if (this.state.locate == "noi") {
           this._checkTimeNoi(this.state.timeH);
@@ -685,6 +686,7 @@ class bookCarForm extends Component {
           this._checkTimeNgoai(this.state.timeH);
         }
       } else {
+        console.log("co")
         if (this.state.locate == "noi") {
           this._checkTimeNoinb(this.state.timeH);
         } else {
@@ -1559,13 +1561,14 @@ class bookCarForm extends Component {
         break;
       } else {
         if (
-          details.formatted_address.split(",")[i].trim() == "Hoàn Kiếm" ||
-          details.formatted_address.split(",")[i].trim() == "Tây Hồ" ||
-          details.formatted_address.split(",")[i].trim() == "Đống Đa" ||
-          details.formatted_address.split(",")[i].trim() == "Ba Đình" ||
-          details.formatted_address.split(",")[i].trim() == "Cầu Giấy" ||
-          details.formatted_address.split(",")[i].trim() == "Long Biên" ||
-          details.formatted_address.split(",")[i].trim() == "Từ Liêm"
+          details.formatted_address.split(",")[i].trim() === "Hoàn Kiếm" ||
+          details.formatted_address.split(",")[i].trim() === "Tây Hồ" ||
+          details.formatted_address.split(",")[i].trim() === "Đống Đa" ||
+          details.formatted_address.split(",")[i].trim() === "Ba Đình" ||
+          details.formatted_address.split(",")[i].trim() === "Cầu Giấy" ||
+          details.formatted_address.split(",")[i].trim() === "Long Biên" ||
+          details.formatted_address.split(",")[i].trim() === "Thanh Xuân" ||
+          details.formatted_address.split(",")[i].trim() === "Hai Bà Trưng"
         ) {
           console.log("data", details.formatted_address.split(",")[i]);
           this.setState({ locate: "noi" });
