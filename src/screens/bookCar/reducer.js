@@ -1,10 +1,12 @@
 const initialState = {
   isLoading: true,
   hasErrored: false,
-  items: []
+  items: [],
+  cartypes: [],
 };
 
 export default function(state: any = initialState, action: Function) {
+  console.log("reducerBookcar")
   switch (action.type) {
     case "BOOKCAR_ERROR": console.log("bookcar error",action.error)
       return { ...state, kind:"error", error: action.error };

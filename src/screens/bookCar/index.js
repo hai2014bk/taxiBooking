@@ -61,7 +61,7 @@ const lat = 21.218714;
 const lng = 105.80417;
 var mainScreen = true;
 var name = "Sân bay Nội Bài";
-var timeH = new Date().getHours();
+// var timeH = new Date().getHours();
 // var timeMi = new Date().getMinutes();
 // var timeY = new Date().getFullYear();
 // var timeMo = new Date().getMonth();
@@ -69,6 +69,7 @@ var timeH = new Date().getHours();
 var press = true;
 // var sidebar = true;
 var dialog = false;
+var hanoi = "";
 class bookCarForm extends Component {
   constructor(props) {
     super(props);
@@ -100,7 +101,7 @@ class bookCarForm extends Component {
       car_type_id: 1,
       dateString: "",
       note: "",
-      timeH: timeH,
+      timeH: new Date().getHours(),
       distance: 0,
       duration: 0,
       visible: false,
@@ -195,7 +196,8 @@ class bookCarForm extends Component {
     });
   }
   render() {
-    console.log(this.state.dateString, timeH);
+    console.log("render");
+    // console.log(this.state.dateString, timeH);
     var date = new Date();
     return (
       <Container>
@@ -231,12 +233,12 @@ class bookCarForm extends Component {
                 backgroundColor: "orange",
                 height: 30,
                 justifyContent: "center",
-                alignItems: "center",
+                alignItems: "center"
               }}
               onPress={() => Linking.openURL(this.state.supPhone)}
             >
               <Icon name={"ios-call"} />
-              <Text style={{fontSize: 12, paddingRight:10 }}>1800-1182</Text>
+              <Text style={{ fontSize: 12, paddingRight: 10 }}>1800-1182</Text>
             </Button>
           </Right>
         </Header>
@@ -269,7 +271,7 @@ class bookCarForm extends Component {
                   styles.chooseBtn,
                   { backgroundColor: this.state.selectedTab1 }
                 ]}
-                onPress={() => this._haNoi()}
+                onPress={() => this._routerSelect(true)}
               >
                 <Text
                   numberOfLines={1}
@@ -283,7 +285,7 @@ class bookCarForm extends Component {
                   styles.chooseBtn,
                   { backgroundColor: this.state.selectedTab2 }
                 ]}
-                onPress={() => this._noiBai()}
+                onPress={() => this._routerSelect(false)}
               >
                 <Text
                   numberOfLines={1}
@@ -381,7 +383,7 @@ class bookCarForm extends Component {
               mode="datetime"
               minimumDate={date}
               isVisible={this.state.openTimePicker}
-              onConfirm={date => this.handleDatePicked(date)}
+              onConfirm={dates => this.handleDatePicked(dates)}
               onCancel={() => this.hideTimePicker()}
             />
           </View>
@@ -510,7 +512,7 @@ class bookCarForm extends Component {
       });
     }
     var params = {};
-    if (this.state.start.trim() == "Chọn điểm đón") {
+    if (this.state.start.trim() === "Chọn điểm đón") {
       this.setState({ visible: false });
       setTimeout(() => {
         this.showAlert("Chú ý", "Vui lòng chọn điểm đón", [
@@ -523,7 +525,7 @@ class bookCarForm extends Component {
         ]);
       }, 100);
     }
-    if (this.state.stop.trim() == "Chọn điểm đến") {
+    if (this.state.stop.trim() === "Chọn điểm đến") {
       this.setState({ visible: false });
       setTimeout(() => {
         this.showAlert("Chú ý", "Vui lòng chọn điểm đến", [
@@ -537,8 +539,8 @@ class bookCarForm extends Component {
       }, 100);
     }
     if (
-      this.state.start.trim() != "Chọn điểm đón" &&
-      this.state.stop.trim() != "Chọn điểm đến"
+      this.state.start.trim() !== "Chọn điểm đón" &&
+      this.state.stop.trim() !== "Chọn điểm đến"
     ) {
       params.user = this.state.userId;
       params.from_text = this.state.start;
@@ -580,7 +582,7 @@ class bookCarForm extends Component {
             alignItems: "flex-end",
             height: 40,
             justifyContent: "center",
-            flex: 3,
+            flex: 3
             // backgroundColor: "red"
           }}
         >
@@ -605,48 +607,63 @@ class bookCarForm extends Component {
     this.setState({ openTimePicker: false });
   }
 
-  async handleDatePicked(date) {
-    console.log(date);
+  _handleMinute(date, minute) {
+    if (minute) {
+      if (
+        date.getMinutes() === 0 ||
+        date.getMinutes() === 1 ||
+        date.getMinutes() === 2 ||
+        date.getMinutes() === 3 ||
+        date.getMinutes() === 4 ||
+        date.getMinutes() === 5 ||
+        date.getMinutes() === 6 ||
+        date.getMinutes() === 7 ||
+        date.getMinutes() === 8 ||
+        date.getMinutes() === 9
+      ) {
+        return true;
+      } else {
+        return false;
+      }
+    } else {
+      if (
+        date.getHours() === 0 ||
+        date.getHours() === 1 ||
+        date.getHours() === 2 ||
+        date.getHours() === 3 ||
+        date.getHours() === 4 ||
+        date.getHours() === 5 ||
+        date.getHours() === 6 ||
+        date.getHours() === 7 ||
+        date.getHours() === 8 ||
+        date.getHours() === 9
+      ) {
+        return true;
+      } else {
+        return false;
+      }
+    }
+  }
+
+  handleDatePicked(date) {
+    // console.log(date);
     var minuteValue = "";
     var hourValue = "";
-    if (
-      date.getMinutes() == 0 ||
-      date.getMinutes() == 1 ||
-      date.getMinutes() == 2 ||
-      date.getMinutes() == 3 ||
-      date.getMinutes() == 4 ||
-      date.getMinutes() == 5 ||
-      date.getMinutes() == 6 ||
-      date.getMinutes() == 7 ||
-      date.getMinutes() == 8 ||
-      date.getMinutes() == 9
-    ) {
-      console.log("123456789");
+    if (this._handleMinute(date, true)) {
+      // console.log("123456789");
       minuteValue = "0" + date.getMinutes().toString();
     } else {
-      console.log("#123456789");
+      // console.log("#123456789");
       minuteValue = date.getMinutes();
     }
-    if (
-      date.getHours() == 0 ||
-      date.getHours() == 1 ||
-      date.getHours() == 2 ||
-      date.getHours() == 3 ||
-      date.getHours() == 4 ||
-      date.getHours() == 5 ||
-      date.getHours() == 6 ||
-      date.getHours() == 7 ||
-      date.getHours() == 8 ||
-      date.getHours() == 9
-    ) {
-      console.log("123456789");
+    if (this._handleMinute(date, false)) {
+      // console.log("123456789");
       hourValue = "0" + date.getHours().toString();
     } else {
-      console.log("#123456789");
       hourValue = date.getHours();
     }
-    console.log("length", hourValue);
-    await this.setState({
+    // console.log("length", hourValue);
+    this.setState({
       dateString:
         date.getFullYear() +
         "-" +
@@ -657,11 +674,6 @@ class bookCarForm extends Component {
         date.getHours() +
         ":" +
         date.getMinutes(),
-      timeH: date.getHours(),
-      validateWorkingTime: false,
-      time: date.getHours() + ":" + date.getMinutes(),
-      date:
-        date.getDate() + "/" + (date.getMonth() + 1) + "/" + date.getFullYear(),
       dateStringshow:
         hourValue +
         ":" +
@@ -675,22 +687,22 @@ class bookCarForm extends Component {
     });
     this.hideTimePicker();
     if (
-      this.state.start.trim() != "Chọn điểm đón" &&
-      this.state.stop.trim() != "Chọn điểm đến"
+      this.state.start.trim() !== "Chọn điểm đón" &&
+      this.state.stop.trim() !== "Chọn điểm đến"
     ) {
-      console.log("zo")
-      if (this.state.router == "nb") {
-        if (this.state.locate == "noi") {
-          this._checkTimeNoi(this.state.timeH);
+      // console.log("zo");
+      if (this.state.router === "nb") {
+        if (this.state.locate === "noi") {
+          this._checkTimeNoi(date.getHours());
         } else {
-          this._checkTimeNgoai(this.state.timeH);
+          this._checkTimeNgoai(date.getHours());
         }
       } else {
-        console.log("co")
-        if (this.state.locate == "noi") {
-          this._checkTimeNoinb(this.state.timeH);
+        // console.log("co");
+        if (this.state.locate === "noi") {
+          this._checkTimeNoinb(date.getHours());
         } else {
-          this._checkTimeNgoainb(this.state.timeH);
+          this._checkTimeNgoainb(date.getHours());
         }
       }
     }
@@ -752,10 +764,10 @@ class bookCarForm extends Component {
   }
 
   priceHandle(price) {
-    var count = 0;
-    price = price.toString().replace(/(\d)(?=(\d\d\d)+(?!\d))/g, "$1.");
+    var priceshow = price.toString().replace(/(\d)(?=(\d\d\d)+(?!\d))/g, "$1.");
     this.setState({
-      priceshow: price
+      priceshow: priceshow,
+      price: price
     });
     // return price
   }
@@ -783,17 +795,17 @@ class bookCarForm extends Component {
         roundTrip: true
       });
       if (
-        this.state.start.trim() != "Chọn điểm đón" &&
-        this.state.stop.trim() != "Chọn điểm đến"
+        this.state.start.trim() !== "Chọn điểm đón" &&
+        this.state.stop.trim() !== "Chọn điểm đến"
       ) {
-        if (this.state.router == "nb") {
-          if (this.state.locate == "noi") {
+        if (this.state.router === "nb") {
+          if (this.state.locate === "noi") {
             this._checkTimeNoi(this.state.timeH);
           } else {
             this._checkTimeNgoai(this.state.timeH);
           }
         } else {
-          if (this.state.locate == "noi") {
+          if (this.state.locate === "noi") {
             this._checkTimeNoinb(this.state.timeH);
           } else {
             this._checkTimeNgoainb(this.state.timeH);
@@ -805,17 +817,17 @@ class bookCarForm extends Component {
         roundTrip: false
       });
       if (
-        this.state.start.trim() != "Chọn điểm đón" &&
-        this.state.stop.trim() != "Chọn điểm đến"
+        this.state.start.trim() !== "Chọn điểm đón" &&
+        this.state.stop.trim() !== "Chọn điểm đến"
       ) {
-        if (this.state.router == "nb") {
-          if (this.state.locate == "noi") {
+        if (this.state.router === "nb") {
+          if (this.state.locate === "noi") {
             this._checkTimeNoi(this.state.timeH);
           } else {
             this._checkTimeNgoai(this.state.timeH);
           }
         } else {
-          if (this.state.locate == "noi") {
+          if (this.state.locate === "noi") {
             this._checkTimeNoinb(this.state.timeH);
           } else {
             this._checkTimeNgoainb(this.state.timeH);
@@ -825,115 +837,63 @@ class bookCarForm extends Component {
     }
   }
 
-  _haNoi() {
-    this.setState({
-      selectedTab1: "#31404B",
-      selectedTab2: "#f4f2f2",
-      textColor1: "white",
-      textColor2: "black",
-      disabledstart: true,
-      disabledstop: false,
-      start: name,
-      stop: "Chọn điểm đến",
-      startLat: lat,
-      startLng: lng,
-      close: false,
-      price: 0,
-      router: "hn",
-      priceshow: 0
-    });
-  }
-  _noiBai() {
-    this.setState({
-      selectedTab2: "#31404B",
-      textColor2: "white",
-      selectedTab1: "#f4f2f2",
-      textColor1: "black",
-      disabledstart: false,
-      disabledstop: true,
-      start: "Chọn điểm đón",
-      stop: name,
-      stopLat: lat,
-      stopLng: lng,
-      open: false,
-      price: 0,
-      router: "nb",
-      priceshow: 0
-    });
-  }
-
-  async _color4() {
-    await this.setState({
-      car4: car4Y,
-      car7: car7W,
-      car16: car16W,
-      car_type_id: 1
-    });
-    if (
-      this.state.start.trim() != "Chọn điểm đón" &&
-      this.state.stop.trim() != "Chọn điểm đến"
-    ) {
-      if (this.state.router == "nb") {
-        if (this.state.locate == "noi") {
-          this._checkTimeNoi(this.state.timeH);
-        } else {
-          this._checkTimeNgoai(this.state.timeH);
-        }
-      } else {
-        if (this.state.locate == "noi") {
-          this._checkTimeNoinb(this.state.timeH);
-        } else {
-          this._checkTimeNgoainb(this.state.timeH);
-        }
-      }
+  _routerSelect(noibaihanoi) {
+    if (noibaihanoi) {
+      this.setState({
+        selectedTab1: "#31404B",
+        selectedTab2: "#f4f2f2",
+        textColor1: "white",
+        textColor2: "black",
+        disabledstart: true,
+        disabledstop: false,
+        start: name,
+        stop: "Chọn điểm đến",
+        startLat: lat,
+        startLng: lng,
+        router: "hn",
+        price: 0,
+        priceshow: 0,
+        close: false
+      });
+    } else {
+      this.setState({
+        selectedTab1: "#f4f2f2",
+        selectedTab2: "#31404B",
+        textColor1: "black",
+        textColor2: "white",
+        disabledstart: false,
+        disabledstop: true,
+        start: "Chọn điểm đón",
+        stop: name,
+        stopLat: lat,
+        stopLng: lng,
+        price: 0,
+        router: "nb",
+        priceshow: 0,
+        open: false
+      });
     }
   }
 
-  async _color7() {
+  async _color(car4, car7, car16, car_type_id) {
     await this.setState({
-      car4: car4W,
-      car7: car7Y,
-      car16: car16W,
-      car_type_id: 2
+      car4: car4,
+      car7: car7,
+      car16: car16,
+      car_type_id: car_type_id
     });
     if (
-      this.state.start.trim() != "Chọn điểm đón" &&
-      this.state.stop.trim() != "Chọn điểm đến"
+      this.state.start.trim() !== "Chọn điểm đón" &&
+      this.state.stop.trim() !== "Chọn điểm đến"
     ) {
-      if (this.state.router == "nb") {
-        if (this.state.locate == "noi") {
+      if (this.state.router === "nb") {
+        if (this.state.locate === "noi") {
           this._checkTimeNoi(this.state.timeH);
         } else {
           this._checkTimeNgoai(this.state.timeH);
         }
       } else {
-        if (this.state.locate == "noi") {
-          this._checkTimeNoinb(this.state.timeH);
-        } else {
-          this._checkTimeNgoainb(this.state.timeH);
-        }
-      }
-    }
-  }
-  async _color16() {
-    await this.setState({
-      car4: car4W,
-      car7: car7W,
-      car16: car16Y,
-      car_type_id: 4
-    });
-    if (
-      this.state.start.trim() != "Chọn điểm đón" &&
-      this.state.stop.trim() != "Chọn điểm đến"
-    ) {
-      if (this.state.router == "nb") {
-        if (this.state.locate == "noi") {
-          this._checkTimeNoi(this.state.timeH);
-        } else {
-          this._checkTimeNgoai(this.state.timeH);
-        }
-      } else {
-        if (this.state.locate == "noi") {
+        if (this.state.locate === "noi") {
           this._checkTimeNoinb(this.state.timeH);
         } else {
           this._checkTimeNgoainb(this.state.timeH);
@@ -945,7 +905,10 @@ class bookCarForm extends Component {
   _cartype() {
     return (
       <View style={styles.containerCartype}>
-        <TouchableOpacity onPress={() => this._color4()} style={styles.cartype}>
+        <TouchableOpacity
+          onPress={() => this._color(car4Y, car7W, car16W, 1)}
+          style={styles.cartype}
+        >
           <Image
             source={this.state.car4}
             style={{ height: "60%", width: "100%" }}
@@ -953,7 +916,10 @@ class bookCarForm extends Component {
           />
           <Text style={{ color: this.state.color4 }}>5 Chỗ</Text>
         </TouchableOpacity>
-        <TouchableOpacity onPress={() => this._color7()} style={styles.cartype}>
+        <TouchableOpacity
+          onPress={() => this._color(car4W, car7Y, car16W, 2)}
+          style={styles.cartype}
+        >
           <Image
             source={this.state.car7}
             style={{ height: "60%", width: "100%" }}
@@ -962,7 +928,7 @@ class bookCarForm extends Component {
           <Text style={{ color: this.state.color7 }}>7 Chỗ</Text>
         </TouchableOpacity>
         <TouchableOpacity
-          onPress={() => this._color16()}
+          onPress={() => this._color(car4W, car7W, car16Y, 4)}
           style={styles.cartype}
         >
           <Image
@@ -975,9 +941,9 @@ class bookCarForm extends Component {
       </View>
     );
   }
-  _startPoint() {
-    console.log("click");
-  }
+  // _startPoint() {
+  //   console.log("click");
+  // }
   _placeStartPicker() {
     return (
       <Container style={{ backgroundColor: "white" }}>
@@ -1036,40 +1002,8 @@ class bookCarForm extends Component {
               "administrative_area_level_3"
             ]}
             onPress={(data, details) => {
-              console.log(data, details);
-              this._checkHanoi(data, details);
-              console.log(this.state.hanoi);
-              if (this.state.hanoi == "hanoi") {
-                if (
-                  details.geometry.location.lat == noiBaiLat &&
-                  details.geometry.location.lng == noiBaiLng
-                ) {
-                  this._haNoi();
-                } else {
-                  var stringLat = details.geometry.location.lat.toString();
-                  var splitLat = stringLat.split(".")[1].slice(0, 6);
-                  var latitude = stringLat.split(".")[0] + "." + splitLat;
-                  var stringLng = details.geometry.location.lng.toString();
-                  var splitLng = stringLng.split(".")[1].slice(0, 6);
-                  var longitude = stringLng.split(".")[0] + "." + splitLng;
-                  this._checklocation(data, details);
-                  this.setState({
-                    start: details.formatted_address,
-                    startLat: latitude,
-                    startLng: longitude,
-                    close: false
-                  });
-                  console.log(
-                    this.state.startLat,
-                    this.state.startLng,
-                    this.state.stopLat,
-                    this.state.stopLng
-                  );
-                }
-              } else {
-                this.setState({
-                  close: false
-                });
+              this._checkHanoi(data, details, true);
+              if (!this.state.hanoi) {
                 setTimeout(() => {
                   this.showAlert(
                     "Thông báo",
@@ -1156,34 +1090,8 @@ class bookCarForm extends Component {
               "administrative_area_level_3"
             ]}
             onPress={(data, details) => {
-              console.log(data, details);
-              this._checkHanoi(data, details);
-              console.log(this.state.hanoi);
-              if (this.state.hanoi == "hanoi") {
-                if (
-                  details.geometry.location.lat == noiBaiLat &&
-                  details.geometry.location.lng == noiBaiLng
-                ) {
-                  this._noiBai();
-                } else {
-                  var stringLat = details.geometry.location.lat.toString();
-                  var splitLat = stringLat.split(".")[1].slice(0, 6);
-                  var latitude = stringLat.split(".")[0] + "." + splitLat;
-                  var stringLng = details.geometry.location.lng.toString();
-                  var splitLng = stringLng.split(".")[1].slice(0, 6);
-                  var longitude = stringLng.split(".")[0] + "." + splitLng;
-                  this._checklocation(data, details);
-                  this.setState({
-                    stop: details.formatted_address,
-                    stopLat: latitude,
-                    stopLng: longitude,
-                    open: false
-                  });
-                }
-              } else {
-                this.setState({
-                  open: false
-                });
+              this._checkHanoi(data, details, false);
+              if (!this.state.hanoi) {
                 setTimeout(() => {
                   this.showAlert(
                     "Thông báo",
@@ -1211,22 +1119,29 @@ class bookCarForm extends Component {
       </Container>
     );
   }
-  _checkTimeNoi(timeH) {
-    console.log(timeH, "adasdasdasd");
+  _checkNightTime(timeH) {
     if (
-      timeH == 22 ||
-      timeH == 23 ||
-      timeH == 0 ||
-      timeH == 2 ||
-      timeH == 3 ||
-      timeH == 4 ||
-      timeH == 5 ||
-      timeH == 6
+      timeH === 22 ||
+      timeH === 23 ||
+      timeH === 0 ||
+      timeH === 2 ||
+      timeH === 3 ||
+      timeH === 4 ||
+      timeH === 5 ||
+      timeH === 6
     ) {
-      if (this.state.car_type_id == 1) {
+      return true;
+    } else {
+      return false;
+    }
+  }
+
+  _checkTimeNoi(timeH) {
+    // console.log(timeH, "adasdasdasd");
+    if (this._checkNightTime(timeH)) {
+      if (this.state.car_type_id === 1) {
         if (!this.state.roundTrip) {
-          this.setState({ price: 200000 });
-          this.priceHandle(this.state.price);
+          this.priceHandle(200000);
           console.log("1");
         } else {
           this.setState({ price: 480000 });
@@ -1234,59 +1149,49 @@ class bookCarForm extends Component {
           console.log("1_1");
         }
       }
-      if (this.state.car_type_id == 2) {
+      if (this.state.car_type_id === 2) {
         if (!this.state.roundTrip) {
-          this.setState({ price: 230000 });
-          this.priceHandle(this.state.price);
+          this.priceHandle(230000);
           console.log("2");
         } else {
-          this.setState({ price: 540000 });
-          this.priceHandle(this.state.price);
+          this.priceHandle(540000);
           console.log("2_1");
         }
       }
-      if (this.state.car_type_id == 4) {
+      if (this.state.car_type_id === 4) {
         if (!this.state.roundTrip) {
-          this.setState({ price: 400000 });
-          this.priceHandle(this.state.price);
+          this.priceHandle(400000);
           console.log("3");
         } else {
-          this.setState({ price: 850000 });
-          this.priceHandle(this.state.price);
+          this.priceHandle(850000);
           console.log("3_1");
         }
       }
     } else {
-      if (this.state.car_type_id == 1) {
+      if (this.state.car_type_id === 1) {
         if (!this.state.roundTrip) {
-          this.setState({ price: 170000 });
-          this.priceHandle(this.state.price);
+          this.priceHandle(170000);
           console.log("4");
         } else {
-          this.setState({ price: 420000 });
-          this.priceHandle(this.state.price);
+          this.priceHandle(420000);
           console.log("4_1");
         }
       }
-      if (this.state.car_type_id == 2) {
+      if (this.state.car_type_id === 2) {
         if (!this.state.roundTrip) {
-          this.setState({ price: 200000 });
-          this.priceHandle(this.state.price);
+          this.priceHandle(200000);
           console.log("5");
         } else {
-          this.setState({ price: 480000 });
-          this.priceHandle(this.state.price);
+          this.priceHandle(480000);
           console.log("5_1");
         }
       }
-      if (this.state.car_type_id == 4) {
+      if (this.state.car_type_id === 4) {
         if (!this.state.roundTrip) {
-          this.setState({ price: 350000 });
-          this.priceHandle(this.state.price);
+          this.priceHandle(350000);
           console.log("6");
         } else {
-          this.setState({ price: 750000 });
-          this.priceHandle(this.state.price);
+          this.priceHandle(750000);
           console.log("6_1");
         }
       }
@@ -1294,80 +1199,59 @@ class bookCarForm extends Component {
   }
 
   _checkTimeNgoai(timeH) {
-    if (
-      timeH == 22 ||
-      timeH == 23 ||
-      timeH == 0 ||
-      timeH == 2 ||
-      timeH == 3 ||
-      timeH == 4 ||
-      timeH == 5 ||
-      timeH == 6
-    ) {
-      if (this.state.car_type_id == 1) {
+    if (this._checkNightTime(timeH)) {
+      if (this.state.car_type_id === 1) {
         if (!this.state.roundTrip) {
-          this.setState({ price: 230000 });
-          this.priceHandle(this.state.price);
+          this.priceHandle(230000);
           console.log("7");
         } else {
-          this.setState({ price: 540000 });
-          this.priceHandle(this.state.price);
+          this.priceHandle(540000);
           console.log("7_1");
         }
       }
-      if (this.state.car_type_id == 2) {
+      if (this.state.car_type_id === 2) {
         if (!this.state.roundTrip) {
-          this.setState({ price: 260000 });
-          this.priceHandle(this.state.price);
+          this.priceHandle(260000);
           console.log("8");
         } else {
-          this.setState({ price: 600000 });
-          this.priceHandle(this.state.price);
+          this.priceHandle(600000);
           console.log("8_1");
         }
       }
-      if (this.state.car_type_id == 4) {
+      if (this.state.car_type_id === 4) {
         if (!this.state.roundTrip) {
-          this.setState({ price: 450000 });
-          this.priceHandle(this.state.price);
+          this.priceHandle(600000);
           console.log("9");
         } else {
-          this.setState({ price: 950000 });
-          this.priceHandle(this.state.price);
+          this.priceHandle(950000);
           console.log("9_1");
         }
       }
     } else {
-      if (this.state.car_type_id == 1) {
+      if (this.state.car_type_id === 1) {
         if (!this.state.roundTrip) {
-          this.setState({ price: 200000 });
-          this.priceHandle(this.state.price);
+          this.priceHandle(200000);
           console.log("10");
         } else {
-          this.setState({ price: 480000 });
-          this.priceHandle(this.state.price);
+          this.priceHandle(480000);
           console.log("10_1");
         }
       }
-      if (this.state.car_type_id == 2) {
+      if (this.state.car_type_id === 2) {
         if (!this.state.roundTrip) {
-          this.setState({ price: 230000 });
-          this.priceHandle(this.state.price);
+          this.priceHandle(230000);
           console.log("11");
         } else {
-          this.setState({ price: 540000 });
-          this.priceHandle(this.state.price);
+          this.priceHandle(540000);
           console.log("11_1");
         }
       }
-      if (this.state.car_type_id == 4) {
+      if (this.state.car_type_id === 4) {
         if (!this.state.roundTrip) {
-          this.setState({ price: 400000 });
-          this.priceHandle(this.state.price);
+          this.priceHandle(400000);
           console.log("12");
         } else {
-          this.setState({ price: 850000 });
-          this.priceHandle(this.state.price);
+          this.priceHandle(850000);
           console.log("12_1");
         }
       }
@@ -1375,80 +1259,59 @@ class bookCarForm extends Component {
   }
 
   _checkTimeNoinb(timeH) {
-    if (
-      timeH == 22 ||
-      timeH == 23 ||
-      timeH == 0 ||
-      timeH == 2 ||
-      timeH == 3 ||
-      timeH == 4 ||
-      timeH == 5 ||
-      timeH == 6
-    ) {
-      if (this.state.car_type_id == 1) {
+    if (this._checkNightTime(timeH)) {
+      if (this.state.car_type_id === 1) {
         if (!this.state.roundTrip) {
-          this.setState({ price: 300000 });
-          this.priceHandle(this.state.price);
+          this.priceHandle(300000);
           console.log("13");
         } else {
-          this.setState({ price: 480000 });
-          this.priceHandle(this.state.price);
+          this.priceHandle(480000);
           console.log("13_1");
         }
       }
-      if (this.state.car_type_id == 2) {
+      if (this.state.car_type_id === 2) {
         if (!this.state.roundTrip) {
-          this.setState({ price: 330000 });
-          this.priceHandle(this.state.price);
+          this.priceHandle(330000);
           console.log("14");
         } else {
-          this.setState({ price: 540000 });
-          this.priceHandle(this.state.price);
+          this.priceHandle(540000);
           console.log("14_1");
         }
       }
-      if (this.state.car_type_id == 4) {
+      if (this.state.car_type_id === 4) {
         if (!this.state.roundTrip) {
-          this.setState({ price: 500000 });
-          this.priceHandle(this.state.price);
+          this.priceHandle(500000);
           console.log("15");
         } else {
-          this.setState({ price: 850000 });
-          this.priceHandle(this.state.price);
+          this.priceHandle(850000);
           console.log("15_1");
         }
       }
     } else {
-      if (this.state.car_type_id == 1) {
+      if (this.state.car_type_id === 1) {
         if (!this.state.roundTrip) {
-          this.setState({ price: 270000 });
-          this.priceHandle(this.state.price);
+          this.priceHandle(270000);
           console.log("16");
         } else {
-          this.setState({ price: 420000 });
-          this.priceHandle(this.state.price);
+          this.priceHandle(420000);
           console.log("16_1");
         }
       }
-      if (this.state.car_type_id == 2) {
+      if (this.state.car_type_id === 2) {
         if (!this.state.roundTrip) {
-          this.setState({ price: 300000 });
-          this.priceHandle(this.state.price);
+          this.priceHandle(300000);
           console.log("17");
         } else {
-          this.setState({ price: 480000 });
-          this.priceHandle(this.state.price);
+          this.priceHandle(480000);
           console.log("17_1");
         }
       }
-      if (this.state.car_type_id == 4) {
+      if (this.state.car_type_id === 4) {
         if (!this.state.roundTrip) {
-          this.setState({ price: 450000 });
-          this.priceHandle(this.state.price);
+          this.priceHandle(450000);
           console.log("18");
         } else {
-          this.setState({ price: 750000 });
-          this.priceHandle(this.state.price);
+          this.priceHandle(750000);
           console.log("18_1");
         }
       }
@@ -1456,142 +1319,220 @@ class bookCarForm extends Component {
   }
 
   _checkTimeNgoainb(timeH) {
-    if (
-      timeH == 22 ||
-      timeH == 23 ||
-      timeH == 0 ||
-      timeH == 2 ||
-      timeH == 3 ||
-      timeH == 4 ||
-      timeH == 5 ||
-      timeH == 6
-    ) {
-      if (this.state.car_type_id == 1) {
+    if (this._checkNightTime(timeH)) {
+      if (this.state.car_type_id === 1) {
         if (!this.state.roundTrip) {
-          this.setState({ price: 330000 });
-          this.priceHandle(this.state.price);
+          this.priceHandle(330000);
           console.log("19");
         } else {
-          this.setState({ price: 540000 });
-          this.priceHandle(this.state.price);
+          this.priceHandle(540000);
           console.log("19_1");
         }
       }
-      if (this.state.car_type_id == 2) {
+      if (this.state.car_type_id === 2) {
         if (!this.state.roundTrip) {
-          this.setState({ price: 360000 });
-          this.priceHandle(this.state.price);
+          this.priceHandle(360000);
           console.log("20");
         } else {
-          this.setState({ price: 600000 });
-          this.priceHandle(this.state.price);
+          this.priceHandle(600000);
           console.log("20_1");
         }
       }
-      if (this.state.car_type_id == 4) {
+      if (this.state.car_type_id === 4) {
         if (!this.state.roundTrip) {
-          this.setState({ price: 550000 });
-          this.priceHandle(this.state.price);
+          this.priceHandle(550000);
           console.log("21");
         } else {
-          this.setState({ price: 950000 });
-          this.priceHandle(this.state.price);
+          this.priceHandle(950000);
           console.log("21_1");
         }
       }
     } else {
-      if (this.state.car_type_id == 1) {
+      if (this.state.car_type_id === 1) {
         if (!this.state.roundTrip) {
-          this.setState({ price: 300000 });
-          this.priceHandle(this.state.price);
+          this.priceHandle(300000);
           console.log("22");
         } else {
-          this.setState({ price: 480000 });
-          this.priceHandle(this.state.price);
+          this.priceHandle(480000);
           console.log("22_1");
         }
       }
-      if (this.state.car_type_id == 2) {
+      if (this.state.car_type_id === 2) {
         if (!this.state.roundTrip) {
-          this.setState({ price: 330000 });
-          this.priceHandle(this.state.price);
+          this.priceHandle(330000);
           console.log("23");
         } else {
-          this.setState({ price: 540000 });
-          this.priceHandle(this.state.price);
+          this.priceHandle(540000);
           console.log("23_1");
         }
       }
-      if (this.state.car_type_id == 4) {
+      if (this.state.car_type_id === 4) {
         if (!this.state.roundTrip) {
-          this.setState({ price: 500000 });
-          this.priceHandle(this.state.price);
+          this.priceHandle(500000);
           console.log("24");
         } else {
-          this.setState({ price: 850000 });
-          this.priceHandle(this.state.price);
+          this.priceHandle(850000);
           console.log("24_1");
         }
       }
     }
   }
 
-  _checkHanoi(data, details) {
+  _checkHanoi(data, details, start) {
+    var stringLat = details.geometry.location.lat.toString();
+    var splitLat = stringLat.split(".")[1].slice(0, 6);
+    var latitude = stringLat.split(".")[0] + "." + splitLat;
+    var stringLng = details.geometry.location.lng.toString();
+    var splitLng = stringLng.split(".")[1].slice(0, 6);
+    var longitude = stringLng.split(".")[0] + "." + splitLng;
     var i = "";
-    for (i in details.formatted_address.split(",")) {
-      if (!details.formatted_address.split(",")[i]) {
+    var j = "";
+    for (j in details.formatted_address.split(",")) {
+      if (!details.formatted_address.split(",")[j]) {
         break;
       } else {
-        if (details.formatted_address.split(",")[i].trim() == "Hà Nội") {
-          this.setState({ hanoi: "hanoi" });
-          break;
+        if (details.formatted_address.split(",")[j].trim() === "Hà Nội") {
+          console.log("thuoc ha noi");
+          for (i in details.formatted_address.split(",")) {
+            if (!details.formatted_address.split(",")[i]) {
+              break;
+            } else {
+              if (
+                details.formatted_address.split(",")[i].trim() ===
+                  "Hoàn Kiếm" ||
+                details.formatted_address.split(",")[i].trim() === "Tây Hồ" ||
+                details.formatted_address.split(",")[i].trim() === "Đống Đa" ||
+                details.formatted_address.split(",")[i].trim() === "Ba Đình" ||
+                details.formatted_address.split(",")[i].trim() === "Cầu Giấy" ||
+                details.formatted_address.split(",")[i].trim() ===
+                  "Long Biên" ||
+                details.formatted_address.split(",")[i].trim() ===
+                  "Thanh Xuân" ||
+                details.formatted_address.split(",")[i].trim() ===
+                  "Hai Bà Trưng"
+              ) {
+                if (this.state.router === "nb") {
+                  this._checkTimeNoi(this.state.timeH);
+                } else {
+                  this._checkTimeNoinb(this.state.timeH);
+                }
+                if (start) {
+                  console.log("if start");
+                  this.setState({
+                    start: details.formatted_address,
+                    startLat: latitude,
+                    startLng: longitude,
+                    close: false,
+                    locate: "noi",
+                    hanoi: true
+                  });
+                } else {
+                  console.log("if !start");
+                  this.setState({
+                    stop: details.formatted_address,
+                    stopLat: latitude,
+                    stopLng: longitude,
+                    open: false,
+                    locate: "noi",
+                    hanoi: true
+                  });
+                }
+                console.log("noi thanh");
+                break;
+              } else {
+                if (this.state.router === "nb") {
+                  this._checkTimeNgoai(this.state.timeH);
+                } else {
+                  this._checkTimeNgoainb(this.state.timeH);
+                }
+                console.log("no data");
+                if (start) {
+                  console.log("else start");
+                  this.setState({
+                    start: details.formatted_address,
+                    startLat: latitude,
+                    startLng: longitude,
+                    close: false,
+                    locate: "ngoai",
+                    hanoi: true
+                  });
+                } else {
+                  console.log("else !start");
+                  this.setState({
+                    stop: details.formatted_address,
+                    stopLat: latitude,
+                    stopLng: longitude,
+                    open: false,
+                    locate: "ngoai",
+                    hanoi: true
+                  });
+                }
+                console.log("ngoai thanh");
+              }
+            }
+          }
+          return i;
         } else {
-          this.setState({ hanoi: "no hanoi" });
+          if (start) {
+            console.log("else start");
+            this.setState({
+              close: false,
+              hanoi: false
+            });
+          } else {
+            console.log("else !start");
+            this.setState({
+              open: false,
+              hanoi: false
+            });
+          }
+          console.log("khong thuoc Hanoi");
         }
       }
     }
-    return i;
+    return j;
   }
-  async _checklocation(data, details) {
-    await this._checkHanoi(data, details);
-    var i = "";
-    for (i in details.formatted_address.split(",")) {
-      if (!details.formatted_address.split(",")[i]) {
-        console.log("akakakk");
-        break;
-      } else {
-        if (
-          details.formatted_address.split(",")[i].trim() === "Hoàn Kiếm" ||
-          details.formatted_address.split(",")[i].trim() === "Tây Hồ" ||
-          details.formatted_address.split(",")[i].trim() === "Đống Đa" ||
-          details.formatted_address.split(",")[i].trim() === "Ba Đình" ||
-          details.formatted_address.split(",")[i].trim() === "Cầu Giấy" ||
-          details.formatted_address.split(",")[i].trim() === "Long Biên" ||
-          details.formatted_address.split(",")[i].trim() === "Thanh Xuân" ||
-          details.formatted_address.split(",")[i].trim() === "Hai Bà Trưng"
-        ) {
-          console.log("data", details.formatted_address.split(",")[i]);
-          this.setState({ locate: "noi" });
-          if (this.state.router == "nb") {
-            this._checkTimeNoi(this.state.timeH);
-          } else {
-            this._checkTimeNoinb(this.state.timeH);
-          }
-          break;
-        } else {
-          if (this.state.router == "nb") {
-            this._checkTimeNgoai(this.state.timeH);
-          } else {
-            this._checkTimeNgoainb(this.state.timeH);
-          }
-          console.log("no data");
-          this.setState({ locate: "ngoai" });
-          // break;
-        }
-      }
-    }
-    return i;
-  }
+
+  // _checklocation(data, details) {
+  //   // await this._checkHanoi(data, details);
+  //   var i = "";
+  //   for (i in details.formatted_address.split(",")) {
+  //     if (!details.formatted_address.split(",")[i]) {
+  //       console.log("akakakk");
+  //       break;
+  //     } else {
+  //       if (
+  //         details.formatted_address.split(",")[i].trim() === "Hoàn Kiếm" ||
+  //         details.formatted_address.split(",")[i].trim() === "Tây Hồ" ||
+  //         details.formatted_address.split(",")[i].trim() === "Đống Đa" ||
+  //         details.formatted_address.split(",")[i].trim() === "Ba Đình" ||
+  //         details.formatted_address.split(",")[i].trim() === "Cầu Giấy" ||
+  //         details.formatted_address.split(",")[i].trim() === "Long Biên" ||
+  //         details.formatted_address.split(",")[i].trim() === "Thanh Xuân" ||
+  //         details.formatted_address.split(",")[i].trim() === "Hai Bà Trưng"
+  //       ) {
+  //         console.log("data", details.formatted_address.split(",")[i]);
+  //         this.setState({ locate: "noi" });
+  //         if (this.state.router === "nb") {
+  //           this._checkTimeNoi(this.state.timeH);
+  //         } else {
+  //           this._checkTimeNoinb(this.state.timeH);
+  //         }
+  //         break;
+  //       } else {
+  //         if (this.state.router === "nb") {
+  //           this._checkTimeNgoai(this.state.timeH);
+  //         } else {
+  //           this._checkTimeNgoainb(this.state.timeH);
+  //         }
+  //         console.log("no data");
+  //         this.setState({ locate: "ngoai" });
+  //         // break;
+  //       }
+  //     }
+  //   }
+  //   return i;
+  // }
   // onPress() {
   //   console.log("map")
   //   RNGooglePlacePicker.show((response) => {

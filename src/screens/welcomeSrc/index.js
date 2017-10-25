@@ -44,7 +44,7 @@ class welcomeSrc extends Component {
   }
 
   render() {
-    console.log(deviceHeight);
+    // console.log(deviceHeight);
     return (
       <Container>
         <StatusBar barStyle="light-content" />
