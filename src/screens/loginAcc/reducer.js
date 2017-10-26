@@ -5,7 +5,7 @@ const initialState = {
   kind: "",
 };
 export default function(state: any = initialState, action: Function) {
-  console.log(":qqqqqqqqqqqqqqqqqqq")
+  // console.log(":qqqqqqqqqqqqqqqqqqq")
   switch (action.type) {
     case "CHECK_NUMBER_SUCCESS":
       return { ...state, kind: "success",items: action.items };
