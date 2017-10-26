@@ -209,10 +209,6 @@ class bookCarForm extends Component {
               onPress={() => {
                 dismissKeyboard();
                 this.props.navigation.navigate("DrawerOpen");
-                this.setState({ sidebar: true });
-                setTimeout(() => {
-                  this.setState({ sidebar: false });
-                }, 1000);
               }}
             >
               <Image
@@ -366,7 +362,11 @@ class bookCarForm extends Component {
               transparent={false}
               style={{ marginTop: 42, backgroundColor: "red" }}
             >
-              {this._placeStartPicker()}
+              {this._placePicker(
+                "Chọn điểm xuất phát",
+                "Chọn điểm xuất phát",
+                true
+              )}
             </Modal>
             <Modal
               visible={this.state.open}
@@ -375,7 +375,7 @@ class bookCarForm extends Component {
               transparent={false}
               style={{ marginTop: 42, backgroundColor: "red" }}
             >
-              {this._placeStopPicker()}
+              {this._placePicker("Chọn điểm đến", "Chọn điểm đến", false)}
             </Modal>
           </View>
           <View style={{ flex: 1 }}>
@@ -943,13 +943,23 @@ class bookCarForm extends Component {
   }
   // _startPoint() {
   //   console.log("click");
-  // }
-  _placeStartPicker() {
+  // } "Chọn điểm xuất phát"   Chọn điểm xuất phát
+
+  _placePicker(header, placeholder, start) {
     return (
       <Container style={{ backgroundColor: "white" }}>
         <Header style={{ backgroundColor: "white" }}>
           <Left style={{ flex: 1 }}>
-            <Button transparent onPress={() => this.setState({ close: false })}>
+            <Button
+              transparent
+              onPress={() => {
+                if (start) {
+                  this.setState({ close: false });
+                } else {
+                  this.setState({ open: false });
+                }
+              }}
+            >
               <Icon active name="arrow-back" style={{ color: "black" }} />
             </Button>
           </Left>
@@ -958,14 +968,14 @@ class bookCarForm extends Component {
               numberOfLines={1}
               style={{ color: "black", fontWeight: "bold", fontSize: 15 }}
             >
-              Chọn điểm xuất phát
+              {header}
             </Text>
           </Body>
           <Right style={{ flex: 1 }} />
         </Header>
         <View>
           <GooglePlacesAutocomplete
-            placeholder="Chọn điểm xuất phát"
+            placeholder={placeholder}
             minLength={2}
             autoFocus={false}
             returnKeyType={"default"}
@@ -1002,24 +1012,47 @@ class bookCarForm extends Component {
               "administrative_area_level_3"
             ]}
             onPress={(data, details) => {
-              this._checkHanoi(data, details, true);
-              if (!this.state.hanoi) {
-                setTimeout(() => {
-                  this.showAlert(
-                    "Thông báo",
-                    "Hiện tại chúng tôi chưa hỗ trợ khu vực ngoài Hà Nội. Vui lòng thử lại sau",
-                    [
-                      {
-                        text: "OK",
-                        onPress: () => {
-                          this.setState({
-                            start: "Chọn điểm đón"
-                          });
+              if (
+                details.geometry.location.lat === noiBaiLat &&
+                details.geometry.location.lng === noiBaiLng
+              ) {
+                if (start) {
+                  this._routerSelect(true);
+                } else {
+                  this._routerSelect(false);
+                }
+              } else {
+                if (start) {
+                  this._checkHanoi(data, details, true);
+                } else {
+                  this._checkHanoi(data, details, false);
+                }
+                if (!this.state.hanoi) {
+                  setTimeout(() => {
+                    this.showAlert(
+                      "Thông báo",
+                      "Hiện tại chúng tôi chưa hỗ trợ khu vực ngoài Hà Nội. Vui lòng thử lại sau",
+                      [
+                        {
+                          text: "OK",
+                          onPress: () => {
+                            if (start) {
+                              this.setState({
+                                start: "Chọn điểm đón",
+                                priceshow: 0
+                              });
+                            } else {
+                              this.setState({
+                                stop: "Chọn điểm đến",
+                                priceshow: 0
+                              });
+                            }
+                          }
                         }
-                      }
-                    ]
-                  );
-                }, 100);
+                      ]
+                    );
+                  }, 100);
+                }
               }
             }}
             query={{
@@ -1032,93 +1065,6 @@ class bookCarForm extends Component {
     );
   }
 
-  _placeStopPicker() {
-    return (
-      <Container style={{ backgroundColor: "white" }}>
-        <Header style={{ backgroundColor: "white" }}>
-          <Left style={{ flex: 1 }}>
-            <Button transparent onPress={() => this.setState({ open: false })}>
-              <Icon active name="arrow-back" style={{ color: "black" }} />
-            </Button>
-          </Left>
-          <Body style={{ flex: 8 }}>
-            <Text
-              numberOfLines={1}
-              style={{ color: "black", fontWeight: "bold", fontSize: 15 }}
-            >
-              Chọn điểm đến
-            </Text>
-          </Body>
-          <Right style={{ flex: 1 }} />
-        </Header>
-        <View>
-          <GooglePlacesAutocomplete
-            placeholder="Chọn điểm đến"
-            minLength={2}
-            autoFocus={false}
-            returnKeyType={"default"}
-            fetchDetails={true}
-            styles={{
-              listView: {
-                position: "absolute",
-                marginTop: Platform.OS !== "ios" ? 54 : 64
-              },
-              textInputContainer: {
-                backgroundColor: "white",
-                borderTopWidth: 0,
-                borderBottomWidth: 0
-              },
-              textInput: {
-                marginLeft: 0,
-                marginRight: 0,
-                height: 38,
-                color: "#5d5d5d",
-                fontSize: 16
-              },
-              predefinedPlacesDescription: {
-                color: "#1faadb"
-              }
-            }}
-            enableHighAccuracyLocation={true}
-            currentLocation={true}
-            currentLocationLabel="Vị trí hiện tại"
-            nearbyPlacesAPI={"GoogleReverseGeocoding"}
-            GoogleReverseGeocodingQuery={{}}
-            GooglePlacesSearchQuery={{}}
-            filterReverseGeocodingByTypes={[
-              "route",
-              "administrative_area_level_3"
-            ]}
-            onPress={(data, details) => {
-              this._checkHanoi(data, details, false);
-              if (!this.state.hanoi) {
-                setTimeout(() => {
-                  this.showAlert(
-                    "Thông báo",
-                    "Hiện tại chúng tôi chưa hỗ trợ khu vực ngoài Hà Nội. Vui lòng thử lại sau",
-                    [
-                      {
-                        text: "OK",
-                        onPress: () => {
-                          this.setState({
-                            stop: "Chọn điểm đến"
-                          });
-                        }
-                      }
-                    ]
-                  );
-                }, 100);
-              }
-            }}
-            query={{
-              key: "AIzaSyBYoB8zl4bBliFHq4ok7LWM8Eqon0v_IqE",
-              language: "vi"
-            }}
-          />
-        </View>
-      </Container>
-    );
-  }
   _checkNightTime(timeH) {
     if (
       timeH === 22 ||
@@ -1492,63 +1438,6 @@ class bookCarForm extends Component {
     }
     return j;
   }
-
-  // _checklocation(data, details) {
-  //   // await this._checkHanoi(data, details);
-  //   var i = "";
-  //   for (i in details.formatted_address.split(",")) {
-  //     if (!details.formatted_address.split(",")[i]) {
-  //       console.log("akakakk");
-  //       break;
-  //     } else {
-  //       if (
-  //         details.formatted_address.split(",")[i].trim() === "Hoàn Kiếm" ||
-  //         details.formatted_address.split(",")[i].trim() === "Tây Hồ" ||
-  //         details.formatted_address.split(",")[i].trim() === "Đống Đa" ||
-  //         details.formatted_address.split(",")[i].trim() === "Ba Đình" ||
-  //         details.formatted_address.split(",")[i].trim() === "Cầu Giấy" ||
-  //         details.formatted_address.split(",")[i].trim() === "Long Biên" ||
-  //         details.formatted_address.split(",")[i].trim() === "Thanh Xuân" ||
-  //         details.formatted_address.split(",")[i].trim() === "Hai Bà Trưng"
-  //       ) {
-  //         console.log("data", details.formatted_address.split(",")[i]);
-  //         this.setState({ locate: "noi" });
-  //         if (this.state.router === "nb") {
-  //           this._checkTimeNoi(this.state.timeH);
-  //         } else {
-  //           this._checkTimeNoinb(this.state.timeH);
-  //         }
-  //         break;
-  //       } else {
-  //         if (this.state.router === "nb") {
-  //           this._checkTimeNgoai(this.state.timeH);
-  //         } else {
-  //           this._checkTimeNgoainb(this.state.timeH);
-  //         }
-  //         console.log("no data");
-  //         this.setState({ locate: "ngoai" });
-  //         // break;
-  //       }
-  //     }
-  //   }
-  //   return i;
-  // }
-  // onPress() {
-  //   console.log("map")
-  //   RNGooglePlacePicker.show((response) => {
-  //     if (response.didCancel) {
-  //       console.log("User cancelled GooglePlacePicker");
-  //     }
-  //     else if (response.error) {
-  //       console.log("GooglePlacePicker Error: ", response.error);
-  //     }
-  //     else {
-  //       this.setState({
-  //         location: response
-  //       });
-  //     }
-  //   });
-  // }
 
   _pickLocation() {
     return (
