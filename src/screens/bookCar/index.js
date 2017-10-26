@@ -111,7 +111,8 @@ class bookCarForm extends Component {
       priceshow: 0,
       dataArray: [],
       dialogShow: false,
-      supPhone: "tel: 18001182"
+      supPhone: "tel: 18001182",
+      locate:"",
     };
   }
   async componentDidMount() {
@@ -196,7 +197,7 @@ class bookCarForm extends Component {
     });
   }
   render() {
-    console.log("render");
+    console.log("render", this.state.timeH);
     // console.log(this.state.dateString, timeH);
     var date = new Date();
     return (
@@ -383,7 +384,7 @@ class bookCarForm extends Component {
               mode="datetime"
               minimumDate={date}
               isVisible={this.state.openTimePicker}
-              onConfirm={dates => this.handleDatePicked(dates)}
+              onConfirm={date => this.handleDatePicked(date)}
               onCancel={() => this.hideTimePicker()}
             />
           </View>
@@ -664,6 +665,7 @@ class bookCarForm extends Component {
     }
     // console.log("length", hourValue);
     this.setState({
+      timeH: date.getHours(),
       dateString:
         date.getFullYear() +
         "-" +
@@ -1056,7 +1058,7 @@ class bookCarForm extends Component {
               }
             }}
             query={{
-              key: "AIzaSyBYoB8zl4bBliFHq4ok7LWM8Eqon0v_IqE",
+              key: "AIzaSyB-O4m9EPQ3aL-ZCjdWnghoepXlQOlGDYg",
               language: "vi" // language of the results
             }}
           />
@@ -1070,6 +1072,7 @@ class bookCarForm extends Component {
       timeH === 22 ||
       timeH === 23 ||
       timeH === 0 ||
+      timeH === 1 ||
       timeH === 2 ||
       timeH === 3 ||
       timeH === 4 ||
@@ -1166,7 +1169,7 @@ class bookCarForm extends Component {
       }
       if (this.state.car_type_id === 4) {
         if (!this.state.roundTrip) {
-          this.priceHandle(600000);
+          this.priceHandle(450000);
           console.log("9");
         } else {
           this.priceHandle(950000);
