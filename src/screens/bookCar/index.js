@@ -1092,8 +1092,8 @@ class bookCarForm extends Component {
           this.priceHandle(200000);
           console.log("1");
         } else {
-          this.setState({ price: 480000 });
-          this.priceHandle(this.state.price);
+          // this.setState({ price: 480000 });
+          this.priceHandle(480000);
           console.log("1_1");
         }
       }
