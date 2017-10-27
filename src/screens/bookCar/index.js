@@ -576,7 +576,7 @@ class bookCarForm extends Component {
             { marginLeft: 10, alignItems: "flex-start" }
           ]}
         >
-          <Text style={{ color: "#31404B" }}>Thời gian</Text>
+          <Text numberOfLines={1} style={{ color: "#31404B" }}>Thời gian</Text>
         </View>
         <View
           style={{
