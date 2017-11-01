@@ -29,7 +29,12 @@ export {
   bookCarSuccess,
   bookCarError,
   carbooking,
-  getcartype
+  getcartype,
+  distance,
+  carTypesSuccess,
+  carTypesError,
+  distanceSuccess,
+  distanceError
 } from "../screens/bookCar/actions";
 
 export {
