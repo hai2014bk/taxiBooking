@@ -36,7 +36,7 @@ import Spinner from "react-native-loading-spinner-overlay";
 import { Grid, Col } from "react-native-easy-grid";
 import Carousel from "react-native-carousel-view";
 import DateTimePicker from "react-native-modal-datetime-picker";
-import { carbooking, getcartype } from "../../actions";
+import { carbookingout, getcartype, distance } from "../../actions";
 import * as mConstants from "../../utils/Constants";
 import { GooglePlacesAutocomplete } from "react-native-google-places-autocomplete";
 // import LocationPicker from "../LocationPicker";
@@ -69,8 +69,7 @@ var name = "Sân bay Nội Bài";
 var press = true;
 // var sidebar = true;
 var dialog = false;
-var hanoi = "";
-class bookCarForm extends Component {
+class bookCarOutForm extends Component {
   constructor(props) {
     super(props);
     this.state = {
@@ -116,6 +115,7 @@ class bookCarForm extends Component {
     };
   }
   async componentDidMount() {
+    // this.props.distance(21.218714,105.80417,21.228714,105.81417);
     this.popupDialog.dismiss();
     var loginInfo = await AsyncStorage.getItem(mConstants.LOGIN_INFO);
     var ObjloginInfo = JSON.parse(loginInfo);
@@ -125,7 +125,65 @@ class bookCarForm extends Component {
     });
     // this.props.getcartype();
   }
+  priceOutHanoi(timeH, cartype, roundTrip, val) {
+    this.setState({ distance: val });
+    // console.log(timeH, cartype, roundTrip, val);
+    if (cartype === 7) {
+      if (this._checkNightTime(timeH)) {
+        if (roundTrip) {
+          this.priceHandle((val / 1000 * 17000 + 100000) * 2);
+        } else {
+          this.priceHandle(val / 1000 * 17000 + 100000);
+        }
+      } else {
+        if (roundTrip) {
+          this.priceHandle(val / 1000 * 17000 * 2);
+        } else {
+          this.priceHandle(val / 1000 * 17000);
+        }
+      }
+    }
 
+    if (cartype === 8) {
+      if (this._checkNightTime(timeH)) {
+        if (roundTrip) {
+          this.priceHandle((val / 1000 * 18000 + 100000) * 2);
+        } else {
+          this.priceHandle(val / 1000 * 18000 + 100000);
+        }
+      } else {
+        if (roundTrip) {
+          this.priceHandle(val / 1000 * 18000 * 2);
+        } else {
+          this.priceHandle(val / 1000 * 18000);
+        }
+      }
+    }
+    if (cartype === 9) {
+      if (this._checkNightTime(timeH)) {
+        if (roundTrip) {
+          this.priceHandle((val / 1000 * 22000 + 100000) * 2);
+        } else {
+          this.priceHandle(val / 1000 * 22000 + 100000);
+        }
+      } else {
+        if (roundTrip) {
+          this.priceHandle(val / 1000 * 22000 * 2);
+        } else {
+          this.priceHandle(val / 1000 * 22000);
+        }
+      }
+    }
+    // if (roundTrip) {
+    //   this.priceHandle(val / 1000 * 15000 * 2);
+    // } else {
+    //   this.setState({
+    //     visible: false,
+    //     distance: val
+    //   });
+    //   this.priceHandle(val / 1000 * 15000);
+    // }
+  }
   componentWillReceiveProps(props) {
     //   if(props.cartypes){
     //   if (props.cartypes[0]) {
@@ -135,6 +193,42 @@ class bookCarForm extends Component {
     //     console.log("nodata");
     //   }
     // }
+    if (props.Successdistance) {
+      this.priceOutHanoi(
+        this.state.timeH,
+        this.state.car_type_id,
+        this.state.roundTrip,
+        props.Successdistance.routes[0].legs[0].distance.value
+      );
+      // console.log(
+      //   "props.Successdistance",
+      //   props.Successdistance.routes[0].legs[0].distance.value
+      // );
+      // console.log("props.Successdistance", props.Successdistance.routes[0]);
+    } else {
+      this.setState({
+        visible: false
+      });
+      if (props.Errordistance) {
+        setTimeout(() => {
+          // alert("asdasdasdasd")
+          this.showAlert(
+            "Lỗi",
+            "Đã xảy ra lỗi khi xác định khoảng cách tới địa điểm bạn chọn, vui lòng thử lại sau",
+            [
+              {
+                text: "OK",
+                onPress: () => {
+                  press = true;
+                }
+              }
+            ]
+          );
+        }, 100);
+        // console.log("props.Errordistance",props.Errordistance);
+      }
+    }
+
     console.log("props", props);
     if (dialog) {
       if (props.items.id) {
@@ -221,8 +315,15 @@ class bookCarForm extends Component {
             </Button>
           </Left>
           <Body>
-            <Text style={{ color: "black", fontWeight: "bold", fontSize: 17 }}>
-              ĐẶT XE
+            <Text
+              numberOfLines={2}
+              style={{
+                color: "black",
+                fontWeight: "bold",
+                textAlign: "center"
+              }}
+            >
+              ĐẶT XE NGOẠI TỈNH
             </Text>
           </Body>
           <Right>
@@ -385,7 +486,7 @@ class bookCarForm extends Component {
               mode="datetime"
               minimumDate={date}
               isVisible={this.state.openTimePicker}
-              onConfirm={date => this.handleDatePicked(date)}
+              onConfirm={date => this.handleDatePicked(date, this.state.hanoi)}
               onCancel={() => this.hideTimePicker()}
             />
           </View>
@@ -564,7 +665,7 @@ class bookCarForm extends Component {
       params.duration = this.state.duration;
       params.delete_flag = 0;
       console.log(params);
-      this.props.carbooking(params);
+      this.props.carbookingout(params);
     }
   }
   _timePicker() {
@@ -611,57 +712,26 @@ class bookCarForm extends Component {
     this.setState({ openTimePicker: false });
   }
 
-  _handleMinute(date, minute) {
-    if (minute) {
-      if (
-        date.getMinutes() === 0 ||
-        date.getMinutes() === 1 ||
-        date.getMinutes() === 2 ||
-        date.getMinutes() === 3 ||
-        date.getMinutes() === 4 ||
-        date.getMinutes() === 5 ||
-        date.getMinutes() === 6 ||
-        date.getMinutes() === 7 ||
-        date.getMinutes() === 8 ||
-        date.getMinutes() === 9
-      ) {
-        return true;
-      } else {
-        return false;
-      }
+  _handleNumber(number) {
+    if (
+      number === 0 ||
+      number === 1 ||
+      number === 2 ||
+      number === 3 ||
+      number === 4 ||
+      number === 5 ||
+      number === 6 ||
+      number === 7 ||
+      number === 8 ||
+      number === 9
+    ) {
+      return "0" + number;
     } else {
-      if (
-        date.getHours() === 0 ||
-        date.getHours() === 1 ||
-        date.getHours() === 2 ||
-        date.getHours() === 3 ||
-        date.getHours() === 4 ||
-        date.getHours() === 5 ||
-        date.getHours() === 6 ||
-        date.getHours() === 7 ||
-        date.getHours() === 8 ||
-        date.getHours() === 9
-      ) {
-        return true;
-      } else {
-        return false;
-      }
+      return number;
     }
   }
 
-  handleDatePicked(date) {
-    var minuteValue = "";
-    var hourValue = "";
-    if (this._handleMinute(date, true)) {
-      minuteValue = "0" + date.getMinutes().toString();
-    } else {
-      minuteValue = date.getMinutes();
-    }
-    if (this._handleMinute(date, false)) {
-      hourValue = "0" + date.getHours().toString();
-    } else {
-      hourValue = date.getHours();
-    }
+  handleDatePicked(date, hanoi) {
     this.setState({
       timeH: date.getHours(),
       dateString:
@@ -675,13 +745,13 @@ class bookCarForm extends Component {
         ":" +
         date.getMinutes(),
       dateStringshow:
-        hourValue +
+        this._handleNumber(date.getHours()) +
         ":" +
-        minuteValue +
+        this._handleNumber(date.getMinutes()) +
         " " +
-        date.getDate() +
+        this._handleNumber(date.getDate()) +
         "-" +
-        (date.getMonth() + 1) +
+        this._handleNumber(date.getMonth() + 1) +
         "-" +
         date.getFullYear()
     });
@@ -690,37 +760,46 @@ class bookCarForm extends Component {
       this.state.start.trim() !== "Chọn điểm đón" &&
       this.state.stop.trim() !== "Chọn điểm đến"
     ) {
-      if (this.state.router === "nb") {
-        console.log("hnnb");
-        console.log(date.getHours());
-        if (this.state.locate === "noi") {
-          this._checkTimeNoi(
-            date.getHours(),
-            this.state.roundTrip,
-            this.state.car_type_id
-          );
+      if (hanoi) {
+        if (this.state.router === "nb") {
+          console.log("hnnb");
+          console.log(date.getHours());
+          if (this.state.locate === "noi") {
+            this._checkTimeNoi(
+              date.getHours(),
+              this.state.roundTrip,
+              this.state.car_type_id
+            );
+          } else {
+            this._checkTimeNgoai(
+              date.getHours(),
+              this.state.roundTrip,
+              this.state.car_type_id
+            );
+          }
         } else {
-          this._checkTimeNgoai(
-            date.getHours(),
-            this.state.roundTrip,
-            this.state.car_type_id
-          );
+          console.log("nbhn", date.getHours());
+          if (this.state.locate === "noi") {
+            this._checkTimeNoinb(
+              date.getHours(),
+              this.state.roundTrip,
+              this.state.car_type_id
+            );
+          } else {
+            this._checkTimeNgoainb(
+              date.getHours(),
+              this.state.roundTrip,
+              this.state.car_type_id
+            );
+          }
         }
       } else {
-        console.log("nbhn", date.getHours());
-        if (this.state.locate === "noi") {
-          this._checkTimeNoinb(
-            date.getHours(),
-            this.state.roundTrip,
-            this.state.car_type_id
-          );
-        } else {
-          this._checkTimeNgoainb(
-            date.getHours(),
-            this.state.roundTrip,
-            this.state.car_type_id
-          );
-        }
+        this.priceOutHanoi(
+          date.getHours(),
+          this.state.car_type_id,
+          this.state.roundTrip,
+          this.state.distance
+        );
       }
     }
   }
@@ -745,7 +824,7 @@ class bookCarForm extends Component {
           <View style={styles.switchZone}>
             <Switch
               value={this.state.roundTrip}
-              onValueChange={val => this._upDate(val)}
+              onValueChange={val => this._upDate(val, this.state.hanoi)}
               disabled={false}
               onTintColor="#31404B"
               thumbTintColor="#b5b5b5"
@@ -784,7 +863,8 @@ class bookCarForm extends Component {
     var priceshow = price.toString().replace(/(\d)(?=(\d\d\d)+(?!\d))/g, "$1.");
     this.setState({
       priceshow: priceshow,
-      price: price
+      price: price,
+      visible: false
     });
     // return price
   }
@@ -806,7 +886,7 @@ class bookCarForm extends Component {
     );
   }
 
-  async _upDate(val) {
+  async _upDate(val, hanoi) {
     console.log(val);
     if (val) {
       await this.setState({
@@ -816,22 +896,39 @@ class bookCarForm extends Component {
         this.state.start.trim() !== "Chọn điểm đón" &&
         this.state.stop.trim() !== "Chọn điểm đến"
       ) {
-        if (this.state.router === "nb") {
-          if (this.state.locate === "noi") {
-            this._checkTimeNoi(this.state.timeH, val, this.state.car_type_id);
+        if (hanoi) {
+          if (this.state.router === "nb") {
+            if (this.state.locate === "noi") {
+              this._checkTimeNoi(this.state.timeH, val, this.state.car_type_id);
+            } else {
+              this._checkTimeNgoai(
+                this.state.timeH,
+                val,
+                this.state.car_type_id
+              );
+            }
           } else {
-            this._checkTimeNgoai(this.state.timeH, val, this.state.car_type_id);
+            if (this.state.locate === "noi") {
+              this._checkTimeNoinb(
+                this.state.timeH,
+                val,
+                this.state.car_type_id
+              );
+            } else {
+              this._checkTimeNgoainb(
+                this.state.timeH,
+                val,
+                this.state.car_type_id
+              );
+            }
           }
         } else {
-          if (this.state.locate === "noi") {
-            this._checkTimeNoinb(this.state.timeH, val, this.state.car_type_id);
-          } else {
-            this._checkTimeNgoainb(
-              this.state.timeH,
-              val,
-              this.state.car_type_id
-            );
-          }
+          this.priceOutHanoi(
+            this.state.timeH,
+            this.state.car_type_id,
+            val,
+            this.state.distance
+          );
         }
       }
     } else {
@@ -842,39 +939,52 @@ class bookCarForm extends Component {
         this.state.start.trim() !== "Chọn điểm đón" &&
         this.state.stop.trim() !== "Chọn điểm đến"
       ) {
-        if (this.state.router === "nb") {
-          if (this.state.locate === "noi") {
-            this._checkTimeNoi(
-              this.state.timeH,
-              this.state.roundTrip,
-              this.state.car_type_id
-            );
+        if (hanoi) {
+          if (this.state.router === "nb") {
+            if (this.state.locate === "noi") {
+              this._checkTimeNoi(
+                this.state.timeH,
+                this.state.roundTrip,
+                this.state.car_type_id
+              );
+            } else {
+              this._checkTimeNgoai(
+                this.state.timeH,
+                this.state.roundTrip,
+                this.state.car_type_id
+              );
+            }
           } else {
-            this._checkTimeNgoai(
-              this.state.timeH,
-              this.state.roundTrip,
-              this.state.car_type_id
-            );
+            if (this.state.locate === "noi") {
+              this._checkTimeNoinb(
+                this.state.timeH,
+                this.state.roundTrip,
+                this.state.car_type_id
+              );
+            } else {
+              this._checkTimeNgoainb(
+                this.state.timeH,
+                this.state.roundTrip,
+                this.state.car_type_id
+              );
+            }
           }
         } else {
-          if (this.state.locate === "noi") {
-            this._checkTimeNoinb(
-              this.state.timeH,
-              this.state.roundTrip,
-              this.state.car_type_id
-            );
-          } else {
-            this._checkTimeNgoainb(
-              this.state.timeH,
-              this.state.roundTrip,
-              this.state.car_type_id
-            );
-          }
+          this.priceOutHanoi(
+            this.state.timeH,
+            this.state.car_type_id,
+            val,
+            this.state.distance
+          );
         }
       }
     }
-    console.log(this.state.roundTrip);
   }
+  // else {
+  //   this.priceOutHanoi(this.state.timeH, this.state.car_type_id, val,this.state.distance)
+  // }
+  //   console.log(this.state.roundTrip);
+  // }
 
   _routerSelect(noibaihanoi) {
     if (noibaihanoi) {
@@ -914,7 +1024,7 @@ class bookCarForm extends Component {
     }
   }
 
-  async _color(car4, car7, car16, car_type_id) {
+  async _color(car4, car7, car16, car_type_id, hanoi) {
     await this.setState({
       car4: car4,
       car7: car7,
@@ -925,34 +1035,49 @@ class bookCarForm extends Component {
       this.state.start.trim() !== "Chọn điểm đón" &&
       this.state.stop.trim() !== "Chọn điểm đến"
     ) {
-      if (this.state.router === "nb") {
-        if (this.state.locate === "noi") {
-          this._checkTimeNoi(
-            this.state.timeH,
-            this.state.roundTrip,
-            car_type_id
-          );
+      if (hanoi) {
+        console.log("hanoi");
+        if (this.state.router === "nb") {
+          if (this.state.locate === "noi") {
+            console.log("nb hanoi noi");
+            this._checkTimeNoi(
+              this.state.timeH,
+              this.state.roundTrip,
+              car_type_id
+            );
+          } else {
+            console.log("nb hanoi ngoai");
+            this._checkTimeNgoai(
+              this.state.timeH,
+              this.state.roundTrip,
+              car_type_id
+            );
+          }
         } else {
-          this._checkTimeNgoai(
-            this.state.timeH,
-            this.state.roundTrip,
-            car_type_id
-          );
+          if (this.state.locate === "noi") {
+            console.log("hn hanoi noi");
+            this._checkTimeNoinb(
+              this.state.timeH,
+              this.state.roundTrip,
+              car_type_id
+            );
+          } else {
+            console.log("hn hanoi ngoai");
+            this._checkTimeNgoainb(
+              this.state.timeH,
+              this.state.roundTrip,
+              car_type_id
+            );
+          }
         }
       } else {
-        if (this.state.locate === "noi") {
-          this._checkTimeNoinb(
-            this.state.timeH,
-            this.state.roundTrip,
-            car_type_id
-          );
-        } else {
-          this._checkTimeNgoainb(
-            this.state.timeH,
-            this.state.roundTrip,
-            car_type_id
-          );
-        }
+        console.log("ngoai thanh");
+        this.priceOutHanoi(
+          this.state.timeH,
+          car_type_id,
+          this.state.roundTrip,
+          this.state.distance
+        );
       }
     }
   }
@@ -961,7 +1086,7 @@ class bookCarForm extends Component {
     return (
       <View style={styles.containerCartype}>
         <TouchableOpacity
-          onPress={() => this._color(car4Y, car7W, car16W, 7)}
+          onPress={() => this._color(car4Y, car7W, car16W, 7, this.state.hanoi)}
           style={styles.cartype}
         >
           <Image
@@ -972,7 +1097,7 @@ class bookCarForm extends Component {
           <Text style={{ color: this.state.color4 }}>5 Chỗ</Text>
         </TouchableOpacity>
         <TouchableOpacity
-          onPress={() => this._color(car4W, car7Y, car16W, 8)}
+          onPress={() => this._color(car4W, car7Y, car16W, 8, this.state.hanoi)}
           style={styles.cartype}
         >
           <Image
@@ -983,7 +1108,7 @@ class bookCarForm extends Component {
           <Text style={{ color: this.state.color7 }}>7 Chỗ</Text>
         </TouchableOpacity>
         <TouchableOpacity
-          onPress={() => this._color(car4W, car7W, car16Y, 9)}
+          onPress={() => this._color(car4W, car7W, car16Y, 9, this.state.hanoi)}
           style={styles.cartype}
         >
           <Image
@@ -1083,11 +1208,28 @@ class bookCarForm extends Component {
                   this._checkHanoi(data, details, false);
                 }
                 if (!this.state.hanoi) {
+                  console.log("this.state.hanoi");
+                  if (this.state.router === "hn") {
+                    this.props.distance(
+                      lat,
+                      lng,
+                      this.state.stopLat,
+                      this.state.stopLng
+                    );
+                  } else {
+                    this.props.distance(
+                      this.state.startLat,
+                      this.state.startLng,
+                      lat,
+                      lng
+                    );
+                  }
+                } else {
                   this.setState({ visible: false, price: 0, priceshow: 0 });
                   setTimeout(() => {
                     Alert.alert(
                       "Thông báo",
-                      "Bạn đã chọn địa điểm ngoài Hà Nội, Bạn có muốn chuyển đến màn hình đặt xe ngoại tỉnh?",
+                      "Bạn đã chọn địa điểm thuộc Hà Nội, Bạn có muốn chuyển đến màn hình đặt xe với địa điểm thuộc Hà nội?",
                       [
                         {
                           text: "Chọn Lại",
@@ -1097,7 +1239,7 @@ class bookCarForm extends Component {
                         {
                           text: "Chuyển",
                           onPress: () =>
-                            this.props.navigation.navigate("bookcarout")
+                            this.props.navigation.navigate("bookCar")
                         }
                       ],
                       { cancelable: false }
@@ -1134,251 +1276,11 @@ class bookCarForm extends Component {
     }
   }
 
-  _checkTimeNoi(timeH, val, car_type_id) {
-    // console.log(timeH, "adasdasdasd");
-    if (this._checkNightTime(timeH)) {
-      if (car_type_id === 7) {
-        if (!val) {
-          this.priceHandle(200000);
-          console.log("1");
-        } else {
-          this.priceHandle(480000);
-          console.log("1_1");
-        }
-      }
-      if (car_type_id === 8) {
-        if (!val) {
-          this.priceHandle(230000);
-          console.log("2");
-        } else {
-          this.priceHandle(540000);
-          console.log("2_1");
-        }
-      }
-      if (car_type_id === 9) {
-        if (!val) {
-          this.priceHandle(400000);
-          console.log("3");
-        } else {
-          this.priceHandle(850000);
-          console.log("3_1");
-        }
-      }
-    } else {
-      if (car_type_id === 7) {
-        if (!val) {
-          this.priceHandle(170000);
-          console.log("4");
-        } else {
-          this.priceHandle(420000);
-          console.log("4_1");
-        }
-      }
-      if (car_type_id === 8) {
-        if (!val) {
-          this.priceHandle(200000);
-          console.log("5");
-        } else {
-          this.priceHandle(480000);
-          console.log("5_1");
-        }
-      }
-      if (car_type_id === 9) {
-        if (!val) {
-          this.priceHandle(350000);
-          console.log("6");
-        } else {
-          this.priceHandle(750000);
-          console.log("6_1");
-        }
-      }
-    }
-  }
-
-  _checkTimeNgoai(timeH, val, car_type_id) {
-    if (this._checkNightTime(timeH)) {
-      if (car_type_id === 7) {
-        if (!val) {
-          this.priceHandle(230000);
-          console.log("7");
-        } else {
-          this.priceHandle(540000);
-          console.log("7_1");
-        }
-      }
-      if (car_type_id === 8) {
-        if (!val) {
-          this.priceHandle(260000);
-          console.log("8");
-        } else {
-          this.priceHandle(600000);
-          console.log("8_1");
-        }
-      }
-      if (car_type_id === 9) {
-        if (!val) {
-          this.priceHandle(450000);
-          console.log("9");
-        } else {
-          this.priceHandle(950000);
-          console.log("9_1");
-        }
-      }
-    } else {
-      if (car_type_id === 7) {
-        if (!val) {
-          this.priceHandle(200000);
-          console.log("10");
-        } else {
-          this.priceHandle(480000);
-          console.log("10_1");
-        }
-      }
-      if (car_type_id === 8) {
-        if (!val) {
-          this.priceHandle(230000);
-          console.log("11");
-        } else {
-          this.priceHandle(540000);
-          console.log("11_1");
-        }
-      }
-      if (car_type_id === 9) {
-        if (!val) {
-          this.priceHandle(400000);
-          console.log("12");
-        } else {
-          this.priceHandle(850000);
-          console.log("12_1");
-        }
-      }
-    }
-  }
-
-  _checkTimeNoinb(timeH, val, car_type_id) {
-    if (this._checkNightTime(timeH)) {
-      if (car_type_id === 7) {
-        if (!val) {
-          this.priceHandle(300000);
-          console.log("13");
-        } else {
-          this.priceHandle(480000);
-          console.log("13_1");
-        }
-      }
-      if (car_type_id === 8) {
-        if (!val) {
-          this.priceHandle(330000);
-          console.log("14");
-        } else {
-          this.priceHandle(540000);
-          console.log("14_1");
-        }
-      }
-      if (car_type_id === 9) {
-        if (!val) {
-          this.priceHandle(500000);
-          console.log("15");
-        } else {
-          this.priceHandle(850000);
-          console.log("15_1");
-        }
-      }
-    } else {
-      if (car_type_id === 7) {
-        if (!val) {
-          this.priceHandle(270000);
-          console.log("16");
-        } else {
-          this.priceHandle(420000);
-          console.log("16_1");
-        }
-      }
-      if (car_type_id === 8) {
-        if (!val) {
-          this.priceHandle(300000);
-          console.log("17");
-        } else {
-          this.priceHandle(480000);
-          console.log("17_1");
-        }
-      }
-      if (car_type_id === 9) {
-        if (!val) {
-          this.priceHandle(450000);
-          console.log("18");
-        } else {
-          this.priceHandle(750000);
-          console.log("18_1");
-        }
-      }
-    }
-  }
-
-  _checkTimeNgoainb(timeH, val, car_type_id) {
-    if (this._checkNightTime(timeH)) {
-      if (car_type_id === 7) {
-        if (!val) {
-          this.priceHandle(330000);
-          console.log("19");
-        } else {
-          this.priceHandle(540000);
-          console.log("19_1");
-        }
-      }
-      if (car_type_id === 8) {
-        if (!val) {
-          this.priceHandle(360000);
-          console.log("20");
-        } else {
-          this.priceHandle(600000);
-          console.log("20_1");
-        }
-      }
-      if (car_type_id === 9) {
-        if (!val) {
-          this.priceHandle(550000);
-          console.log("21");
-        } else {
-          this.priceHandle(950000);
-          console.log("21_1");
-        }
-      }
-    } else {
-      if (car_type_id === 7) {
-        if (!val) {
-          this.priceHandle(300000);
-          console.log("22");
-        } else {
-          this.priceHandle(480000);
-          console.log("22_1");
-        }
-      }
-      if (car_type_id === 8) {
-        if (!val) {
-          this.priceHandle(330000);
-          console.log("23");
-        } else {
-          this.priceHandle(540000);
-          console.log("23_1");
-        }
-      }
-      if (car_type_id === 9) {
-        if (!val) {
-          this.priceHandle(500000);
-          console.log("24");
-        } else {
-          this.priceHandle(850000);
-          console.log("24_1");
-        }
-      }
-    }
-  }
-
   _checkHanoi(data, details, start) {
     var stringLat = details.geometry.location.lat.toString();
     var splitLat = stringLat.split(".")[1].slice(0, 6);
     var latitude = stringLat.split(".")[0] + "." + splitLat;
+
     var stringLng = details.geometry.location.lng.toString();
     var splitLng = stringLng.split(".")[1].slice(0, 6);
     var longitude = stringLng.split(".")[0] + "." + splitLng;
@@ -1389,112 +1291,40 @@ class bookCarForm extends Component {
         break;
       } else {
         if (details.formatted_address.split(",")[j].trim() === "Hà Nội") {
-          console.log("thuoc ha noi");
-          for (i in details.formatted_address.split(",")) {
-            if (!details.formatted_address.split(",")[i]) {
-              break;
-            } else {
-              if (
-                details.formatted_address.split(",")[i].trim() ===
-                  "Hoàn Kiếm" ||
-                details.formatted_address.split(",")[i].trim() === "Tây Hồ" ||
-                details.formatted_address.split(",")[i].trim() === "Đống Đa" ||
-                details.formatted_address.split(",")[i].trim() === "Ba Đình" ||
-                details.formatted_address.split(",")[i].trim() === "Cầu Giấy" ||
-                details.formatted_address.split(",")[i].trim() ===
-                  "Long Biên" ||
-                details.formatted_address.split(",")[i].trim() ===
-                  "Thanh Xuân" ||
-                details.formatted_address.split(",")[i].trim() ===
-                  "Hai Bà Trưng"
-              ) {
-                if (this.state.router === "nb") {
-                  this._checkTimeNoi(
-                    this.state.timeH,
-                    this.state.roundTrip,
-                    this.state.car_type_id
-                  );
-                } else {
-                  this._checkTimeNoinb(
-                    this.state.timeH,
-                    this.state.roundTrip,
-                    this.state.car_type_id
-                  );
-                }
-                if (start) {
-                  // console.log("if start");
-                  this.setState({
-                    start: details.formatted_address,
-                    startLat: latitude,
-                    startLng: longitude,
-                    close: false,
-                    locate: "noi",
-                    hanoi: true
-                  });
-                } else {
-                  // console.log("if !start");
-                  this.setState({
-                    stop: details.formatted_address,
-                    stopLat: latitude,
-                    stopLng: longitude,
-                    open: false,
-                    locate: "noi",
-                    hanoi: true
-                  });
-                }
-                // console.log("noi thanh", );
-                break;
-              } else {
-                if (this.state.router === "nb") {
-                  this._checkTimeNgoai(
-                    this.state.timeH,
-                    this.state.roundTrip,
-                    this.state.car_type_id
-                  );
-                } else {
-                  this._checkTimeNgoainb(
-                    this.state.timeH,
-                    this.state.roundTrip,
-                    this.state.car_type_id
-                  );
-                }
-                // console.log("no data");
-                if (start) {
-                  // console.log("else start");
-                  this.setState({
-                    start: details.formatted_address,
-                    startLat: latitude,
-                    startLng: longitude,
-                    close: false,
-                    locate: "ngoai",
-                    hanoi: true
-                  });
-                } else {
-                  // console.log("else !start");
-                  this.setState({
-                    stop: details.formatted_address,
-                    stopLat: latitude,
-                    stopLng: longitude,
-                    open: false,
-                    locate: "ngoai",
-                    hanoi: true
-                  });
-                }
-                console.log("ngoai thanh");
-              }
-            }
+          if (start) {
+            this.setState({
+              visible: true,
+              close: false,
+              hanoi: true
+            });
+            break;
+          } else {
+            this.setState({
+              visible: true,
+              open: false,
+              hanoi: true
+            });
+            break;
           }
-          return i;
         } else {
           if (start) {
-            console.log("else start");
             this.setState({
+              start: details.formatted_address,
+              startLat: latitude,
+              startLng: longitude,
+              visible: true,
               close: false,
               hanoi: false
             });
+            console.log("else start", longitude);
           } else {
             console.log("else !start");
             this.setState({
+              stop: details.formatted_address,
+              // originlat,originlng,destinationlat,destinationlng
+              stopLat: latitude,
+              stopLng: longitude,
+              visible: true,
               open: false,
               hanoi: false
             });
@@ -1593,22 +1423,27 @@ class bookCarForm extends Component {
     );
   }
 }
-const bookCar = reduxForm({
-  form: "bookcar"
-})(bookCarForm);
+
+const bookCarOut = reduxForm({
+  form: "bookcarout"
+})(bookCarOutForm);
 
 function bindAction(dispatch) {
   return {
-    carbooking: params => dispatch(carbooking(params)),
-    getcartype: () => dispatch(getcartype())
+    carbookingout: params => dispatch(carbookingout(params)),
+    getcartype: () => dispatch(getcartype()),
+    distance: (originlat, originlng, destinationlat, destinationlng) =>
+      dispatch(distance(originlat, originlng, destinationlat, destinationlng))
     // fetchData: url => dispatch(itemsFetchData(url))
   };
 }
 
 const mapStateToProps = state => ({
-  items: state.bookCarReducer.items,
-  error: state.bookCarReducer.error,
-  cartypes: state.bookCarReducer.cartypes,
-  errorC: state.bookCarReducer.errorC
+  items: state.bookCarOutReducer.items,
+  error: state.bookCarOutReducer.error,
+  cartypes: state.bookCarOutReducer.cartypes,
+  errorC: state.bookCarOutReducer.errorC,
+  Successdistance: state.bookCarOutReducer.Successdistance,
+  Errordistance: state.bookCarOutReducer.Errordistance
 });
-export default connect(mapStateToProps, bindAction)(bookCarForm);
+export default connect(mapStateToProps, bindAction)(bookCarOutForm);

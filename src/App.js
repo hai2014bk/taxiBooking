@@ -26,12 +26,14 @@ import Timeline from "./screens/Timeline";
 import Feedback from "./screens/Feedback/";
 import Profile from "./screens/Profile/";
 import Settings from "./screens/Settings";
+import bookcarout from "./screens/bookCarOut";
 
 const Drawer = DrawerNavigator(
   {
     bookCar: { screen: bookCar },
     profileBookCar: { screen: profileBookCar },
     history: { screen: history },
+    bookcarout: { screen: bookcarout },
   },
   {
     initialRouteName: "bookCar",

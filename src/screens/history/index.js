@@ -158,50 +158,33 @@ class historyForm extends Component {
     console.log("this.state.priceshow", this.state.priceshow);
     // return price
   }
+
+  _handleNumber(number) {
+    if (
+      number === 0 ||
+      number === 1 ||
+      number === 2 ||
+      number === 3 ||
+      number === 4 ||
+      number === 5 ||
+      number === 6 ||
+      number === 7 ||
+      number === 8 ||
+      number === 9
+    ) {
+      return "0" + number;
+    } else {
+      return number;
+    }
+  }
+
   _renderrow(item) {
     var priceshow = item.price.toString().split(".")[0];
     var price = priceshow.toString().replace(/(\d)(?=(\d\d\d)+(?!\d))/g, "$1.");
-    // this.priceHandle(priceshow);
-    // console.log("priceshow",priceshow)
     var date = new Date(item.start_time);
-    var minuteValue = "";
-    var hourValue = "";
-    if (
-      date.getMinutes() == 0 ||
-      date.getMinutes() == 1 ||
-      date.getMinutes() == 2 ||
-      date.getMinutes() == 3 ||
-      date.getMinutes() == 4 ||
-      date.getMinutes() == 5 ||
-      date.getMinutes() == 6 ||
-      date.getMinutes() == 7 ||
-      date.getMinutes() == 8 ||
-      date.getMinutes() == 9
-    ) {
-      minuteValue = "0" + date.getMinutes().toString();
-    } else {
-      minuteValue = date.getMinutes();
-    }
-
-    if (
-      date.getHours() == 0 ||
-      date.getHours() == 1 ||
-      date.getHours() == 2 ||
-      date.getHours() == 3 ||
-      date.getHours() == 4 ||
-      date.getHours() == 5 ||
-      date.getHours() == 6 ||
-      date.getHours() == 7 ||
-      date.getHours() == 8 ||
-      date.getHours() == 9
-    ) {
-      hourValue = "0" + date.getHours().toString();
-    } else {
-      hourValue = date.getHours();
-    }
-    var time = hourValue + ":" + minuteValue;
+    var time = this._handleNumber(date.getHours()) + ":" + this._handleNumber(date.getMinutes());
     var dateshow =
-      date.getDate() + "-" + (date.getMonth() + 1) + "-" + date.getFullYear();
+    this._handleNumber(date.getDate()) + "-" + this._handleNumber((date.getMonth() + 1)) + "-" + date.getFullYear();
     console.log(item.price.split(".")[0]);
     return (
       <ListItem style={{ borderColor: "white", marginLeft: 0 }}>

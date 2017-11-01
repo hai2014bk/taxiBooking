@@ -174,6 +174,28 @@ class SideBar extends Component {
             <ListItem
               button
               onPress={() => {
+                navigation.navigate("bookCar");
+              }}
+              iconLeft
+              style={styles.links}
+            >
+              <Icon name="ios-car" />
+              <Text style={styles.linkText}>Đặt xe Hà Nội</Text>
+            </ListItem>
+            <ListItem
+              button
+              onPress={() => {
+                navigation.navigate("bookcarout");
+              }}
+              iconLeft
+              style={styles.links}
+            >
+              <Icon name="ios-bus" />
+              <Text style={styles.linkText}>Đặt xe ngoại tỉnh</Text>
+            </ListItem>
+            <ListItem
+              button
+              onPress={() => {
                 navigation.navigate("history");
               }}
               iconLeft

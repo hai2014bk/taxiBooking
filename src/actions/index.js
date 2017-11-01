@@ -30,12 +30,18 @@ export {
   bookCarError,
   carbooking,
   getcartype,
-  distance,
   carTypesSuccess,
   carTypesError,
+} from "../screens/bookCar/actions";
+
+export {
+  bookCaroutSuccess,
+  bookCaroutError,
+  carbookingout,
+  distance,
   distanceSuccess,
   distanceError
-} from "../screens/bookCar/actions";
+} from "../screens/bookCarOut/actions";
 
 export {
   profileSuccess,
